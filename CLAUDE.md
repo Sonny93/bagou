@@ -2,7 +2,7 @@
 
 PWA mono-utilisateur : un raccourci OS ouvre la fenêtre, l'enregistrement démarre, le texte partiel s'affiche en direct, Entrée termine, Claude Haiku nettoie le texte final, le résultat part dans le presse-papier. Rien de lourd côté client : tout passe par un seul conteneur Adonis.
 
-> Statut : étapes 1 à 3 terminées (scaffolding, auth passkey, port STT + Mistral + relais WebSocket). Prochaine : capture micro + AudioWorklet + affichage live.
+> Statut : étapes 1 à 4 terminées (scaffolding, auth passkey, port STT + Mistral + relais, capture micro + affichage live). Prochaine : nettoyage Haiku + copie presse-papier.
 
 ## Conventions
 

@@ -6,6 +6,7 @@ dev:
 test:
 	@docker compose -f dev.compose.yml up -d --wait
 	@node ace test
+	@pnpm run test:front
 
 lint:
 	@pnpm run lint
