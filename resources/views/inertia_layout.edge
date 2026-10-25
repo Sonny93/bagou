@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-inertia>Dictée vocale</title>
+  <meta name="description" content="Dictée vocale en temps réel">
+
+  <script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
+  @viteReactRefresh()
+  @inertiaHead()
+  @vite(['inertia/app.tsx', `inertia/pages/${page.component}.tsx`])
+</head>
+
+<body>
+  @inertia()
+</body>
+
+</html>

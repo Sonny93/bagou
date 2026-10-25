@@ -1,0 +1,19 @@
+{
+	"extends": "@adonisjs/tsconfig/tsconfig.client.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"jsx": "react-jsx",
+		"rewriteRelativeImportExtensions": true,
+		"allowImportingTsExtensions": true,
+		"paths": {
+			"~/*": ["./*"],
+			"@generated/*": ["../.adonisjs/client/*"]
+		}
+	},
+	"include": [
+		"./**/*.ts",
+		"./**/*.tsx",
+		"../.adonisjs/client/**/*.ts",
+		"../.adonisjs/server/**/*.ts"
+	]
+}
