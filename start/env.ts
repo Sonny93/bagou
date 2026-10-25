@@ -14,4 +14,6 @@ export default await Env.create(new URL('../', import.meta.url), {
 	DB_DATABASE: Env.schema.string(),
 
 	APP_URL: Env.schema.string({ format: 'url', tld: false }),
+
+	MISTRAL_API_KEY: Env.schema.string(),
 });

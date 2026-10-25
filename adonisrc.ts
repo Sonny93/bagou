@@ -1,9 +1,10 @@
 import { indexEntities } from '@adonisjs/core';
 import { defineConfig } from '@adonisjs/core/app';
 import { indexPages } from '@adonisjs/inertia';
+import { generateSocketRegistry } from '@rlanz/socket/assembler_hook';
 import { generateRegistry } from '@tuyau/core/hooks';
 
-const DOMAINS = ['auth', 'dictation', 'passkeys', 'users'];
+const DOMAINS = ['auth', 'dictation', 'passkeys', 'transcription', 'users'];
 
 export default defineConfig({
 	commands: [
@@ -27,6 +28,11 @@ export default defineConfig({
 		() => import('@adonisjs/lucid/database_provider'),
 		() => import('@adonisjs/auth/auth_provider'),
 		() => import('@adonisjs/inertia/inertia_provider'),
+		() => import('#providers/transcription_provider'),
+		{
+			file: () => import('@rlanz/socket/provider'),
+			environment: ['web', 'test'],
+		},
 	],
 
 	preloads: [
@@ -45,6 +51,10 @@ export default defineConfig({
 					'app/**/*_transformer.spec.ts',
 					'app/**/validators/**/*.spec.ts',
 					'app/**/*_command.spec.ts',
+					'app/**/*_session.spec.ts',
+					'app/**/*_provider.spec.ts',
+					'app/**/parse_*.spec.ts',
+					'app/**/decode_*.spec.ts',
 				],
 				name: 'unit',
 				timeout: 2000,
@@ -94,6 +104,11 @@ export default defineConfig({
 			}),
 			indexPages({ framework: 'react' }),
 			generateRegistry(),
+			generateSocketRegistry({
+				source: './app',
+				glob: ['**/*_channel.ts'],
+				importAlias: '#app',
+			}),
 		],
 		buildStarting: [() => import('@adonisjs/vite/build_hook')],
 	},
