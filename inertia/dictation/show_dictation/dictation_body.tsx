@@ -2,16 +2,23 @@ import { DictationMessage } from './dictation_message';
 import { DictationResult } from './dictation_result';
 import { DictationTranscript } from './dictation_transcript';
 import { RecordingIndicator } from './recording_indicator';
+import { StartDictationButton } from './start_dictation_button';
 import type { DictationState } from '~/dictation/core/dictation_state';
 
 type DictationBodyProps = {
 	state: DictationState;
 	level: number;
+	onStart: () => void;
 };
 
-export function DictationBody({ state, level }: Readonly<DictationBodyProps>) {
+export function DictationBody({
+	state,
+	level,
+	onStart,
+}: Readonly<DictationBodyProps>) {
 	switch (state.status) {
 		case 'idle':
+			return <StartDictationButton onStart={onStart} />;
 		case 'connecting':
 			return <DictationMessage text="Connexion…" />;
 		case 'recording':

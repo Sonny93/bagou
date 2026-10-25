@@ -17,22 +17,32 @@ const CAN_START_FROM = new Set<DictationState['status']>([
 	'error',
 ]);
 
+type UseDictationOptions = {
+	shouldAutoStart: boolean;
+};
+
 type UseDictationReturn = {
 	state: DictationState;
 	level: number;
 	finish: () => void;
 	cancel: () => void;
-	restart: () => void;
+	start: () => void;
 };
 
-/** Starts recording on mount and drives one dictation at a time. */
-export function useDictation(): UseDictationReturn {
+/**
+ * Drives one dictation at a time. Starts recording on mount only when
+ * `shouldAutoStart` is true at that moment; later changes are ignored.
+ */
+export function useDictation({
+	shouldAutoStart,
+}: Readonly<UseDictationOptions>): UseDictationReturn {
 	const [state, dispatch] = useReducer(
 		dictationReducer,
 		INITIAL_DICTATION_STATE
 	);
 	const [level, setLevel] = useState(0);
 	const sessionRef = useRef<DictationSession | null>(null);
+	const shouldAutoStartOnMountRef = useRef(shouldAutoStart);
 	const statusRef = useRef(state.status);
 	useEffect(() => {
 		statusRef.current = state.status;
@@ -42,7 +52,7 @@ export function useDictation(): UseDictationReturn {
 		dispatch({ type: 'failed', message: describeDictationError(error) });
 	}, []);
 
-	const restart = useCallback(async () => {
+	const start = useCallback(async () => {
 		if (!CAN_START_FROM.has(statusRef.current)) return;
 		dispatch({ type: 'startRequested' });
 		setLevel(0);
@@ -84,15 +94,15 @@ export function useDictation(): UseDictationReturn {
 	}, []);
 
 	useEffect(() => {
-		void restart();
+		if (shouldAutoStartOnMountRef.current) void start();
 		return () => void sessionRef.current?.cancel();
-	}, [restart]);
+	}, [start]);
 
 	return {
 		state,
 		level,
 		finish: () => void finish(),
 		cancel,
-		restart: () => void restart(),
+		start: () => void start(),
 	};
 }
