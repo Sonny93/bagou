@@ -4,7 +4,22 @@
  */
 
 export const controllers = {
+  auth: {
+    Logout: () => import('#app/auth/logout_controller'),
+  },
   dictation: {
-    ShowDictation: () => import('../../app/dictation/show_dictation_controller.ts'),
+    ShowDictation: () => import('#app/dictation/show_dictation_controller'),
+  },
+  passkeys: {
+    CreateAuthenticationOptions: () => import('#app/passkeys/create_authentication_options_controller'),
+    CreateInvitationOptions: () => import('#app/passkeys/create_invitation_options_controller'),
+    CreateRegistrationOptions: () => import('#app/passkeys/create_registration_options_controller'),
+    DeletePasskey: () => import('#app/passkeys/delete_passkey_controller'),
+    ShowLogin: () => import('#app/passkeys/show_login_controller'),
+    ShowPasskeyInvitation: () => import('#app/passkeys/show_passkey_invitation_controller'),
+    ShowPasskeys: () => import('#app/passkeys/show_passkeys_controller'),
+    VerifyAuthentication: () => import('#app/passkeys/verify_authentication_controller'),
+    VerifyInvitation: () => import('#app/passkeys/verify_invitation_controller'),
+    VerifyRegistration: () => import('#app/passkeys/verify_registration_controller'),
   },
 }

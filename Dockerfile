@@ -34,7 +34,6 @@ FROM base
 
 ENV NODE_ENV=production
 ENV LOG_LEVEL=info
-ENV SESSION_DRIVER=cookie
 ENV PORT=3333
 
 WORKDIR /app

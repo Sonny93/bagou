@@ -3,7 +3,7 @@ import { defineConfig } from '@adonisjs/core/app';
 import { indexPages } from '@adonisjs/inertia';
 import { generateRegistry } from '@tuyau/core/hooks';
 
-const DOMAINS = ['dictation', 'users'];
+const DOMAINS = ['auth', 'dictation', 'passkeys', 'users'];
 
 export default defineConfig({
 	commands: [
@@ -33,6 +33,7 @@ export default defineConfig({
 		() => import('#start/routes'),
 		() => import('#start/kernel'),
 		() => import('#start/validator'),
+		() => import('#start/passkey_routes'),
 	],
 
 	tests: {
@@ -43,6 +44,7 @@ export default defineConfig({
 					'app/**/*_service.spec.ts',
 					'app/**/*_transformer.spec.ts',
 					'app/**/validators/**/*.spec.ts',
+					'app/**/*_command.spec.ts',
 				],
 				name: 'unit',
 				timeout: 2000,
@@ -79,7 +81,7 @@ export default defineConfig({
 				controllers: {
 					source: 'app',
 					glob: ['**/*_controller.ts'],
-					importAlias: undefined,
+					importAlias: '#app',
 				},
 				transformers: {
 					enabled: true,

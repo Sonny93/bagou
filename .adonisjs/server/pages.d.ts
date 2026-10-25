@@ -13,5 +13,8 @@ type ExtractProps<T> =
 declare module '@adonisjs/inertia/types' {
   export interface InertiaPages {
     'dictation/show_dictation': ExtractProps<(typeof import('../../inertia/pages/dictation/show_dictation.tsx'))['default']>
+    'passkeys/show_login': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_login.tsx'))['default']>
+    'passkeys/show_passkey_invitation': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_passkey_invitation.tsx'))['default']>
+    'passkeys/show_passkeys': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_passkeys.tsx'))['default']>
   }
 }

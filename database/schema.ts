@@ -7,6 +7,65 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class PasskeyInvitationSchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'id', 'tokenHash', 'updatedAt', 'usedAt'] as const
+  $columns = PasskeyInvitationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tokenHash: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column.dateTime()
+  declare usedAt: DateTime | null
+}
+
+export class PasskeySchema extends BaseModel {
+  static $columns = ['backedUp', 'counter', 'createdAt', 'credentialId', 'deviceType', 'id', 'label', 'lastUsedAt', 'publicKey', 'transports', 'updatedAt', 'userId'] as const
+  $columns = PasskeySchema.$columns
+  @column()
+  declare backedUp: boolean
+  @column()
+  declare counter: bigint | number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare credentialId: string
+  @column()
+  declare deviceType: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare label: string
+  @column.dateTime()
+  declare lastUsedAt: DateTime | null
+  @column()
+  declare publicKey: Buffer
+  @column()
+  declare transports: any
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
+export class SessionSchema extends BaseModel {
+  static $columns = ['data', 'expiresAt', 'id', 'userId'] as const
+  $columns = SessionSchema.$columns
+  @column()
+  declare data: string
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare userId: string | null
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'updatedAt'] as const
   $columns = UserSchema.$columns

@@ -2,7 +2,7 @@
 
 PWA mono-utilisateur : un raccourci OS ouvre la fenêtre, l'enregistrement démarre, le texte partiel s'affiche en direct, Entrée termine, Claude Haiku nettoie le texte final, le résultat part dans le presse-papier. Rien de lourd côté client : tout passe par un seul conteneur Adonis.
 
-> Statut : étape 1 (scaffolding) terminée. Prochaine : auth passkey + session.
+> Statut : étapes 1 (scaffolding) et 2 (auth passkey + session) terminées. Prochaine : port STT + adaptateur Mistral + relais WebSocket.
 
 ## Conventions
 
@@ -17,7 +17,7 @@ Charger `typescript-conventions`, `adonis-conventions` et `react-conventions` av
 - **Temps réel** : `@rlanz/socket` pour le relais navigateur ↔ Adonis. Transmit seulement si un besoin SSE apparaît. Aucune autre lib temps réel. Côté serveur → fournisseur STT : `WebSocket` global de Node (undici, accepte `headers`).
 - **STT hexagonal** : port `TranscriptionProvider` / `TranscriptionSession` (événements `partial`, `final`, `error`), un adaptateur par fournisseur dans `app/transcription/providers/<name>/`. Le reste de l'appli ne connaît que le port. Fournisseur choisi par env.
 - **Nettoyage** : Claude Haiku via `@anthropic-ai/sdk`, hors du port STT (domaine `text_cleanup`). Consigne : retirer hésitations et répétitions, appliquer les auto-corrections (« non, plutôt… »), ponctuer, ne pas reformuler, préserver le vocabulaire technique.
-- **Auth** : passkeys WebAuthn (`@simplewebauthn/*`), plusieurs passkeys par utilisateur, session Adonis 30 jours. Le WebSocket s'authentifie par le cookie de session. **Contrat d'isolation** : le reste de l'appli ne dépend que du guard session Adonis (`auth.getUserOrFail()`, `middleware.auth()`) et du modèle `User` ; tout ce qui est WebAuthn reste dans `app/passkeys/`. Passer à OIDC (Pocket ID) = remplacer ce domaine par un autre qui finit par `auth.use('web').login(user)`.
+- **Auth** : passkeys WebAuthn (`@simplewebauthn/*`), plusieurs passkeys par utilisateur, session Adonis 30 jours stockée en Postgres (store `database` ; `memory` uniquement en test). Le WebSocket s'authentifie par le cookie de session. **Contrat d'isolation** : le reste de l'appli ne dépend que du guard session Adonis (`auth.getUserOrFail()`, `middleware.auth()`) et du modèle `User` ; tout ce qui est WebAuthn reste dans `app/passkeys/`. Passer à OIDC (Pocket ID) = remplacer ce domaine par un autre qui finit par `auth.use('web').login(user)`.
 - **Base** : Postgres (service dans `compose.yml` et `dev.compose.yml`, port lié à `127.0.0.1`). Store `database` pour `@adonisjs/limiter`.
 - **Première passkey** : `node ace passkey:invite` génère un lien d'enregistrement à usage unique (15 min). Sert aussi de secours si toutes les passkeys sont perdues.
 - **Fournisseur STT** : le free tier passe en premier, sinon le projet perd son intérêt. Premier et seul adaptateur pour l'instant : Mistral Voxtral Realtime (gratuit récurrent, base64 JSON transmis tel quel). Repli prévu : Deepgram (crédit unique qui n'expire pas).

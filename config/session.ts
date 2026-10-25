@@ -1,7 +1,12 @@
 import app from '@adonisjs/core/services/app';
 import { defineConfig, stores } from '@adonisjs/session';
 
-import env from '#start/env';
+/**
+ * Sessions live in Postgres. Tests use the built-in memory store instead:
+ * the Japa session and auth api-client plugins simulate session state
+ * through the same in-process store the session middleware reads.
+ */
+const SESSION_STORE = app.inTest ? 'memory' : 'database';
 
 const sessionConfig = defineConfig({
 	enabled: true,
@@ -14,9 +19,9 @@ const sessionConfig = defineConfig({
 		secure: app.inProduction,
 		sameSite: 'lax',
 	},
-	store: env.get('SESSION_DRIVER'),
+	store: SESSION_STORE,
 	stores: {
-		cookie: stores.cookie(),
+		database: stores.database(),
 	},
 });
 

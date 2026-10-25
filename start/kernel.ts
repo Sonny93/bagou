@@ -30,3 +30,12 @@ router.use([
 	() => import('@adonisjs/shield/shield_middleware'),
 	() => import('@adonisjs/auth/initialize_auth_middleware'),
 ]);
+
+/**
+ * Named middleware collection must be explicitly assigned to
+ * the routes or the routes group.
+ */
+export const middleware = router.named({
+	guest: () => import('#middleware/guest_middleware'),
+	auth: () => import('#middleware/auth_middleware'),
+});
