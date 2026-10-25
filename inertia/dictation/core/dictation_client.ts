@@ -113,6 +113,7 @@ export class DictationClient {
 	}
 
 	#handleConnectionLost = (): void => {
+		if (this.#hasEnded()) return;
 		this.#isConnectionLost = true;
 		this.#failWith(new DictationClientError('connection_lost'));
 	};

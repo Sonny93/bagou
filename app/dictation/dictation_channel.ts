@@ -6,11 +6,13 @@ import type { AuthenticatedSocket } from '@rlanz/socket/types';
 import { decodeAudioChunk } from '#dictation/decode_audio_chunk';
 import type { Dictation } from '#dictation/dictation';
 import DictationAlreadyActiveException from '#dictation/dictation_already_active_exception';
+import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
 import DictationUnavailableException from '#dictation/dictation_unavailable_exception';
 import { ensureDictationAccess } from '#dictation/ensure_dictation_access';
+import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type User from '#users/user';
 
 /**
@@ -75,6 +77,11 @@ export default class DictationChannel extends BaseChannel<
 			await dictation.start();
 		} catch (error) {
 			if (error instanceof SocketResponseError) throw error;
+			if (error instanceof TranscriptionProviderError) {
+				throw new DictationUnavailableException(
+					DICTATION_ERROR_MESSAGES[error.code]
+				);
+			}
 			throw new DictationUnavailableException();
 		}
 	}

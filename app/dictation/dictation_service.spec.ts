@@ -154,6 +154,25 @@ test.group('Dictation', () => {
 		assert.include(readLogs(lines).at(-1), { outcome: 'failed' });
 	});
 
+	test('should log the provider and error code, never the message, when the provider cannot open', async ({
+		assert,
+	}) => {
+		const openError = new TranscriptionProviderError(
+			TranscriptionErrorCode.connectionFailed,
+			'secret provider text'
+		);
+		const provider = new FakeTranscriptionProvider(undefined, openError);
+		const { dictation, lines } = createDictation(provider);
+
+		await assert.rejects(() => dictation.start());
+
+		assert.include(readLogs(lines).at(-2), {
+			provider: provider.name,
+			code: TranscriptionErrorCode.connectionFailed,
+		});
+		assert.notInclude(lines.join(''), 'secret provider text');
+	});
+
 	test('should abort the session once when cancelled twice', async ({
 		assert,
 	}) => {

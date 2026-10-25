@@ -141,6 +141,18 @@ describe('DictationClient', () => {
 		});
 	});
 
+	it('should rethrow the start rejection, not connection_lost, when the server rejects the start', async () => {
+		const transport = new FakeDictationTransport();
+		transport.startError = new Error('Impossible de joindre le service');
+		const { client, errors } = createClient(transport);
+
+		await expect(client.start()).rejects.toMatchObject({
+			code: 'rejected',
+			message: 'Impossible de joindre le service',
+		});
+		expect(errors).toEqual([]);
+	});
+
 	it('should fail when too much audio piles up before the start is acknowledged', async () => {
 		const transport = new FakeDictationTransport();
 		transport.holdStart = true;

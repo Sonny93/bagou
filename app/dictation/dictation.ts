@@ -6,7 +6,7 @@ import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import type { TranscriptionProvider } from '#transcription/transcription_provider';
-import type { TranscriptionProviderError } from '#transcription/transcription_provider_error';
+import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type { TranscriptionSession } from '#transcription/transcription_session';
 
 const MAX_DICTATION_DURATION_MS = 10 * 60 * 1000;
@@ -88,6 +88,9 @@ export class Dictation {
 		try {
 			return await this.provider.open({ language: 'fr' });
 		} catch (error) {
+			if (error instanceof TranscriptionProviderError) {
+				this.#logProviderError(error);
+			}
 			this.#end('failed');
 			throw error;
 		}
@@ -100,15 +103,19 @@ export class Dictation {
 	}
 
 	#reportProviderError(error: TranscriptionProviderError): void {
-		this.logger.warn(
-			{ provider: this.provider.name, code: error.code },
-			'Transcription provider error'
-		);
+		this.#logProviderError(error);
 		this.listener.onError({
 			code: error.code,
 			message: DICTATION_ERROR_MESSAGES[error.code],
 		});
 		this.#end('failed');
+	}
+
+	#logProviderError(error: TranscriptionProviderError): void {
+		this.logger.warn(
+			{ provider: this.provider.name, code: error.code },
+			'Transcription provider error'
+		);
 	}
 
 	#finishAtMaxDuration(session: TranscriptionSession): void {

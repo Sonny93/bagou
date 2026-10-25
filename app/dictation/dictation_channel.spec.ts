@@ -176,7 +176,7 @@ test.group('DictationChannel', (group) => {
 		await assert.rejects(() => send('dictation:stop'), /Aucune dictée/);
 	});
 
-	test('should acknowledge a start failure with a generic unavailable error', async ({
+	test('should acknowledge a provider start failure with the safe message of its code', async ({
 		assert,
 	}) => {
 		const failingProvider = new FakeTranscriptionProvider(
@@ -185,6 +185,23 @@ test.group('DictationChannel', (group) => {
 				TranscriptionErrorCode.connectionFailed,
 				'dns failure for api.mistral.ai'
 			)
+		);
+		const restoreProvider = swapTranscriptionProvider(failingProvider);
+		const { send } = await joinChannel();
+
+		await assert.rejects(
+			() => send('dictation:start'),
+			'Impossible de joindre le service de transcription.'
+		);
+		restoreProvider();
+	});
+
+	test('should acknowledge an unexpected start failure with a generic unavailable error', async ({
+		assert,
+	}) => {
+		const failingProvider = new FakeTranscriptionProvider(
+			session,
+			new Error('boom')
 		);
 		const restoreProvider = swapTranscriptionProvider(failingProvider);
 		const { send } = await joinChannel();

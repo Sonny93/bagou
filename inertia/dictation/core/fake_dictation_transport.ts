@@ -4,7 +4,11 @@ import type {
 	TranscriptListener,
 } from './dictation_transport';
 
-/** In-memory transport recording every call and letting a spec play the server. */
+/**
+ * In-memory transport recording every call and letting a spec play the
+ * server. Like the real socket, `disconnect()` synchronously notifies the
+ * connection-lost listener.
+ */
 export class FakeDictationTransport implements DictationTransport {
 	readonly sentAudio: string[] = [];
 	readonly calls: string[] = [];
@@ -25,6 +29,7 @@ export class FakeDictationTransport implements DictationTransport {
 
 	disconnect(): void {
 		this.calls.push('disconnect');
+		this.#connectionLostListener();
 	}
 
 	onConnectionLost(listener: () => void): void {
