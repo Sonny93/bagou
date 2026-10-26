@@ -1,10 +1,11 @@
-import { Link } from '@adonisjs/inertia/react';
 import type { Data } from '@generated/data';
-import { Card } from '@minimalstuff/ui';
 
 import { AddPasskeyForm } from '~/passkeys/show_passkeys/add_passkey_form';
+import { BackToDictationLink } from '~/passkeys/show_passkeys/back_to_dictation_link';
 import { PasskeyRow } from '~/passkeys/show_passkeys/passkey_row';
 import { useDeletePasskey } from '~/passkeys/show_passkeys/use_delete_passkey';
+import { AppHeader } from '~/shared/ui/app_header';
+import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 
 type ShowPasskeysProps = {
 	passkeys: Data.Passkey[];
@@ -16,12 +17,19 @@ export default function ShowPasskeys({
 	const deletePasskey = useDeletePasskey();
 
 	return (
-		<main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 bg-gray-50 p-6 dark:bg-gray-800">
-			<Link route="dictation.show_dictation" className="text-sm underline">
-				Retour à la dictée
-			</Link>
-			<Card title="Passkeys" padding="lg">
-				<ul className="divide-y divide-gray-200 dark:divide-gray-700">
+		<div className="flex min-h-dvh flex-col">
+			<AppHeader maxWidthClassName="max-w-xl">
+				<BackToDictationLink />
+				<AppThemeToggle />
+			</AppHeader>
+			<main className="mx-auto flex w-full max-w-xl flex-col gap-8 px-4 py-6 sm:px-6">
+				<div className="flex flex-col gap-1">
+					<h1 className="text-2xl font-semibold">Passkeys</h1>
+					<p className="text-muted">
+						Les appareils qui peuvent ouvrir ta session.
+					</p>
+				</div>
+				<ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
 					{passkeys.map((passkey) => (
 						<PasskeyRow
 							key={passkey.id}
@@ -30,10 +38,11 @@ export default function ShowPasskeys({
 						/>
 					))}
 				</ul>
-			</Card>
-			<Card title="Ajouter une passkey" padding="lg">
-				<AddPasskeyForm />
-			</Card>
-		</main>
+				<section className="flex flex-col gap-4">
+					<h2 className="text-base font-semibold">Ajouter une passkey</h2>
+					<AddPasskeyForm />
+				</section>
+			</main>
+		</div>
 	);
 }

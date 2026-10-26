@@ -7,6 +7,16 @@
 		<style>
 			:root {
 				color-scheme: light dark;
+				--color-canvas: #f3f6f8;
+				--color-ink: #14202a;
+				--color-muted: #5a6873;
+			}
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--color-canvas: #131b21;
+					--color-ink: #e6edf2;
+					--color-muted: #8d9aa5;
+				}
 			}
 			body {
 				margin: 0;
@@ -17,14 +27,11 @@
 				box-sizing: border-box;
 				font-family: system-ui, sans-serif;
 				text-align: center;
-				background: #f9fafb;
-				color: #1f2937;
+				background: var(--color-canvas);
+				color: var(--color-ink);
 			}
-			@media (prefers-color-scheme: dark) {
-				body {
-					background: #1f2937;
-					color: #f9fafb;
-				}
+			p {
+				color: var(--color-muted);
 			}
 		</style>
 	</head>

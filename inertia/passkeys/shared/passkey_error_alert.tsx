@@ -8,7 +8,11 @@ export function PasskeyErrorAlert({
 	if (!message) return null;
 
 	return (
-		<p role="alert" className="text-sm text-red-700 dark:text-red-300">
+		<p role="alert" className="flex items-start gap-2 text-sm text-signal">
+			<span
+				className="i-tabler-alert-circle mt-0.5 size-4 shrink-0"
+				aria-hidden
+			/>
 			{message}
 		</p>
 	);

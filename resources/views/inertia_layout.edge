@@ -6,17 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-inertia>Dictée vocale</title>
   <meta name="description" content="Dictée vocale en temps réel">
-  <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f3f6f8">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="/icons/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 
   <script>
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark');
-    }
+    (function () {
+      var storedTheme = null;
+      try {
+        storedTheme = localStorage.getItem('theme');
+      } catch (error) {}
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDark = storedTheme === 'dark' || (storedTheme !== 'light' && prefersDark);
+      document.documentElement.classList.toggle('dark', isDark);
+      document
+        .querySelector('meta[name="theme-color"]')
+        .setAttribute('content', isDark ? '#131b21' : '#f3f6f8');
+    })();
   </script>
 
   @viteReactRefresh()

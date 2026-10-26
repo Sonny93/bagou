@@ -39,7 +39,7 @@ export function PasskeyLabelForm({
 				onChange={handleChange}
 			/>
 			<PasskeyErrorAlert message={errorMessage} />
-			<Button type="submit" loading={isSubmitting}>
+			<Button type="submit" fullWidth loading={isSubmitting}>
 				{submitLabel}
 			</Button>
 		</form>

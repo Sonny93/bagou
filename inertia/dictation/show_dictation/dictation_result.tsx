@@ -1,50 +1,27 @@
-import { Button, Textarea } from '@minimalstuff/ui';
-import { useState } from 'react';
-
-import type { CopyStatus } from './copy_status';
+import { cn } from '~/shared/lib/cn';
 
 type DictationResultProps = {
 	text: string;
-	isCleaned: boolean;
-	copyStatus: CopyStatus;
-	onCopy: (text: string) => void;
+	onTextChange: (text: string) => void;
 };
 
-const COPY_STATUS_MESSAGES = {
-	none: null,
-	copied: 'Copié dans le presse-papier',
-	failed: 'Copie impossible, utilise le bouton Copier',
-} as const satisfies Record<CopyStatus, string | null>;
-
-/** Final text, editable; the copy button copies the edited text, not `text`. */
+/** Final text, editable; the copy button copies the edited text, not the dictated one. */
 export function DictationResult({
 	text,
-	isCleaned,
-	copyStatus,
-	onCopy,
+	onTextChange,
 }: Readonly<DictationResultProps>) {
-	const [editedText, setEditedText] = useState(text);
-
 	const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
-		setEditedText(event.target.value);
-	const handleCopy = () => onCopy(editedText);
+		onTextChange(event.target.value);
 
 	return (
-		<div className="flex flex-col gap-4">
-			<Textarea
-				label="Texte dicté"
-				value={editedText}
-				onChange={handleChange}
-				rows={8}
-				className="text-xl leading-relaxed"
-			/>
-			<div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-				<Button onClick={handleCopy} startIcon="i-tabler-copy">
-					Copier
-				</Button>
-				<output>{COPY_STATUS_MESSAGES[copyStatus]}</output>
-				{!isCleaned && <span>Nettoyage indisponible, texte brut</span>}
-			</div>
-		</div>
+		<textarea
+			aria-label="Texte dicté"
+			value={text}
+			onChange={handleChange}
+			className={cn(
+				'dictation-text min-h-48 w-full flex-1 resize-none rounded-md border-0 bg-transparent p-0 text-ink [field-sizing:content]',
+				'focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-accent-600/40 dark:focus-visible:outline-accent-400/40'
+			)}
+		/>
 	);
 }

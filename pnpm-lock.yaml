@@ -251,6 +251,9 @@ importers:
       '@adonisjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
+      '@iconify-json/tabler':
+        specifier: ^1.2.42
+        version: 1.2.42
       '@japa/api-client':
         specifier: ^3.2.1
         version: 3.2.1(@japa/assert@4.2.0(@japa/runner@5.4.0))(@japa/runner@5.4.0)(supports-color@10.2.2)
@@ -289,6 +292,9 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@unocss/preset-icons':
         specifier: ^66.11.0
+        version: 66.11.0
+      '@unocss/preset-web-fonts':
+        specifier: 66.11.0
         version: 66.11.0
       '@vitejs/plugin-react':
         specifier: ^6.1.2
@@ -899,6 +905,9 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@iconify-json/tabler@1.2.42':
+    resolution: {integrity: sha512-fObaBh/H2zJphk3lS1dWPUf/buuGaCHQXnB4UYgKOPXQub5Ac1qEu0AHRj/0+E2FEl8pWfgM2xQWzfz7ffcY+A==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -5449,6 +5458,10 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@iconify-json/tabler@1.2.42':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/types@2.0.0': {}
 

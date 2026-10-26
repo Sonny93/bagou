@@ -19,10 +19,10 @@ export default function ShowPasskeyInvitation({
 	);
 
 	return (
-		<PasskeyCardPage title="Enregistrer une passkey">
-			<p className="text-sm text-gray-600 dark:text-gray-300">
-				Donne un nom à cette passkey pour la reconnaître plus tard.
-			</p>
+		<PasskeyCardPage
+			title="Enregistrer une passkey"
+			intro="Donne un nom à cette passkey pour la reconnaître plus tard."
+		>
 			<PasskeyLabelForm
 				submitLabel="Créer la passkey"
 				isSubmitting={isRegistering}

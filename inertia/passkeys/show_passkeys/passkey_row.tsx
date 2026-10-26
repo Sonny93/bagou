@@ -16,10 +16,13 @@ export function PasskeyRow({ passkey, onDelete }: Readonly<PasskeyRowProps>) {
 	const handleDelete = () => onDelete(passkey);
 
 	return (
-		<li className="flex items-center justify-between gap-4 py-3">
-			<div className="flex flex-col">
+		<li className="flex items-center gap-3 px-4 py-3">
+			<span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-100 text-accent-700 dark:bg-accent-950 dark:text-accent-300">
+				<span className="i-tabler-fingerprint size-5" aria-hidden />
+			</span>
+			<div className="flex min-w-0 flex-1 flex-col">
 				<span className="font-medium">{passkey.label}</span>
-				<span className="text-sm text-gray-600 dark:text-gray-300">
+				<span className="text-sm text-muted">
 					Créée le {formatPasskeyDate(passkey.createdAt)}, {lastUsed}
 				</span>
 			</div>

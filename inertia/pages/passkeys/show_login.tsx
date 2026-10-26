@@ -8,10 +8,14 @@ export default function ShowLogin() {
 	const { isLoggingIn, errorMessage, login } = usePasskeyLogin();
 
 	return (
-		<PasskeyCardPage title="Connexion">
+		<PasskeyCardPage
+			title="Connexion"
+			intro="Utilise une passkey enregistrée sur cet appareil."
+		>
 			<PasskeyErrorAlert message={errorMessage} />
 			<Button
 				startIcon="i-tabler-fingerprint"
+				fullWidth
 				loading={isLoggingIn}
 				onClick={login}
 			>

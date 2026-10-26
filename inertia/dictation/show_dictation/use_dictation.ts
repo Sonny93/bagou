@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
+import { appendLevel } from './append_level';
 import { cleanDictationText } from './clean_dictation_text';
 import type { CopyStatus } from './copy_status';
 import { copyToClipboard } from './copy_to_clipboard';
 import { describeDictationError } from './describe_dictation_error';
 import { DICTATION_WORKLET_URL } from './dictation_worklet_url';
 import { finalizeDictation } from './finalize_dictation';
+import { LEVEL_HISTORY_CAPACITY } from './level_history_capacity';
 import { DictationSession } from '~/dictation/core/dictation_session';
 import {
 	dictationReducer,
@@ -32,7 +34,7 @@ type UseDictationOptions = {
 
 type UseDictationReturn = {
 	state: DictationState;
-	level: number;
+	levels: readonly number[];
 	copyStatus: CopyStatus;
 	copyText: (text: string) => void;
 	finish: () => void;
@@ -51,7 +53,7 @@ export function useDictation({
 		dictationReducer,
 		INITIAL_DICTATION_STATE
 	);
-	const [level, setLevel] = useState(0);
+	const [levels, setLevels] = useState<readonly number[]>([]);
 	const [copyStatus, setCopyStatus] = useState<CopyStatus>('none');
 	const sessionRef = useRef<DictationSession | null>(null);
 	const shouldAutoStartOnMountRef = useRef(shouldAutoStart);
@@ -67,7 +69,7 @@ export function useDictation({
 	const start = useCallback(async () => {
 		if (!CAN_START_FROM.has(statusRef.current)) return;
 		dispatch({ type: 'startRequested' });
-		setLevel(0);
+		setLevels([]);
 		setCopyStatus('none');
 		const session = new DictationSession(
 			{
@@ -77,7 +79,10 @@ export function useDictation({
 			{
 				onPartial: (text) => dispatch({ type: 'partialReceived', text }),
 				onFinal: (text) => dispatch({ type: 'finalReceived', text }),
-				onLevel: setLevel,
+				onLevel: (level) =>
+					setLevels((previous) =>
+						appendLevel(previous, level, LEVEL_HISTORY_CAPACITY)
+					),
 				onError: fail,
 			}
 		);
@@ -124,7 +129,7 @@ export function useDictation({
 
 	return {
 		state,
-		level,
+		levels,
 		copyStatus,
 		copyText: (text) => void copyText(text),
 		finish: () => void finish(),

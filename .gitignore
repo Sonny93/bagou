@@ -28,3 +28,6 @@ yarn-error.log
 bench/samples/*
 !bench/samples/README.md
 bench/results/
+
+# Self-hosted web fonts generated at build time
+public/fonts

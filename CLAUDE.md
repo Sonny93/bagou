@@ -11,7 +11,7 @@ Charger `typescript-conventions`, `adonis-conventions` et `react-conventions` av
 ## Décisions verrouillées
 
 - **Toolchain** : Node 26 et pnpm épinglés dans `mise.toml` (pas de corepack), `packageManager` dans `package.json`. Les `FROM` du `Dockerfile` (image Node, image `ghcr.io/pnpm/pnpm`) restent synchronisés avec `mise.toml`. TypeScript 6 (voir Pièges).
-- **Front** : React 19 + Inertia 3 (`@adonisjs/inertia` 5), sans SSR (appli authentifiée, APIs navigateur uniquement). UI `@minimalstuff/ui`, UnoCSS `presetWind4`.
+- **Front** : React 19 + Inertia 3 (`@adonisjs/inertia` 5), sans SSR (appli authentifiée, APIs navigateur uniquement). UI `@minimalstuff/ui`, UnoCSS `presetWind4`. Thème par le `ThemeToggle` de la lib (clé localStorage `theme`, classe `dark` sur `<html>`, appliquée avant rendu par `inertia_layout.edge`). Jetons de couleur dans `inertia/css/app.css` ; l'échelle `blue` de Uno est redéfinie en pétrole car la lib peint sa couleur primaire via `--colors-blue-*`. Icônes Tabler (`@iconify-json/tabler`), polices Instrument Sans + Literata auto-hébergées (`presetWebFonts` fontsource + processeur local, dans `public/fonts`, gitignoré).
 - **Cœur de dictée réutilisable** : capture micro, AudioWorklet, client socket et machine d'état de dictée vivent dans `inertia/dictation/core/` sans aucun import Inertia/Adonis, pour être repris tel quel par une future app Tauri.
 - **Audio** : normalisé une seule fois dans le navigateur en PCM s16le, 16 kHz, mono (AudioWorklet), découpé en trames de 100 ms.
 - **Temps réel** : `@rlanz/socket` pour le relais navigateur ↔ Adonis. Transmit seulement si un besoin SSE apparaît. Aucune autre lib temps réel. Côté serveur → fournisseur STT : `WebSocket` global de Node (undici, accepte `headers`).
