@@ -8,6 +8,9 @@ test:
 	@node ace test
 	@pnpm run test:front
 
+bench *args:
+	@node ace transcription:bench {{args}}
+
 lint:
 	@pnpm run lint
 

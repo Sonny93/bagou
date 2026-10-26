@@ -1,8 +1,7 @@
 import type { ApplicationService } from '@adonisjs/core/types';
 
 import env from '#start/env';
-import { createNodeRealtimeSocket } from '#transcription/providers/mistral/create_node_realtime_socket';
-import { MistralTranscriptionProvider } from '#transcription/providers/mistral/mistral_transcription_provider';
+import { createMistralTranscriptionProvider } from '#transcription/providers/mistral/create_mistral_transcription_provider';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 
 /**
@@ -13,13 +12,8 @@ export default class TranscriptionAppProvider {
 	constructor(protected app: ApplicationService) {}
 
 	register(): void {
-		this.app.container.singleton(
-			TranscriptionProvider,
-			() =>
-				new MistralTranscriptionProvider(
-					env.get('MISTRAL_API_KEY'),
-					createNodeRealtimeSocket
-				)
+		this.app.container.singleton(TranscriptionProvider, () =>
+			createMistralTranscriptionProvider(env.get('MISTRAL_API_KEY'))
 		);
 	}
 }

@@ -17,6 +17,7 @@
 		"#dictation_quota/*": "./app/dictation_quota/*.js",
 		"#transcription/*": "./app/transcription/*.js",
 		"#text_cleanup/*": "./app/text_cleanup/*.js",
+		"#stt_bench/*": "./app/stt_bench/*.js",
 		"#auth/*": "./app/auth/*.js",
 		"#passkeys/*": "./app/passkeys/*.js",
 		"#users/*": "./app/users/*.js",
