@@ -1,1 +1,1 @@
-export type CopyStatus = 'none' | 'copied' | 'failed';
+export type CopyStatus = 'none' | 'copied' | 'stale' | 'failed';

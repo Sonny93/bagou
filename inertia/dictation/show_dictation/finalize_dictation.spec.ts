@@ -8,8 +8,7 @@ const DRAFT_PREFIX = 'Avant. ';
 
 type CopyText = (text: string) => Promise<boolean>;
 
-const createCopyText = (isCopied = true) =>
-	vi.fn<CopyText>(async () => isCopied);
+const createCopyText = () => vi.fn<CopyText>(async () => true);
 
 type DraftTextUpdate = (text: string) => string;
 
@@ -25,17 +24,13 @@ describe('finalizeDictation', () => {
 		const draftEditor = createDraftEditor();
 		const copyText = createCopyText();
 
-		const outcome = await finalizeDictation(
+		const isCleaned = await finalizeDictation(
 			{ rawText: RAW_TEXT, cleanedDraft: CLEANED_DRAFT },
 			draftEditor,
 			copyText
 		);
 
-		expect(outcome).toEqual({
-			draftText: CLEANED_DRAFT,
-			isCleaned: true,
-			isCopied: true,
-		});
+		expect(isCleaned).toBe(true);
 		expect(draftEditor.replaceDraft).toHaveBeenCalledWith(CLEANED_DRAFT);
 		expect(draftEditor.insertSegment).not.toHaveBeenCalled();
 		expect(copyText).toHaveBeenCalledWith(CLEANED_DRAFT);
@@ -45,17 +40,13 @@ describe('finalizeDictation', () => {
 		const draftEditor = createDraftEditor();
 		const copyText = createCopyText();
 
-		const outcome = await finalizeDictation(
+		const isCleaned = await finalizeDictation(
 			{ rawText: RAW_TEXT, cleanedDraft: null },
 			draftEditor,
 			copyText
 		);
 
-		expect(outcome).toEqual({
-			draftText: DRAFT_PREFIX + RAW_TEXT,
-			isCleaned: false,
-			isCopied: true,
-		});
+		expect(isCleaned).toBe(false);
 		expect(draftEditor.insertSegment).toHaveBeenCalledWith(RAW_TEXT);
 		expect(draftEditor.replaceDraft).not.toHaveBeenCalled();
 		expect(copyText).toHaveBeenCalledWith(DRAFT_PREFIX + RAW_TEXT);
@@ -63,45 +54,29 @@ describe('finalizeDictation', () => {
 
 	it('should leave the draft unchanged and count it as cleaned when the segment is blank', async () => {
 		const draftEditor = createDraftEditor('Brouillon.');
+		const copyText = createCopyText();
 
-		const outcome = await finalizeDictation(
+		const isCleaned = await finalizeDictation(
 			{ rawText: '  ', cleanedDraft: null },
 			draftEditor,
-			createCopyText()
+			copyText
 		);
 
-		expect(outcome).toEqual({
-			draftText: 'Brouillon.',
-			isCleaned: true,
-			isCopied: true,
-		});
+		expect(isCleaned).toBe(true);
 		expect(draftEditor.replaceDraft).not.toHaveBeenCalled();
+		expect(copyText).toHaveBeenCalledWith('Brouillon.');
 	});
 
 	it('should not copy when the draft is blank', async () => {
 		const copyText = createCopyText();
 
-		const outcome = await finalizeDictation(
+		const isCleaned = await finalizeDictation(
 			{ rawText: '  ', cleanedDraft: null },
 			{ insertSegment: () => '', replaceDraft: (text) => text },
 			copyText
 		);
 
-		expect(outcome).toEqual({
-			draftText: '',
-			isCleaned: true,
-			isCopied: false,
-		});
+		expect(isCleaned).toBe(true);
 		expect(copyText).not.toHaveBeenCalled();
-	});
-
-	it('should report the copy as failed when the clipboard refuses it', async () => {
-		const outcome = await finalizeDictation(
-			{ rawText: RAW_TEXT, cleanedDraft: CLEANED_DRAFT },
-			createDraftEditor(),
-			createCopyText(false)
-		);
-
-		expect(outcome.isCopied).toBe(false);
 	});
 });

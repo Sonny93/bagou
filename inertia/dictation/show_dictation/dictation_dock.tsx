@@ -50,10 +50,19 @@ export function DictationDock({
 		/>
 	);
 	const quota = (
-		<p className="text-sm text-muted">
+		<p className="truncate text-sm text-muted">
 			{formatRemainingQuota(remainingMinutes)}
 		</p>
 	);
+
+	const renderCopyControls = (isCleaned: boolean) => (
+		<CopyControls
+			copyStatus={copyStatus}
+			isCleaned={isCleaned}
+			onCopy={onCopy}
+		/>
+	);
+	const idleStatus = hasDraftText ? renderCopyControls(true) : quota;
 
 	switch (state.status) {
 		case 'connecting':
@@ -66,13 +75,13 @@ export function DictationDock({
 				/>
 			);
 		case 'idle':
-			return <DockLayout mic={mic} status={quota} />;
+			return <DockLayout mic={mic} status={idleStatus} />;
 		case 'cancelled':
 		case 'error':
 			return (
 				<DockLayout
 					mic={mic}
-					status={quota}
+					status={idleStatus}
 					end={<NewDictationButton onStart={onStartNew} />}
 				/>
 			);
@@ -90,13 +99,7 @@ export function DictationDock({
 			return (
 				<DockLayout
 					mic={mic}
-					status={
-						<CopyControls
-							copyStatus={copyStatus}
-							isCleaned={state.isCleaned}
-							onCopy={onCopy}
-						/>
-					}
+					status={hasDraftText ? renderCopyControls(state.isCleaned) : quota}
 					end={<NewDictationButton onStart={onStartNew} />}
 				/>
 			);

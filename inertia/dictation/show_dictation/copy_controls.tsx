@@ -1,21 +1,34 @@
-import { Badge, Button } from '@minimalstuff/ui';
+import { Badge, Button, Kbd, Tooltip } from '@minimalstuff/ui';
 
 import type { CopyStatus } from './copy_status';
 import { cn } from '~/shared/lib/cn';
 
-type CopyStatusDisplay = { icon: string; message: string; className: string };
+type CopyStatusDisplay = {
+	icon: string;
+	message: string;
+	className: string;
+	isEmphasised: boolean;
+};
 
 const COPY_STATUS_DISPLAYS = {
 	none: null,
 	copied: {
 		icon: 'i-tabler-check',
-		message: 'Copié dans le presse-papier',
+		message: 'Copié',
 		className: 'text-muted',
+		isEmphasised: false,
+	},
+	stale: {
+		icon: 'i-tabler-clipboard-x',
+		message: 'Modifié depuis la copie',
+		className: 'text-muted',
+		isEmphasised: true,
 	},
 	failed: {
 		icon: 'i-tabler-alert-circle',
-		message: 'Copie impossible, utilise le bouton Copier',
+		message: 'Copie impossible',
 		className: 'text-signal',
+		isEmphasised: true,
 	},
 } as const satisfies Record<CopyStatus, CopyStatusDisplay | null>;
 
@@ -33,19 +46,44 @@ export function CopyControls({
 	const display = COPY_STATUS_DISPLAYS[copyStatus];
 
 	return (
-		<div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-			<Button startIcon="i-tabler-copy" onClick={onCopy}>
-				Copier
-			</Button>
-			<output
-				className={cn('flex items-center gap-1.5 text-sm', display?.className)}
+		<div className="flex min-w-0 items-center gap-3">
+			<Tooltip
+				position="top"
+				content={
+					<>
+						Copier <Kbd>C</Kbd>
+					</>
+				}
 			>
-				{display && <span className={cn(display.icon, 'size-4')} aria-hidden />}
-				{display?.message}
-			</output>
+				<Button
+					variant={display?.isEmphasised ? 'solid' : 'subtle'}
+					startIcon="i-tabler-copy"
+					className="shrink-0"
+					onClick={onCopy}
+				>
+					Copier
+				</Button>
+			</Tooltip>
+			{display && (
+				<output
+					title={display.message}
+					className={cn(
+						'flex min-w-0 items-center gap-1.5 text-sm',
+						display.className
+					)}
+				>
+					<span className={cn(display.icon, 'size-4 shrink-0')} aria-hidden />
+					<span className="truncate">{display.message}</span>
+				</output>
+			)}
 			{!isCleaned && (
-				<Badge color="warning" variant="subtle">
-					Texte brut, nettoyage indisponible
+				<Badge
+					color="warning"
+					variant="subtle"
+					className="shrink-0"
+					title="Nettoyage indisponible, texte brut"
+				>
+					Non nettoyé
 				</Badge>
 			)}
 		</div>

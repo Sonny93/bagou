@@ -1,17 +1,11 @@
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 
-type FinalizedDictation = {
-	draftText: string;
-	isCleaned: boolean;
-	isCopied: boolean;
-};
-
 type DraftEditor = {
 	insertSegment: (segment: string) => string;
 	replaceDraft: (text: string) => string;
 };
 
-type DraftUpdate = Pick<FinalizedDictation, 'draftText' | 'isCleaned'>;
+type DraftUpdate = { draftText: string; isCleaned: boolean };
 
 const isBlank = (text: string): boolean => text.trim() === '';
 
@@ -32,14 +26,14 @@ function updateDraft(
  * Brings the server's answer into the draft: a blank segment leaves it
  * untouched, a cleaned draft replaces it as a whole, and without one the raw
  * segment is inserted at the caret. Then copies the whole draft; a blank draft
- * is not copied.
+ * is not copied. Returns whether the draft was cleaned.
  */
 export async function finalizeDictation(
 	transcript: Readonly<DictationTranscript>,
 	draftEditor: Readonly<DraftEditor>,
-	copyText: (text: string) => Promise<boolean>
-): Promise<FinalizedDictation> {
+	copyText: (text: string) => Promise<unknown>
+): Promise<boolean> {
 	const { draftText, isCleaned } = updateDraft(transcript, draftEditor);
-	const isCopied = isBlank(draftText) ? false : await copyText(draftText);
-	return { draftText, isCleaned, isCopied };
+	if (!isBlank(draftText)) await copyText(draftText);
+	return isCleaned;
 }

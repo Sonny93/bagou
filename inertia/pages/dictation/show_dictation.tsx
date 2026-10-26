@@ -7,6 +7,7 @@ import { useAutoStartPreference } from '~/dictation/show_dictation/use_auto_star
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
 import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
+import { useDraftCopy } from '~/dictation/show_dictation/use_draft_copy';
 import { useRefreshRemainingQuota } from '~/dictation/show_dictation/use_refresh_remaining_quota';
 import { useSaveDraftText } from '~/dictation/show_dictation/use_save_draft_text';
 
@@ -19,13 +20,17 @@ export default function ShowDictation({
 }: Readonly<ShowDictationProps>) {
 	const [isAutoStartEnabled, setAutoStartEnabled] = useAutoStartPreference();
 	const draft = useDictationDraft();
-	const { state, levels, copyStatus, copyText, finish, cancel, start } =
-		useDictation({
-			shouldAutoStart: isAutoStartEnabled,
-			insertSegment: draft.insert,
-			replaceDraft: draft.replace,
-			getDraftContext: draft.getContext,
-		});
+	const { copyStatus, copyDraft } = useDraftCopy({
+		draftId: draft.draftId,
+		draftText: draft.text,
+	});
+	const { state, levels, finish, cancel, start } = useDictation({
+		shouldAutoStart: isAutoStartEnabled,
+		insertSegment: draft.insert,
+		replaceDraft: draft.replace,
+		getDraftContext: draft.getContext,
+		copyDraft,
+	});
 	useSaveDraftText({
 		draftId: draft.draftId,
 		text: draft.text,
@@ -37,16 +42,21 @@ export default function ShowDictation({
 		clearDraft();
 		start();
 	}, [clearDraft, start]);
+	const hasDraftText = draft.text.trim() !== '';
+	const handleCopy = useCallback(
+		() => void copyDraft(draft.text),
+		[copyDraft, draft.text]
+	);
 	useDictationHotkeys({
 		status: state.status,
 		start,
 		startNew,
 		finish,
 		cancel,
+		copy: handleCopy,
+		canCopy: hasDraftText,
 	});
 	useRefreshRemainingQuota(state.status);
-
-	const handleCopy = () => copyText(draft.text);
 
 	return (
 		<div className="flex h-dvh flex-col">
@@ -67,7 +77,7 @@ export default function ShowDictation({
 				state={state}
 				levels={levels}
 				remainingMinutes={remainingMinutes}
-				hasDraftText={draft.text.trim() !== ''}
+				hasDraftText={hasDraftText}
 				copyStatus={copyStatus}
 				onCopy={handleCopy}
 				onStart={start}
