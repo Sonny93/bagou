@@ -2,7 +2,7 @@
 
 PWA mono-utilisateur : un raccourci OS ouvre la fenêtre, l'enregistrement démarre, le texte partiel s'affiche en direct, Entrée termine, Claude Haiku nettoie le texte final, le résultat part dans le presse-papier. Rien de lourd côté client : tout passe par un seul conteneur Adonis.
 
-> Statut : étapes 1 à 5 terminées (scaffolding, auth passkey, port STT + Mistral + relais, capture micro + affichage live, nettoyage Haiku + copie presse-papier). Prochaine : étape 6 (quotas, rate limiting, logs minimaux).
+> Statut : étapes 1 à 7 terminées (scaffolding, auth passkey, port STT + Mistral + relais, capture micro + affichage live, nettoyage Haiku + copie presse-papier, quotas et rate limiting, PWA installable). Prochaine : étape 8 (benchmark STT, `just bench`).
 
 ## Conventions
 
@@ -21,6 +21,7 @@ Charger `typescript-conventions`, `adonis-conventions` et `react-conventions` av
 - **Base** : Postgres (service dans `compose.yml` et `dev.compose.yml`, port lié à `127.0.0.1`). Store `database` pour `@adonisjs/limiter`.
 - **Première passkey** : `node ace passkey:invite` génère un lien d'enregistrement à usage unique (15 min). Sert aussi de secours si toutes les passkeys sont perdues.
 - **Fournisseur STT** : le free tier passe en premier, sinon le projet perd son intérêt. Premier et seul adaptateur pour l'instant : Mistral Voxtral Realtime (gratuit récurrent, base64 JSON transmis tel quel). Repli prévu : Deepgram (crédit unique qui n'expire pas).
+- **PWA** : `public/sw.js` ne met rien en cache (appli inutile hors ligne), il sert seulement `public/offline.html` quand une navigation échoue. Manifest avec `launch_handler: navigate-existing` : le raccourci OS réutilise et recharge l'unique fenêtre. Icônes régénérées par `just icons`, sources dans `resources/icons/`.
 - **Déploiement** : Dokploy à partir du `Dockerfile` et du `compose.yml`, rien d'autre.
 - **Coûts** : quota journalier de minutes (constante dans `config/dictation.ts`, pas une variable d'env), compté sur les octets audio reçus (32 000 o = 1 s). Jour calendaire en `Europe/Paris`, compteur par utilisateur et par jour dans `dictation_usages` (domaine `app/dictation_quota/`), incrémenté atomiquement une fois à la fin de chaque dictée, quel que soit le résultat. Le budget restant est passé à `Dictation` à sa création. Rate limiting `@adonisjs/limiter` (store `database`, `memory` en test) : routes d'auth par IP, nettoyage par utilisateur (throttles nommés dans `start/limiter.ts`), ouverture de dictée par utilisateur (limiter programmatique dans `DictationStartLimiter`).
 - **Secrets et vie privée** : clés API uniquement côté serveur, jamais exposées au front ni loguées. Les transcriptions ne sont jamais loguées.

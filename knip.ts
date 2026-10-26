@@ -1,3 +1,6 @@
 import { minimalstuffPreset } from '@minimalstuff/tooling/knip';
 
-export default minimalstuffPreset({ adonisjs: true });
+export default minimalstuffPreset({
+	adonisjs: true,
+	ignore: ['public/sw.js'],
+});

@@ -7,8 +7,11 @@ import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { BaseLayout } from '~/layouts/base_layout';
+import { registerServiceWorker } from '~/pwa/register_service_worker';
 
 const PROJECT_NAME = 'Dictée vocale';
+
+registerServiceWorker();
 
 void createInertiaApp({
 	title: (title) => (title && `${title} — `) + PROJECT_NAME,
