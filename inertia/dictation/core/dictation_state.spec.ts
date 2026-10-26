@@ -22,6 +22,8 @@ const finishing: DictationState = {
 	partialText: '',
 };
 
+const cleaning: DictationState = { status: 'cleaning', rawText: 'bonjour' };
+
 const reduce = (
 	state: DictationState,
 	...events: DictationEvent[]
@@ -35,10 +37,45 @@ describe('dictationReducer', () => {
 			{ type: 'recordingStarted', startedAt: STARTED_AT },
 			{ type: 'finalReceived', text: 'Bonjour' },
 			{ type: 'stopRequested' },
-			{ type: 'finished', text: 'Bonjour le monde' }
+			{ type: 'finished', text: 'bonjour le monde' },
+			{ type: 'cleaned', text: 'Bonjour le monde.', isCleaned: true }
 		);
 
-		expect(state).toEqual({ status: 'done', text: 'Bonjour le monde' });
+		expect(state).toEqual({
+			status: 'done',
+			text: 'Bonjour le monde.',
+			isCleaned: true,
+		});
+	});
+
+	it('should keep the raw text while cleaning after the dictation finished', () => {
+		const state = reduce(finishing, { type: 'finished', text: 'bonjour' });
+
+		expect(state).toEqual({ status: 'cleaning', rawText: 'bonjour' });
+	});
+
+	it('should end cleaning in done with the raw text when the cleanup is unavailable', () => {
+		const state = reduce(cleaning, {
+			type: 'cleaned',
+			text: 'bonjour',
+			isCleaned: false,
+		});
+
+		expect(state).toEqual({
+			status: 'done',
+			text: 'bonjour',
+			isCleaned: false,
+		});
+	});
+
+	it.each<DictationEvent>([
+		{ type: 'cancelRequested' },
+		{ type: 'failed', message: 'Oups' },
+		{ type: 'startRequested' },
+		{ type: 'finalReceived', text: 'late' },
+		{ type: 'finished', text: 'late' },
+	])('should ignore $type while cleaning', (event) => {
+		expect(dictationReducer(cleaning, event)).toBe(cleaning);
 	});
 
 	it('should append every final to the committed text and keep the partial', () => {
@@ -100,7 +137,7 @@ describe('dictationReducer', () => {
 	});
 
 	it.each<[string, DictationState]>([
-		['done', { status: 'done', text: 'x' }],
+		['done', { status: 'done', text: 'x', isCleaned: true }],
 		['cancelled', { status: 'cancelled' }],
 		['error', { status: 'error', message: 'm' }],
 	])('should start a new dictation from %s', (_name, state) => {
@@ -110,7 +147,7 @@ describe('dictationReducer', () => {
 	});
 
 	it('should ignore events that do not apply to the current state', () => {
-		const done: DictationState = { status: 'done', text: 'x' };
+		const done: DictationState = { status: 'done', text: 'x', isCleaned: true };
 		const cancelled: DictationState = { status: 'cancelled' };
 		const connecting: DictationState = { status: 'connecting' };
 		const events: [DictationState, DictationEvent][] = [

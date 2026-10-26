@@ -8,7 +8,8 @@ export type DictationState =
 			startedAt: number;
 	  }
 	| { status: 'finishing'; committedText: string; partialText: string }
-	| { status: 'done'; text: string }
+	| { status: 'cleaning'; rawText: string }
+	| { status: 'done'; text: string; isCleaned: boolean }
 	| { status: 'cancelled' }
 	| { status: 'error'; message: string };
 
@@ -19,6 +20,7 @@ export type DictationEvent =
 	| { type: 'partialReceived'; text: string }
 	| { type: 'stopRequested' }
 	| { type: 'finished'; text: string }
+	| { type: 'cleaned'; text: string; isCleaned: boolean }
 	| { type: 'cancelRequested' }
 	| { type: 'failed'; message: string };
 
@@ -26,7 +28,8 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
 
 /**
  * `final` text is append-only and `partial` text replaces the previous
- * partial, matching the server's transcript contract. An event that does not
+ * partial, matching the server's transcript contract. Cleaning always ends
+ * in `done`: cancel and failure do not apply to it. An event that does not
  * apply to the current state is ignored, so late events never resurrect a
  * dictation that already ended.
  */
@@ -64,7 +67,11 @@ export function dictationReducer(
 				: state;
 		case 'finished':
 			return state.status === 'finishing'
-				? { status: 'done', text: event.text }
+				? { status: 'cleaning', rawText: event.text }
+				: state;
+		case 'cleaned':
+			return state.status === 'cleaning'
+				? { status: 'done', text: event.text, isCleaned: event.isCleaned }
 				: state;
 		case 'cancelRequested':
 			return state.status === 'connecting' || isLive(state)

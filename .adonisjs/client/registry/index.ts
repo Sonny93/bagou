@@ -12,6 +12,12 @@ const routes = {
     tokens: [[0,"/"]],
     types: placeholder as Registry['dictation.show_dictation']['types'],
   },
+  'text_cleanup.clean_text': {
+    methods: ["POST"],
+    pattern: '/dictation/cleanup',
+    tokens: [[0,"dictation"],[0,"cleanup"]],
+    types: placeholder as Registry['text_cleanup.clean_text']['types'],
+  },
   'auth.logout': {
     methods: ["POST"],
     pattern: '/logout',

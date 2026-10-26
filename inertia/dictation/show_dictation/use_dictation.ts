@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
+import { cleanDictationText } from './clean_dictation_text';
+import type { CopyStatus } from './copy_status';
+import { copyToClipboard } from './copy_to_clipboard';
 import { describeDictationError } from './describe_dictation_error';
 import { DICTATION_WORKLET_URL } from './dictation_worklet_url';
+import { finalizeDictation } from './finalize_dictation';
 import { DictationSession } from '~/dictation/core/dictation_session';
 import {
 	dictationReducer,
@@ -9,6 +13,11 @@ import {
 	type DictationState,
 } from '~/dictation/core/dictation_state';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
+
+const toCopyStatus = (text: string, isCopied: boolean): CopyStatus => {
+	if (isCopied) return 'copied';
+	return text.trim() === '' ? 'none' : 'failed';
+};
 
 const CAN_START_FROM = new Set<DictationState['status']>([
 	'idle',
@@ -24,6 +33,8 @@ type UseDictationOptions = {
 type UseDictationReturn = {
 	state: DictationState;
 	level: number;
+	copyStatus: CopyStatus;
+	copyText: (text: string) => void;
 	finish: () => void;
 	cancel: () => void;
 	start: () => void;
@@ -41,6 +52,7 @@ export function useDictation({
 		INITIAL_DICTATION_STATE
 	);
 	const [level, setLevel] = useState(0);
+	const [copyStatus, setCopyStatus] = useState<CopyStatus>('none');
 	const sessionRef = useRef<DictationSession | null>(null);
 	const shouldAutoStartOnMountRef = useRef(shouldAutoStart);
 	const statusRef = useRef(state.status);
@@ -56,6 +68,7 @@ export function useDictation({
 		if (!CAN_START_FROM.has(statusRef.current)) return;
 		dispatch({ type: 'startRequested' });
 		setLevel(0);
+		setCopyStatus('none');
 		const session = new DictationSession(
 			{
 				workletUrl: DICTATION_WORKLET_URL,
@@ -81,12 +94,23 @@ export function useDictation({
 		if (statusRef.current !== 'recording') return;
 		dispatch({ type: 'stopRequested' });
 		try {
-			const text = await sessionRef.current?.stop();
-			dispatch({ type: 'finished', text: text ?? '' });
+			const rawText = (await sessionRef.current?.stop()) ?? '';
+			dispatch({ type: 'finished', text: rawText });
+			const { text, isCleaned, isCopied } = await finalizeDictation(rawText, {
+				cleanText: cleanDictationText,
+				copyText: copyToClipboard,
+			});
+			setCopyStatus(toCopyStatus(text, isCopied));
+			dispatch({ type: 'cleaned', text, isCleaned });
 		} catch (error) {
 			fail(error);
 		}
 	}, [fail]);
+
+	const copyText = useCallback(async (text: string) => {
+		const isCopied = await copyToClipboard(text);
+		setCopyStatus(toCopyStatus(text, isCopied));
+	}, []);
 
 	const cancel = useCallback(() => {
 		dispatch({ type: 'cancelRequested' });
@@ -101,6 +125,8 @@ export function useDictation({
 	return {
 		state,
 		level,
+		copyStatus,
+		copyText: (text) => void copyText(text),
 		finish: () => void finish(),
 		cancel,
 		start: () => void start(),

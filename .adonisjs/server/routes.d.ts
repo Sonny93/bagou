@@ -5,6 +5,7 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
+    'text_cleanup.clean_text': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }
@@ -30,6 +31,7 @@ export type ScannedRoutes = {
     'passkeys.show_passkeys': { paramsTuple?: []; params?: {} }
   }
   POST: {
+    'text_cleanup.clean_text': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }
     'passkeys.verify_authentication': { paramsTuple?: []; params?: {} }

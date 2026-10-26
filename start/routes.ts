@@ -9,6 +9,12 @@ router
 			.get('/', [controllers.dictation.ShowDictation, 'render'])
 			.as('dictation.show_dictation');
 		router
+			.post('/dictation/cleanup', [
+				controllers.textCleanup.CleanText,
+				'execute',
+			])
+			.as('text_cleanup.clean_text');
+		router
 			.post('/logout', [controllers.auth.Logout, 'execute'])
 			.as('auth.logout');
 	})

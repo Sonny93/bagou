@@ -4,7 +4,14 @@ import { indexPages } from '@adonisjs/inertia';
 import { generateSocketRegistry } from '@rlanz/socket/assembler_hook';
 import { generateRegistry } from '@tuyau/core/hooks';
 
-const DOMAINS = ['auth', 'dictation', 'passkeys', 'transcription', 'users'];
+const DOMAINS = [
+	'auth',
+	'dictation',
+	'passkeys',
+	'text_cleanup',
+	'transcription',
+	'users',
+];
 
 export default defineConfig({
 	commands: [
@@ -29,6 +36,7 @@ export default defineConfig({
 		() => import('@adonisjs/auth/auth_provider'),
 		() => import('@adonisjs/inertia/inertia_provider'),
 		() => import('#providers/transcription_provider'),
+		() => import('#providers/text_cleanup_provider'),
 		{
 			file: () => import('@rlanz/socket/provider'),
 			environment: ['web', 'test'],
@@ -52,6 +60,7 @@ export default defineConfig({
 					'app/**/validators/**/*.spec.ts',
 					'app/**/*_command.spec.ts',
 					'app/**/*_session.spec.ts',
+					'app/**/*_cleaner.spec.ts',
 					'app/**/*_provider.spec.ts',
 					'app/**/parse_*.spec.ts',
 					'app/**/decode_*.spec.ts',

@@ -22,4 +22,7 @@ export const controllers = {
     VerifyInvitation: () => import('#app/passkeys/verify_invitation_controller'),
     VerifyRegistration: () => import('#app/passkeys/verify_registration_controller'),
   },
+  textCleanup: {
+    CleanText: () => import('#app/text_cleanup/clean_text_controller'),
+  },
 }

@@ -16,4 +16,5 @@ export default await Env.create(new URL('../', import.meta.url), {
 	APP_URL: Env.schema.string({ format: 'url', tld: false }),
 
 	MISTRAL_API_KEY: Env.schema.string(),
+	ANTHROPIC_API_KEY: Env.schema.string(),
 });

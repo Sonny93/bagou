@@ -20,6 +20,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/dictation/show_dictation_controller').default['render']>>>
     }
   }
+  'text_cleanup.clean_text': {
+    methods: ["POST"]
+    pattern: '/dictation/cleanup'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#text_cleanup/validators/clean_text_validator').cleanTextValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#text_cleanup/validators/clean_text_validator').cleanTextValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'auth.logout': {
     methods: ["POST"]
     pattern: '/logout'

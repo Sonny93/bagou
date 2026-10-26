@@ -36,6 +36,8 @@ export const DictationHint = ({
 		);
 	}
 
+	if (status === 'cleaning') return null;
+
 	return (
 		<p className="text-sm text-gray-600 dark:text-gray-300">
 			Appuie sur <Kbd>Entrée</Kbd> pour terminer, <Kbd>Échap</Kbd> pour annuler

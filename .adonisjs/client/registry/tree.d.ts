@@ -5,6 +5,9 @@ export interface ApiDefinition {
   dictation: {
     showDictation: typeof routes['dictation.show_dictation']
   }
+  textCleanup: {
+    cleanText: typeof routes['text_cleanup.clean_text']
+  }
   auth: {
     logout: typeof routes['auth.logout']
     login: typeof routes['auth.login']

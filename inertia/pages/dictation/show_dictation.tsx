@@ -9,9 +9,10 @@ import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_ho
 
 export default function ShowDictation() {
 	const [isAutoStartEnabled, setAutoStartEnabled] = useAutoStartPreference();
-	const { state, level, finish, cancel, start } = useDictation({
-		shouldAutoStart: isAutoStartEnabled,
-	});
+	const { state, level, copyStatus, copyText, finish, cancel, start } =
+		useDictation({
+			shouldAutoStart: isAutoStartEnabled,
+		});
 	useDictationHotkeys({ status: state.status, finish, cancel, start });
 
 	return (
@@ -21,7 +22,13 @@ export default function ShowDictation() {
 				onAutoStartChange={setAutoStartEnabled}
 			/>
 			<Card title="Dictée" padding="lg" className="flex-1">
-				<DictationBody state={state} level={level} onStart={start} />
+				<DictationBody
+					state={state}
+					level={level}
+					onStart={start}
+					copyStatus={copyStatus}
+					onCopy={copyText}
+				/>
 			</Card>
 			<DictationHint status={state.status} onStart={start} />
 		</main>

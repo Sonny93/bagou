@@ -1,3 +1,4 @@
+import type { CopyStatus } from './copy_status';
 import { DictationMessage } from './dictation_message';
 import { DictationResult } from './dictation_result';
 import { DictationTranscript } from './dictation_transcript';
@@ -9,12 +10,16 @@ type DictationBodyProps = {
 	state: DictationState;
 	level: number;
 	onStart: () => void;
+	copyStatus: CopyStatus;
+	onCopy: (text: string) => void;
 };
 
 export function DictationBody({
 	state,
 	level,
 	onStart,
+	copyStatus,
+	onCopy,
 }: Readonly<DictationBodyProps>) {
 	switch (state.status) {
 		case 'idle':
@@ -41,8 +46,26 @@ export function DictationBody({
 					/>
 				</div>
 			);
+		case 'cleaning':
+			return (
+				<div className="flex flex-col gap-4">
+					<DictationMessage text="Nettoyage…" />
+					<DictationTranscript
+						committedText={state.rawText}
+						partialText=""
+						className="opacity-50"
+					/>
+				</div>
+			);
 		case 'done':
-			return <DictationResult text={state.text} />;
+			return (
+				<DictationResult
+					text={state.text}
+					isCleaned={state.isCleaned}
+					copyStatus={copyStatus}
+					onCopy={onCopy}
+				/>
+			);
 		case 'cancelled':
 			return <DictationMessage text="Dictée annulée" />;
 		case 'error':
