@@ -8,6 +8,7 @@ export const NewDictationButton = ({
 	onStart,
 }: Readonly<NewDictationButtonProps>) => (
 	<Button variant="ghost" onClick={onStart}>
-		Nouvelle dictée <Kbd>N</Kbd>
+		Nouvelle<span className="hidden sm:inline"> dictée</span>{' '}
+		<Kbd className="hidden sm:inline-flex">N</Kbd>
 	</Button>
 );

@@ -14,12 +14,14 @@ export function RecordingStatus({
 	const elapsed = useElapsedTime(startedAt);
 
 	return (
-		<div className="flex items-center gap-3 text-sm">
+		<div className="flex min-w-0 items-center gap-3 text-sm">
 			<span
 				className="size-2.5 shrink-0 animate-pulse rounded-full bg-signal motion-reduce:animate-none"
 				aria-hidden
 			/>
-			<time className="tabular-nums">{formatElapsedTime(elapsed)}</time>
+			<time className="shrink-0 tabular-nums">
+				{formatElapsedTime(elapsed)}
+			</time>
 			<LevelWaveform levels={levels} />
 		</div>
 	);

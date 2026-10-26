@@ -18,7 +18,7 @@ export function LevelWaveform({ levels }: Readonly<LevelWaveformProps>) {
 		<div
 			role="presentation"
 			aria-hidden
-			className="flex h-6 items-center gap-0.5"
+			className="flex h-6 min-w-0 items-center justify-end gap-0.5 overflow-hidden"
 		>
 			{slots.map((level, slotIndex) => (
 				<span

@@ -8,6 +8,6 @@ export const RecordingActions = ({
 	onCancel,
 }: Readonly<RecordingActionsProps>) => (
 	<Button variant="ghost" onClick={onCancel}>
-		Annuler <Kbd>Échap</Kbd>
+		Annuler <Kbd className="hidden sm:inline-flex">Échap</Kbd>
 	</Button>
 );
