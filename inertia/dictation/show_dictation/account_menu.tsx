@@ -17,6 +17,7 @@ export function AccountMenu() {
 					icon="i-tabler-dots-vertical"
 					aria-label="Compte"
 					variant="ghost"
+					tooltip
 					size="sm"
 				/>
 			}

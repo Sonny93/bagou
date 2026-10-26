@@ -30,6 +30,7 @@ export function PasskeyRow({ passkey, onDelete }: Readonly<PasskeyRowProps>) {
 				icon="i-tabler-trash"
 				aria-label={`Supprimer la passkey ${passkey.label}`}
 				variant="ghost"
+				tooltip
 				color="danger"
 				onClick={handleDelete}
 			/>
