@@ -10,7 +10,7 @@ export type DictationState =
 	| { status: 'finishing'; committedText: string; partialText: string }
 	| { status: 'cleaning'; rawText: string }
 	| { status: 'done'; text: string; isCleaned: boolean }
-	| { status: 'cancelled' }
+	| { status: 'cancelled'; hasKeptText: boolean }
 	| { status: 'error'; message: string };
 
 export type DictationEvent =
@@ -32,7 +32,8 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
  * in `done`, also from `finishing` when the finished event never arrived:
  * cancel and failure do not apply to it. An event that does not
  * apply to the current state is ignored, so late events never resurrect a
- * dictation that already ended.
+ * dictation that already ended. A cancelled dictation remembers whether it
+ * had text, which the server keeps raw in the history.
  */
 export function dictationReducer(
 	state: DictationState,
@@ -75,8 +76,11 @@ export function dictationReducer(
 				? { status: 'done', text: event.text, isCleaned: event.isCleaned }
 				: state;
 		case 'cancelRequested':
-			return state.status === 'connecting' || isLive(state)
-				? { status: 'cancelled' }
+			if (state.status === 'connecting') {
+				return { status: 'cancelled', hasKeptText: false };
+			}
+			return isLive(state)
+				? { status: 'cancelled', hasKeptText: hasText(state) }
 				: state;
 		case 'failed':
 			return state.status === 'connecting' || isLive(state)
@@ -89,6 +93,12 @@ function isLive(
 	state: DictationState
 ): state is Extract<DictationState, { status: 'recording' | 'finishing' }> {
 	return state.status === 'recording' || state.status === 'finishing';
+}
+
+function hasText(
+	state: Extract<DictationState, { status: 'recording' | 'finishing' }>
+): boolean {
+	return (state.committedText + state.partialText).trim() !== '';
 }
 
 function isEnded(state: DictationState): boolean {

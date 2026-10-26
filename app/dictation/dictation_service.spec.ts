@@ -36,6 +36,7 @@ type CreateDictationOptions = {
 	remainingBytes?: number;
 	recordUsage?: (receivedBytes: number) => Promise<void>;
 	complete?: (rawText: string) => Promise<DictationTranscript>;
+	keepRaw?: (rawText: string) => Promise<void>;
 };
 
 const completeWithUppercase = async (
@@ -52,10 +53,12 @@ function createDictation(
 		remainingBytes = AMPLE_REMAINING_BYTES,
 		recordUsage,
 		complete = completeWithUppercase,
+		keepRaw,
 	}: Readonly<CreateDictationOptions> = {}
 ) {
 	const { logger, lines } = createRecordingLogger();
 	const recordedBytes: number[] = [];
+	const keptRawTexts: string[] = [];
 	const partials: string[] = [];
 	const finals: string[] = [];
 	const finisheds: string[] = [];
@@ -73,6 +76,11 @@ function createDictation(
 			maxDurationMs,
 			remainingBytes,
 			complete,
+			keepRaw:
+				keepRaw ??
+				(async (rawText) => {
+					keptRawTexts.push(rawText);
+				}),
 			recordUsage:
 				recordUsage ??
 				(async (receivedBytes) => {
@@ -88,8 +96,11 @@ function createDictation(
 		finisheds,
 		errors,
 		recordedBytes,
+		keptRawTexts,
 	};
 }
+
+const settleCancellation = (): Promise<void> => sleep(0);
 
 const readLogs = (lines: readonly string[]): Record<string, unknown>[] =>
 	lines.map((line) => JSON.parse(line));
@@ -347,6 +358,7 @@ test.group('Dictation', () => {
 
 		dictation.cancel();
 		dictation.cancel();
+		await settleCancellation();
 
 		assert.equal(provider.session.abortCount, 1);
 		const logs = readLogs(lines);
@@ -462,8 +474,122 @@ test.group('Dictation usage', () => {
 
 		dictation.cancel();
 		dictation.cancel();
+		await settleCancellation();
 
 		assert.deepEqual(recordedBytes, [3200]);
+	});
+
+	test('should flush the session then keep only the raw text when cancelled while active', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte brut')
+		);
+		const { dictation, keptRawTexts, finisheds, lines } =
+			createDictation(provider);
+		await dictation.start();
+
+		dictation.cancel();
+		await settleCancellation();
+
+		assert.equal(provider.session.finishCount, 1);
+		assert.deepEqual(keptRawTexts, ['texte brut']);
+		assert.lengthOf(finisheds, 0);
+		assert.isFalse(dictation.isActive);
+		assert.include(readLogs(lines).at(-1), { outcome: 'cancelled' });
+	});
+
+	test('should not abort the session before it is flushed when cancelled', async ({
+		assert,
+	}) => {
+		const abortCountsWhenFlushed: number[] = [];
+		const session = new FakeTranscriptionSession('texte');
+		const flush = session.finish.bind(session);
+		session.finish = async () => {
+			abortCountsWhenFlushed.push(session.abortCount);
+			return flush();
+		};
+		const { dictation } = createDictation(
+			new FakeTranscriptionProvider(session)
+		);
+		await dictation.start();
+
+		dictation.cancel();
+		await settleCancellation();
+
+		assert.deepEqual(abortCountsWhenFlushed, [0]);
+		assert.equal(session.abortCount, 1);
+	});
+
+	test('should not call the completer when cancelled', async ({ assert }) => {
+		let completeCount = 0;
+		const { dictation } = createDictation(undefined, {
+			complete: async (rawText) => {
+				completeCount += 1;
+				return { rawText, cleanedText: null };
+			},
+		});
+		await dictation.start();
+
+		dictation.cancel();
+		await settleCancellation();
+
+		assert.equal(completeCount, 0);
+	});
+
+	test('should keep nothing when cancelled before the session is open', async ({
+		assert,
+	}) => {
+		const provider = new DeferredProvider();
+		const { dictation, keptRawTexts } = createDictation(provider);
+		const starting = dictation.start();
+
+		dictation.cancel();
+		provider.openingResolver(provider.session);
+		await assert.rejects(() => starting);
+		await settleCancellation();
+
+		assert.lengthOf(keptRawTexts, 0);
+		assert.equal(provider.session.finishCount, 0);
+	});
+
+	test('should let a running stop win when cancelled while finishing', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte')
+		);
+		const { dictation, keptRawTexts } = createDictation(provider);
+		await dictation.start();
+
+		const stopping = dictation.stop();
+		dictation.cancel();
+		const transcript = await stopping;
+
+		assert.deepEqual(transcript, { rawText: 'texte', cleanedText: 'TEXTE' });
+		assert.equal(provider.session.finishCount, 1);
+		assert.lengthOf(keptRawTexts, 0);
+	});
+
+	test('should end as failed, abort and keep nothing when the flush fails on cancel', async ({
+		assert,
+	}) => {
+		const session = new FakeTranscriptionSession();
+		session.finish = async () => {
+			throw new Error('flush failed');
+		};
+		const { dictation, keptRawTexts, lines } = createDictation(
+			new FakeTranscriptionProvider(session)
+		);
+		await dictation.start();
+
+		dictation.cancel();
+		await settleCancellation();
+
+		assert.lengthOf(keptRawTexts, 0);
+		assert.equal(session.abortCount, 1);
+		assert.include(readLogs(lines).at(-2), { outcome: 'failed' });
+		assert.include(readLogs(lines).at(-1), { errorName: 'Error' });
 	});
 
 	test('should record the received bytes once when the provider fails', async ({
@@ -567,7 +693,10 @@ test.group('DictationService', (group) => {
 			new DictationStartLimiter(logger),
 			new DictationCompletionService(
 				new TextCleanupService(textCleaner),
-				new TranscriptHistoryService(new Clock()),
+				new TranscriptHistoryService(
+					new Clock(),
+					new TextCleanupService(textCleaner)
+				),
 				logger
 			)
 		);

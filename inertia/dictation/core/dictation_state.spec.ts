@@ -129,15 +129,22 @@ describe('dictationReducer', () => {
 		});
 	});
 
-	it.each<[string, DictationState]>([
-		['connecting', { status: 'connecting' }],
-		['recording', recording()],
-		['finishing', finishing],
-	])('should go to cancelled when cancelled while %s', (_name, state) => {
-		expect(reduce(state, { type: 'cancelRequested' })).toEqual({
-			status: 'cancelled',
-		});
-	});
+	it.each<[string, DictationState, boolean]>([
+		['connecting', { status: 'connecting' }, false],
+		['recording without text', recording(), false],
+		['recording with blank text', recording('  ', ' '), false],
+		['recording with committed text', recording('Bonjour'), true],
+		['recording with partial text only', recording('', 'Bon'), true],
+		['finishing with text', finishing, true],
+	])(
+		'should go to cancelled when cancelled while %s',
+		(_name, state, hasKeptText) => {
+			expect(reduce(state, { type: 'cancelRequested' })).toEqual({
+				status: 'cancelled',
+				hasKeptText,
+			});
+		}
+	);
 
 	it.each<[string, DictationState]>([
 		['connecting', { status: 'connecting' }],
@@ -152,7 +159,7 @@ describe('dictationReducer', () => {
 
 	it.each<[string, DictationState]>([
 		['done', { status: 'done', text: 'x', isCleaned: true }],
-		['cancelled', { status: 'cancelled' }],
+		['cancelled', { status: 'cancelled', hasKeptText: false }],
 		['error', { status: 'error', message: 'm' }],
 	])('should start a new dictation from %s', (_name, state) => {
 		expect(reduce(state, { type: 'startRequested' })).toEqual({
@@ -162,7 +169,10 @@ describe('dictationReducer', () => {
 
 	it('should ignore events that do not apply to the current state', () => {
 		const done: DictationState = { status: 'done', text: 'x', isCleaned: true };
-		const cancelled: DictationState = { status: 'cancelled' };
+		const cancelled: DictationState = {
+			status: 'cancelled',
+			hasKeptText: false,
+		};
 		const connecting: DictationState = { status: 'connecting' };
 		const events: [DictationState, DictationEvent][] = [
 			[INITIAL_DICTATION_STATE, { type: 'recordingStarted', startedAt: 1 }],

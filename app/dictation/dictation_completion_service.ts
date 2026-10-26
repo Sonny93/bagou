@@ -31,6 +31,11 @@ export class DictationCompletionService {
 		return transcript;
 	}
 
+	/** Saves the raw text of a cancelled dictation as is: no cleanup, so no credits spent. */
+	async keepRaw(userId: number, rawText: string): Promise<void> {
+		await this.#saveOrLog(userId, { rawText, cleanedText: null });
+	}
+
 	async #saveOrLog(
 		userId: number,
 		transcript: Readonly<DictationTranscript>

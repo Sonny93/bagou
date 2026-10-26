@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import { CancelledNotice } from './cancelled_notice';
 import { DictationResult } from './dictation_result';
 import { DictationTranscript } from './dictation_transcript';
 import { ErrorNotice } from './error_notice';
@@ -56,9 +57,7 @@ function StageContent({
 				<DictationResult text={editedText} onTextChange={onEditedTextChange} />
 			);
 		case 'cancelled':
-			return (
-				<p className="dictation-text my-auto text-muted">Dictée annulée.</p>
-			);
+			return <CancelledNotice hasKeptText={state.hasKeptText} />;
 		case 'error':
 			return <ErrorNotice message={state.message} />;
 	}

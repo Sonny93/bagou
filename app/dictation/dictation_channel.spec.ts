@@ -3,6 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 import socketService from '@rlanz/socket/services/main';
 import type { MiddlewareContext } from '@rlanz/socket/types';
+import { setTimeout as sleep } from 'node:timers/promises';
 
 import DictationChannel from '#app/dictation/dictation_channel';
 import { UserFactory } from '#database/factories/user_factory';
@@ -16,6 +17,7 @@ import { swapTranscriptionProvider } from '#tests/helpers/swap_transcription_pro
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import { TranscriptionErrorCode } from '#transcription/transcription_error_code';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
+import Transcript from '#transcription_history/transcript';
 import type User from '#users/user';
 
 const DICTATION_ID = '7f9c1f5e-3b0a-4c43-9c66-2d6a53e8f1aa';
@@ -25,6 +27,8 @@ const DAILY_QUOTA_BYTES = 60 * 60 * 32_000;
 const VALID_CHUNK = Buffer.from(new Uint8Array([1, 0, 2, 0])).toString(
 	'base64'
 );
+
+const settleCancellation = (): Promise<void> => sleep(50);
 
 async function createChannel() {
 	const channel = await app.container.make(DictationChannel);
@@ -248,26 +252,51 @@ test.group('DictationChannel', (group) => {
 		restoreProvider();
 	});
 
-	test('should abort the provider session when the dictation is cancelled', async ({
+	test('should finish the provider session then release it when the dictation is cancelled', async ({
 		assert,
 	}) => {
 		const { send } = await joinChannel();
 		await send('dictation:start');
 
 		await send('dictation:cancel');
+		await settleCancellation();
 
+		assert.equal(session.finishCount, 1);
 		assert.equal(session.abortCount, 1);
 	});
 
-	test('should abort the provider session when the socket leaves the channel', async ({
+	test('should keep the raw text without cleanup when the dictation is cancelled', async ({
 		assert,
 	}) => {
-		const { send, leave } = await joinChannel();
+		const textCleaner = new FakeTextCleaner();
+		const restoreTextCleaner = swapTextCleaner(textCleaner);
+		const { send, user } = await joinChannel();
+		await send('dictation:start');
+
+		await send('dictation:cancel');
+		await settleCancellation();
+
+		const [saved] = await Transcript.query().where('userId', user.id);
+		assert.equal(saved?.rawText, 'Bonjour le monde');
+		assert.isNull(saved?.cleanedText);
+		assert.lengthOf(textCleaner.cleaned, 0);
+		restoreTextCleaner();
+	});
+
+	test('should finish the session and keep the raw text when the socket leaves the channel', async ({
+		assert,
+	}) => {
+		const { send, leave, user } = await joinChannel();
 		await send('dictation:start');
 
 		await leave();
+		await settleCancellation();
 
+		assert.equal(session.finishCount, 1);
 		assert.equal(session.abortCount, 1);
+		const [saved] = await Transcript.query().where('userId', user.id);
+		assert.equal(saved?.rawText, 'Bonjour le monde');
+		assert.isNull(saved?.cleanedText);
 	});
 
 	test('should reject starting without opening the provider when the daily quota is spent', async ({

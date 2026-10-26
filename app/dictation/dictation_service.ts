@@ -44,6 +44,7 @@ export class DictationService {
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
 			complete: (rawText) => this.completionService.complete(userId, rawText),
+			keepRaw: (rawText) => this.completionService.keepRaw(userId, rawText),
 		});
 	}
 }

@@ -3,7 +3,11 @@ import { Badge, IconButton } from '@minimalstuff/ui';
 
 import { formatTranscriptDate } from './format_transcript_date';
 import { TranscriptRawText } from './transcript_raw_text';
+import { useCleanTranscript } from './use_clean_transcript';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
+
+const CLEAN_ICON = 'i-tabler-sparkles';
+const CLEANING_ICON = 'i-tabler-loader-2 animate-spin';
 
 type TranscriptRowProps = {
 	transcript: Data.Transcript;
@@ -16,6 +20,7 @@ export function TranscriptRow({
 }: Readonly<TranscriptRowProps>) {
 	const { cleanedText, rawText } = transcript;
 	const displayedText = cleanedText ?? rawText;
+	const { clean, isCleaning, errorMessage } = useCleanTranscript(transcript.id);
 
 	const handleCopy = () => void copyToClipboard(displayedText);
 	const handleDelete = () => onDelete(transcript);
@@ -31,11 +36,24 @@ export function TranscriptRow({
 						non nettoyé
 					</Badge>
 				)}
+				{cleanedText === null && (
+					<IconButton
+						icon={isCleaning ? CLEANING_ICON : CLEAN_ICON}
+						aria-label="Nettoyer le texte"
+						aria-busy={isCleaning}
+						variant="ghost"
+						size="sm"
+						tooltip
+						disabled={isCleaning}
+						onClick={clean}
+					/>
+				)}
 				<IconButton
 					icon="i-tabler-copy"
 					aria-label="Copier le texte"
 					variant="ghost"
 					size="sm"
+					tooltip
 					onClick={handleCopy}
 				/>
 				<IconButton
@@ -44,10 +62,16 @@ export function TranscriptRow({
 					variant="ghost"
 					color="danger"
 					size="sm"
+					tooltip
 					onClick={handleDelete}
 				/>
 			</div>
 			<p className="whitespace-pre-wrap">{displayedText}</p>
+			{errorMessage !== null && (
+				<p role="alert" className="text-sm text-signal">
+					{errorMessage}
+				</p>
+			)}
 			{cleanedText !== null && <TranscriptRawText rawText={rawText} />}
 		</li>
 	);

@@ -4,6 +4,7 @@ import type { DateTime } from 'luxon';
 
 import transcriptionHistoryConfig from '#config/transcription_history';
 import { Clock } from '#shared/clock';
+import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import Transcript from '#transcription_history/transcript';
 import type { TranscriptContent } from '#transcription_history/transcript_content';
 import TranscriptNotFoundException from '#transcription_history/transcript_not_found_exception';
@@ -17,7 +18,10 @@ type TranscriptListing = {
 
 @inject()
 export class TranscriptHistoryService {
-	constructor(private readonly clock: Clock) {}
+	constructor(
+		private readonly clock: Clock,
+		private readonly textCleanupService: TextCleanupService
+	) {}
 
 	/** Keeps a finished dictation, then purges what this user no longer may keep. A blank one is skipped. */
 	async save(
@@ -50,6 +54,24 @@ export class TranscriptHistoryService {
 
 	count(userId: number): Promise<number> {
 		return Transcript.countOwned(userId);
+	}
+
+	/**
+	 * Cleans the stored raw text of an entry that has no cleaned text yet; an
+	 * already cleaned one is left alone so no credits are spent twice.
+	 */
+	async clean(userId: number, id: number): Promise<void> {
+		const transcript = await Transcript.findOwned(
+			userId,
+			id,
+			this.#retentionStart()
+		);
+		if (!transcript) throw new TranscriptNotFoundException();
+		if (transcript.cleanedText !== null) return;
+		transcript.cleanedText = await this.textCleanupService.clean(
+			transcript.rawText
+		);
+		await transcript.save();
 	}
 
 	async delete(userId: number, id: number): Promise<void> {

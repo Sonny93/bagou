@@ -24,6 +24,12 @@ const routes = {
     tokens: [[0,"history"],[1,"id"]],
     types: placeholder as Registry['transcription_history.delete_transcript']['types'],
   },
+  'transcription_history.clean_transcript': {
+    methods: ["POST"],
+    pattern: '/history/:id/clean',
+    tokens: [[0,"history"],[1,"id"],[0,"clean"]],
+    types: placeholder as Registry['transcription_history.clean_transcript']['types'],
+  },
   'transcription_history.delete_transcripts': {
     methods: ["DELETE"],
     pattern: '/history',

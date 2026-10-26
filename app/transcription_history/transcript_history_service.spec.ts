@@ -4,7 +4,10 @@ import { DateTime } from 'luxon';
 
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
+import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
+import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
+import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import Transcript from '#transcription_history/transcript';
 import {
 	TRANSCRIPTS_PER_PAGE,
@@ -14,9 +17,13 @@ import {
 const NOW = DateTime.fromISO('2026-06-01T10:00:00Z', { zone: 'utc' });
 const RETENTION_DAYS = 60;
 
-async function createService() {
+async function createService(textCleaner = new FakeTextCleaner()) {
 	const user = await UserFactory.create();
-	return { user, service: new TranscriptHistoryService(new FixedClock(NOW)) };
+	const service = new TranscriptHistoryService(
+		new FixedClock(NOW),
+		new TextCleanupService(textCleaner)
+	);
+	return { user, service, textCleaner };
 }
 
 const daysAgo = (days: number): DateTime => NOW.minus({ days });
@@ -270,5 +277,87 @@ test.group('TranscriptHistoryService', (group) => {
 
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
 		assert.isNotNull(await Transcript.find(foreign.id));
+	});
+
+	test('should store the cleaned text of a row without one', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			rawText: 'euh bonjour',
+			cleanedText: null,
+		}).create();
+
+		await service.clean(user.id, transcript.id);
+
+		await transcript.refresh();
+		assert.equal(transcript.cleanedText, 'EUH BONJOUR');
+	});
+
+	test('should not call the cleaner when the row is already cleaned', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: 'Déjà propre.',
+		}).create();
+
+		await service.clean(user.id, transcript.id);
+
+		await transcript.refresh();
+		assert.equal(transcript.cleanedText, 'Déjà propre.');
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should throw not found without cleaning when the row belongs to another user', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		const foreign = await TranscriptFactory.with('user')
+			.merge({ cleanedText: null })
+			.create();
+
+		await assert.rejects(
+			() => service.clean(user.id, foreign.id),
+			'Dictée introuvable'
+		);
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should throw not found when the row is past the retention', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: null,
+			createdAt: daysAgo(RETENTION_DAYS + 1),
+		}).create();
+
+		await assert.rejects(
+			() => service.clean(user.id, transcript.id),
+			'Dictée introuvable'
+		);
+	});
+
+	test('should keep the row uncleaned and rethrow when the cleanup is unavailable', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService(
+			new FakeTextCleaner(new TextCleanupUnavailableException())
+		);
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: null,
+		}).create();
+
+		await assert.rejects(
+			() => service.clean(user.id, transcript.id),
+			'Le nettoyage du texte est indisponible'
+		);
+		await transcript.refresh();
+		assert.isNull(transcript.cleanedText);
 	});
 });

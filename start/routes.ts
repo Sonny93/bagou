@@ -2,6 +2,7 @@ import router from '@adonisjs/core/services/router';
 
 import { controllers } from '#generated/controllers';
 import { middleware } from '#start/kernel';
+import { cleanupThrottle } from '#start/limiter';
 
 router
 	.group(() => {
@@ -23,6 +24,14 @@ router
 					])
 					.where('id', router.matchers.number())
 					.as('transcription_history.delete_transcript');
+				router
+					.post('/:id/clean', [
+						controllers.transcriptionHistory.CleanTranscript,
+						'execute',
+					])
+					.where('id', router.matchers.number())
+					.use(cleanupThrottle)
+					.as('transcription_history.clean_transcript');
 				router
 					.delete('/', [
 						controllers.transcriptionHistory.DeleteTranscripts,

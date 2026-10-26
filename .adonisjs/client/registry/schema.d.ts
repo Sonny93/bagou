@@ -46,6 +46,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcript_controller').default['execute']>>>
     }
   }
+  'transcription_history.clean_transcript': {
+    methods: ["POST"]
+    pattern: '/history/:id/clean'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/clean_transcript_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/clean_transcript_controller').default['execute']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/clean_transcript_controller').default['execute']>>>
+    }
+  }
   'transcription_history.delete_transcripts': {
     methods: ["DELETE"]
     pattern: '/history'

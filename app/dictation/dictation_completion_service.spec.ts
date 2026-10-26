@@ -30,7 +30,8 @@ class FailingTranscriptHistoryService extends TranscriptHistoryService {
 async function createService(
 	textCleaner: FakeTextCleaner,
 	historyService: TranscriptHistoryService = new TranscriptHistoryService(
-		new FixedClock(DateTime.now())
+		new FixedClock(DateTime.now()),
+		new TextCleanupService(textCleaner)
 	)
 ) {
 	const { logger, lines } = createRecordingLogger();
@@ -114,7 +115,10 @@ test.group('DictationCompletionService', (group) => {
 	}) => {
 		const { service, user, lines } = await createService(
 			new FakeTextCleaner(),
-			new FailingTranscriptHistoryService(new FixedClock(DateTime.now()))
+			new FailingTranscriptHistoryService(
+				new FixedClock(DateTime.now()),
+				new TextCleanupService(new FakeTextCleaner())
+			)
 		);
 
 		const transcript = await service.complete(user.id, 'texte secret');
@@ -125,6 +129,52 @@ test.group('DictationCompletionService', (group) => {
 			level: 50,
 			msg: 'Transcript could not be saved',
 			errorName: 'Error',
+			errorCode: '23505',
+		});
+		assert.notInclude(lines.join('').toLowerCase(), 'secret');
+	});
+
+	test('should save the raw text without cleaned text nor calling the cleaner when keeping a raw text', async ({
+		assert,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		const { service, user } = await createService(textCleaner);
+
+		await service.keepRaw(user.id, 'euh bonjour');
+
+		const [saved] = await Transcript.query().where('userId', user.id);
+		assert.equal(saved?.rawText, 'euh bonjour');
+		assert.isNull(saved?.cleanedText);
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should save nothing when the raw text to keep is blank', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService(new FakeTextCleaner());
+
+		await service.keepRaw(user.id, '  ');
+
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should log the failure without any text when keeping the raw text fails to save', async ({
+		assert,
+	}) => {
+		const { service, user, lines } = await createService(
+			new FakeTextCleaner(),
+			new FailingTranscriptHistoryService(
+				new FixedClock(DateTime.now()),
+				new TextCleanupService(new FakeTextCleaner())
+			)
+		);
+
+		await service.keepRaw(user.id, 'texte secret');
+
+		const logs = lines.map((line) => JSON.parse(line));
+		assert.include(logs.at(-1), {
+			level: 50,
+			msg: 'Transcript could not be saved',
 			errorCode: '23505',
 		});
 		assert.notInclude(lines.join('').toLowerCase(), 'secret');

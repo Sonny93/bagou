@@ -29,7 +29,10 @@ type DictationOutcome =
  * by itself when the remaining budget is spent, and hands the total to the
  * usage recorder once at the end. Once the provider text is final, it tells
  * the listener, then completes it (cleanup) into the transcript `stop`
- * resolves. Logs duration, provider and outcome once at
+ * resolves. A cancelled dictation (Escape, socket left) is not thrown away:
+ * once the provider session is flushed, its raw text is kept without any
+ * cleanup or listener call. Cancelling while a finish is already running
+ * changes nothing. Logs duration, provider and outcome once at
  * the end, never any text.
  */
 export class Dictation {
@@ -91,7 +94,13 @@ export class Dictation {
 	}
 
 	cancel(): void {
-		this.#end('cancelled');
+		if (this.#phase === 'active' && this.#session) {
+			this.#keepRawText(this.#session).catch(this.#logUnexpectedFailure);
+			return;
+		}
+		if (this.#phase === 'created' || this.#phase === 'starting') {
+			this.#end('cancelled');
+		}
 	}
 
 	#hasEnded(): boolean {
@@ -178,6 +187,12 @@ export class Dictation {
 		const rawText = await this.#finishSession(session, outcome);
 		this.listener.onFinished(rawText);
 		return this.options.complete(rawText);
+	}
+
+	async #keepRawText(session: TranscriptionSession): Promise<void> {
+		this.#phase = 'finishing';
+		const rawText = await this.#finishSession(session, 'cancelled');
+		await this.options.keepRaw(rawText);
 	}
 
 	async #finishSession(

@@ -4,6 +4,7 @@ import limiter from '@adonisjs/limiter/services/main';
 const RATE_LIMIT_MESSAGE = 'Trop de requêtes, patiente une minute';
 const WINDOW = '1 minute';
 const AUTH_REQUESTS_PER_WINDOW = 10;
+const CLEANUP_REQUESTS_PER_WINDOW = 10;
 
 type LimiterKeyType = 'ip' | 'user';
 
@@ -23,5 +24,17 @@ export const authThrottle = limiter.define('auth', (ctx) =>
 		.limitExceeded((error) => {
 			error.setMessage(RATE_LIMIT_MESSAGE);
 			reportRateLimitHit(ctx, 'auth', 'ip');
+		})
+);
+
+/** Each on-demand cleanup spends text cleanup credits, so it is capped per user. */
+export const cleanupThrottle = limiter.define('cleanup', (ctx) =>
+	limiter
+		.allowRequests(CLEANUP_REQUESTS_PER_WINDOW)
+		.every(WINDOW)
+		.usingKey(`user_${ctx.auth.getUserOrFail().id}`)
+		.limitExceeded((error) => {
+			error.setMessage(RATE_LIMIT_MESSAGE);
+			reportRateLimitHit(ctx, 'cleanup', 'user');
 		})
 );

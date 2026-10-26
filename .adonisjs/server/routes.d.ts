@@ -7,6 +7,7 @@ export type ScannedRoutes = {
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'transcription_history.delete_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transcription_history.delete_transcripts': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
@@ -40,6 +41,7 @@ export type ScannedRoutes = {
     'passkeys.delete_passkey': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
+    'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }
     'passkeys.verify_authentication': { paramsTuple?: []; params?: {} }

@@ -38,6 +38,19 @@ export default class Transcript extends TranscriptSchema {
 		return transcripts.orderBy('createdAt', 'desc').paginate(page, perPage);
 	}
 
+	/** @returns The row when it belongs to the user and is not older than `since`. */
+	static findOwned(
+		userId: number,
+		id: number,
+		since: DateTime
+	): Promise<Transcript | null> {
+		return Transcript.query()
+			.where('userId', userId)
+			.where('id', id)
+			.where('createdAt', '>=', since.toSQL() ?? '')
+			.first();
+	}
+
 	static async deleteOlderThan(
 		userId: number,
 		cutoff: DateTime
