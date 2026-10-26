@@ -1,3 +1,4 @@
+import type { DictationTranscript } from './dictation_transcript';
 import type {
 	DictationTransport,
 	JoinedDictation,
@@ -13,7 +14,10 @@ export class FakeDictationTransport implements DictationTransport {
 	readonly sentAudio: string[] = [];
 	readonly calls: string[] = [];
 	joinedId: string | undefined;
-	stopText = 'texte final';
+	stopTranscript: DictationTranscript = {
+		rawText: 'texte final',
+		cleanedText: 'Texte final.',
+	};
 	connectError: Error | undefined;
 	startError: Error | undefined;
 	stopError: Error | undefined;
@@ -48,7 +52,7 @@ export class FakeDictationTransport implements DictationTransport {
 			stop: async () => {
 				this.calls.push('stop');
 				if (this.stopError) throw this.stopError;
-				return this.stopText;
+				return this.stopTranscript;
 			},
 			cancel: () => this.calls.push('cancel'),
 		};

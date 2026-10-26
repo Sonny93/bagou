@@ -9,3 +9,4 @@
 /// <reference path="../../config/limiter.ts" />
 /// <reference path="../../config/logger.ts" />
 /// <reference path="../../config/socket.ts" />
+/// <reference path="../../config/transcription_history.ts" />

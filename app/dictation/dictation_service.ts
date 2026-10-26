@@ -2,6 +2,7 @@ import { inject } from '@adonisjs/core';
 import { Logger } from '@adonisjs/core/logger';
 
 import { Dictation } from '#dictation/dictation';
+import { DictationCompletionService } from '#dictation/dictation_completion_service';
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationQuotaExceededException from '#dictation/dictation_quota_exceeded_exception';
 import { DictationStartLimiter } from '#dictation/dictation_start_limiter';
@@ -15,7 +16,8 @@ export class DictationService {
 		private readonly provider: TranscriptionProvider,
 		private readonly logger: Logger,
 		private readonly quotaService: DictationQuotaService,
-		private readonly startLimiter: DictationStartLimiter
+		private readonly startLimiter: DictationStartLimiter,
+		private readonly completionService: DictationCompletionService
 	) {}
 
 	/**
@@ -41,6 +43,7 @@ export class DictationService {
 			remainingBytes,
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
+			complete: (rawText) => this.completionService.complete(userId, rawText),
 		});
 	}
 }

@@ -8,6 +8,7 @@ const DOMAINS = [
 	'auth',
 	'dictation',
 	'dictation_quota',
+	'transcription_history',
 	'passkeys',
 	'stt_bench',
 	'text_cleanup',

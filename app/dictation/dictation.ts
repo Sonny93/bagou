@@ -1,10 +1,12 @@
 import type { Logger } from '@adonisjs/core/logger';
 
+import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import { DictationErrorCode } from '#dictation/dictation_error_code';
 import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationOptions } from '#dictation/dictation_options';
+import type { DictationTranscript } from '#dictation/dictation_transcript';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import type { TranscriptionProvider } from '#transcription/transcription_provider';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
@@ -21,19 +23,19 @@ type DictationOutcome =
 	| 'cancelled'
 	| 'failed';
 
-const ignoreRejection = (): void => undefined;
-
 /**
  * One dictation from the first audio to its end, over one provider session.
  * Counts the audio bytes received (the basis for the daily quota): it finishes
  * by itself when the remaining budget is spent, and hands the total to the
- * usage recorder once at the end. Logs duration, provider and outcome once at
+ * usage recorder once at the end. Once the provider text is final, it tells
+ * the listener, then completes it (cleanup) into the transcript `stop`
+ * resolves. Logs duration, provider and outcome once at
  * the end, never any text.
  */
 export class Dictation {
 	#phase: DictationPhase = 'created';
 	#session: TranscriptionSession | undefined;
-	#finishing: Promise<string> | undefined;
+	#finishing: Promise<DictationTranscript> | undefined;
 	#maxDurationTimer: NodeJS.Timeout | undefined;
 	#receivedBytes = 0;
 
@@ -80,7 +82,7 @@ export class Dictation {
 		}
 	}
 
-	stop(): Promise<string> {
+	stop(): Promise<DictationTranscript> {
 		if (this.#finishing) return this.#finishing;
 		if (this.#phase !== 'active' || !this.#session) {
 			throw new DictationNotActiveException();
@@ -123,6 +125,14 @@ export class Dictation {
 		this.#end('failed');
 	}
 
+	#logUnexpectedFailure = (error: unknown): void => {
+		if (error instanceof TranscriptionProviderError) return;
+		this.logger.error(
+			describeErrorForLog(error),
+			'Dictation could not be completed'
+		);
+	};
+
 	#logProviderError(error: TranscriptionProviderError): void {
 		this.logger.warn(
 			{ provider: this.provider.name, code: error.code },
@@ -149,13 +159,13 @@ export class Dictation {
 	): void {
 		if (this.#phase !== 'active') return;
 		this.listener.onError({ code, message: DICTATION_ERROR_MESSAGES[code] });
-		this.#beginFinishing(session, outcome).catch(ignoreRejection);
+		this.#beginFinishing(session, outcome).catch(this.#logUnexpectedFailure);
 	}
 
 	#beginFinishing(
 		session: TranscriptionSession,
 		outcome: DictationOutcome
-	): Promise<string> {
+	): Promise<DictationTranscript> {
 		this.#phase = 'finishing';
 		this.#finishing = this.#finish(session, outcome);
 		return this.#finishing;
@@ -164,11 +174,20 @@ export class Dictation {
 	async #finish(
 		session: TranscriptionSession,
 		outcome: DictationOutcome
+	): Promise<DictationTranscript> {
+		const rawText = await this.#finishSession(session, outcome);
+		this.listener.onFinished(rawText);
+		return this.options.complete(rawText);
+	}
+
+	async #finishSession(
+		session: TranscriptionSession,
+		outcome: DictationOutcome
 	): Promise<string> {
 		try {
-			const text = await session.finish();
+			const rawText = await session.finish();
 			this.#end(outcome);
-			return text;
+			return rawText;
 		} catch (error) {
 			this.#end('failed');
 			throw error;

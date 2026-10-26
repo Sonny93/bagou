@@ -5,8 +5,10 @@ export interface ApiDefinition {
   dictation: {
     showDictation: typeof routes['dictation.show_dictation']
   }
-  textCleanup: {
-    cleanText: typeof routes['text_cleanup.clean_text']
+  transcriptionHistory: {
+    showTranscripts: typeof routes['transcription_history.show_transcripts']
+    deleteTranscript: typeof routes['transcription_history.delete_transcript']
+    deleteTranscripts: typeof routes['transcription_history.delete_transcripts']
   }
   auth: {
     logout: typeof routes['auth.logout']

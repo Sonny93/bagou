@@ -1,11 +1,13 @@
 import { DictationClient } from './dictation_client';
 import type { DictationClientError } from './dictation_client_error';
+import type { DictationTranscript } from './dictation_transcript';
 import type { DictationTransport } from './dictation_transport';
 import { MicrophoneCapture } from './microphone_capture';
 
 export type DictationSessionListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
+	onFinished(text: string): void;
 	onLevel(level: number): void;
 	onError(error: DictationClientError): void;
 };
@@ -54,8 +56,8 @@ export class DictationSession {
 		if (failure) throw failure.reason;
 	}
 
-	/** Sends the last audio, then resolves the final text. */
-	async stop(): Promise<string> {
+	/** Sends the last audio, then resolves the raw and cleaned text. */
+	async stop(): Promise<DictationTranscript> {
 		await this.#capture.stop();
 		return this.#client.stop();
 	}

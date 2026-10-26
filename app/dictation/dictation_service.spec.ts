@@ -4,21 +4,26 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { UserFactory } from '#database/factories/user_factory';
 import { Dictation } from '#dictation/dictation';
+import { DictationCompletionService } from '#dictation/dictation_completion_service';
 import { DictationErrorCode } from '#dictation/dictation_error_code';
 import type { DictationErrorEvent } from '#dictation/dictation_error_event';
 import { DictationService } from '#dictation/dictation_service';
 import { DictationStartLimiter } from '#dictation/dictation_start_limiter';
-import { Clock } from '#dictation_quota/clock';
+import type { DictationTranscript } from '#dictation/dictation_transcript';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
+import { Clock } from '#shared/clock';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
+import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { FakeTranscriptionSession } from '#tests/helpers/fake_transcription_session';
+import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import type { OpenTranscriptionOptions } from '#transcription/open_transcription_options';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionErrorCode } from '#transcription/transcription_error_code';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type { TranscriptionSession } from '#transcription/transcription_session';
+import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
 
 const SHORT_MAX_DURATION_MS = 20;
 const DAILY_QUOTA_SECONDS = 60 * 60;
@@ -30,7 +35,15 @@ type CreateDictationOptions = {
 	maxDurationMs?: number;
 	remainingBytes?: number;
 	recordUsage?: (receivedBytes: number) => Promise<void>;
+	complete?: (rawText: string) => Promise<DictationTranscript>;
 };
+
+const completeWithUppercase = async (
+	rawText: string
+): Promise<DictationTranscript> => ({
+	rawText,
+	cleanedText: rawText.toUpperCase(),
+});
 
 function createDictation(
 	provider: TranscriptionProvider = new FakeTranscriptionProvider(),
@@ -38,12 +51,14 @@ function createDictation(
 		maxDurationMs,
 		remainingBytes = AMPLE_REMAINING_BYTES,
 		recordUsage,
+		complete = completeWithUppercase,
 	}: Readonly<CreateDictationOptions> = {}
 ) {
 	const { logger, lines } = createRecordingLogger();
 	const recordedBytes: number[] = [];
 	const partials: string[] = [];
 	const finals: string[] = [];
+	const finisheds: string[] = [];
 	const errors: DictationErrorEvent[] = [];
 	const dictation = new Dictation(
 		provider,
@@ -51,11 +66,13 @@ function createDictation(
 		{
 			onPartial: (text) => partials.push(text),
 			onFinal: (text) => finals.push(text),
+			onFinished: (text) => finisheds.push(text),
 			onError: (event) => errors.push(event),
 		},
 		{
 			maxDurationMs,
 			remainingBytes,
+			complete,
 			recordUsage:
 				recordUsage ??
 				(async (receivedBytes) => {
@@ -63,7 +80,15 @@ function createDictation(
 				}),
 		}
 	);
-	return { dictation, lines, partials, finals, errors, recordedBytes };
+	return {
+		dictation,
+		lines,
+		partials,
+		finals,
+		finisheds,
+		errors,
+		recordedBytes,
+	};
 }
 
 const readLogs = (lines: readonly string[]): Record<string, unknown>[] =>
@@ -122,7 +147,7 @@ test.group('Dictation', () => {
 		assert.equal(dictation.receivedBytes, 4800);
 	});
 
-	test('should resolve the full text on stop and log the duration, provider and outcome without any text', async ({
+	test('should resolve the transcript on stop and log the duration, provider and outcome without any text', async ({
 		assert,
 	}) => {
 		const provider = new FakeTranscriptionProvider(
@@ -132,9 +157,12 @@ test.group('Dictation', () => {
 		await dictation.start();
 		dictation.appendAudio(new Uint8Array(PCM_AUDIO_FORMAT.bytesPerSecond * 2));
 
-		const text = await dictation.stop();
+		const transcript = await dictation.stop();
 
-		assert.equal(text, 'texte secret');
+		assert.deepEqual(transcript, {
+			rawText: 'texte secret',
+			cleanedText: 'TEXTE SECRET',
+		});
 		const logs = readLogs(lines);
 		assert.lengthOf(logs, 1);
 		assert.include(logs[0], {
@@ -144,6 +172,115 @@ test.group('Dictation', () => {
 		});
 		assert.notInclude(lines.join(''), 'secret');
 		assert.isFalse(dictation.isActive);
+	});
+
+	test('should tell the listener the finished text before completing it', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte brut')
+		);
+		const completedTexts: string[] = [];
+		const { dictation, finisheds } = createDictation(provider, {
+			complete: async (rawText) => {
+				completedTexts.push(rawText);
+				return { rawText, cleanedText: null };
+			},
+		});
+		await dictation.start();
+
+		await dictation.stop();
+
+		assert.deepEqual(finisheds, ['texte brut']);
+		assert.deepEqual(completedTexts, ['texte brut']);
+	});
+
+	test('should complete the text when the maximum duration is reached', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte long')
+		);
+		const { dictation, finisheds } = createDictation(provider, {
+			maxDurationMs: SHORT_MAX_DURATION_MS,
+		});
+		await dictation.start();
+
+		await sleep(SHORT_MAX_DURATION_MS * 3);
+
+		assert.deepEqual(finisheds, ['texte long']);
+		assert.deepEqual(await dictation.stop(), {
+			rawText: 'texte long',
+			cleanedText: 'TEXTE LONG',
+		});
+	});
+
+	test('should reject stop without logging the text when the completion fails', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte secret')
+		);
+		const { dictation, lines } = createDictation(provider, {
+			complete: () => Promise.reject(new Error('cleanup down')),
+		});
+		await dictation.start();
+
+		await assert.rejects(() => dictation.stop(), /cleanup down/);
+
+		assert.notInclude(lines.join(''), 'secret');
+	});
+
+	test('should log the failure without any text when the completion fails at the maximum duration', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte secret')
+		);
+		const { dictation, lines } = createDictation(provider, {
+			maxDurationMs: SHORT_MAX_DURATION_MS,
+			complete: () =>
+				Promise.reject(
+					Object.assign(new Error('failed on texte secret'), {
+						detail: 'Failing row contains (texte secret)',
+					})
+				),
+		});
+		await dictation.start();
+
+		await sleep(SHORT_MAX_DURATION_MS * 3);
+
+		const failure = readLogs(lines).find(
+			({ msg }) => msg === 'Dictation could not be completed'
+		);
+		assert.equal(failure?.level, 50);
+		assert.notInclude(lines.join(''), 'secret');
+	});
+
+	test('should not log a provider error twice when it fails the finish at the maximum duration', async ({
+		assert,
+	}) => {
+		const session = new FakeTranscriptionSession('texte');
+		session.finish = () =>
+			Promise.reject(
+				new TranscriptionProviderError(
+					TranscriptionErrorCode.connectionClosed,
+					'closed'
+				)
+			);
+		const { dictation, lines } = createDictation(
+			new FakeTranscriptionProvider(session),
+			{ maxDurationMs: SHORT_MAX_DURATION_MS }
+		);
+		await dictation.start();
+
+		await sleep(SHORT_MAX_DURATION_MS * 3);
+
+		assert.isUndefined(
+			readLogs(lines).find(
+				({ msg }) => msg === 'Dictation could not be completed'
+			)
+		);
 	});
 
 	test('should reject audio once stopped', async ({ assert }) => {
@@ -264,7 +401,7 @@ test.group('Dictation', () => {
 			errors.map(({ code }) => code),
 			[DictationErrorCode.tooLong]
 		);
-		assert.equal(await dictation.stop(), 'texte long');
+		assert.equal((await dictation.stop()).rawText, 'texte long');
 		assert.equal(provider.session.finishCount, 1);
 		assert.include(readLogs(lines).at(-1), { outcome: 'timed_out' });
 	});
@@ -292,7 +429,7 @@ test.group('Dictation usage', () => {
 				message: 'Le quota quotidien de dictée est atteint, réessaie demain.',
 			},
 		]);
-		assert.equal(await dictation.stop(), 'texte gardé');
+		assert.equal((await dictation.stop()).rawText, 'texte gardé');
 		assert.equal(provider.session.finishCount, 1);
 		const logs = readLogs(lines);
 		assert.include(logs.at(-1), { outcome: 'quota_exceeded' });
@@ -413,20 +550,29 @@ test.group('DictationService', (group) => {
 	const listener = {
 		onPartial: () => undefined,
 		onFinal: () => undefined,
+		onFinished: () => undefined,
 		onError: () => undefined,
 	};
 
-	async function createService(provider = new FakeTranscriptionProvider()) {
+	async function createService(
+		provider = new FakeTranscriptionProvider(),
+		textCleaner = new FakeTextCleaner()
+	) {
 		const { logger, lines } = createRecordingLogger();
 		const quotaService = new DictationQuotaService(new Clock());
 		const service = new DictationService(
 			provider,
 			logger,
 			quotaService,
-			new DictationStartLimiter(logger)
+			new DictationStartLimiter(logger),
+			new DictationCompletionService(
+				new TextCleanupService(textCleaner),
+				new TranscriptHistoryService(new Clock()),
+				logger
+			)
 		);
 		const user = await UserFactory.create();
-		return { service, quotaService, user, provider, lines };
+		return { service, quotaService, user, provider, lines, textCleaner };
 	}
 
 	test('should create a dictation on the injected provider that is not started yet', async ({
@@ -453,6 +599,25 @@ test.group('DictationService', (group) => {
 		await sleep(50);
 
 		assert.equal((await quotaService.getUsage(user.id)).usedBytes, 3200);
+	});
+
+	test('should complete the dictation text with the injected text cleaner', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('euh bonjour')
+		);
+		const { service, user, textCleaner } = await createService(provider);
+		const dictation = await service.create(user.id, listener);
+		await dictation.start();
+
+		const transcript = await dictation.stop();
+
+		assert.deepEqual(transcript, {
+			rawText: 'euh bonjour',
+			cleanedText: 'EUH BONJOUR',
+		});
+		assert.deepEqual(textCleaner.cleaned, ['euh bonjour']);
 	});
 
 	test('should refuse to create a dictation once the daily quota is spent, logging the user', async ({

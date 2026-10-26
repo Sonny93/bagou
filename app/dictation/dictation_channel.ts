@@ -10,6 +10,7 @@ import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
+import type { DictationTranscript } from '#dictation/dictation_transcript';
 import DictationUnavailableException from '#dictation/dictation_unavailable_exception';
 import { ensureDictationAccess } from '#dictation/ensure_dictation_access';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
@@ -60,9 +61,8 @@ export default class DictationChannel extends BaseChannel<
 	}
 
 	@onMessage('dictation:stop')
-	async stop(_socket: AuthenticatedSocket<User>): Promise<{ text: string }> {
-		const text = await this.#requireDictation().stop();
-		return { text };
+	async stop(_socket: AuthenticatedSocket<User>): Promise<DictationTranscript> {
+		return this.#requireDictation().stop();
 	}
 
 	@onMessage('dictation:cancel')
@@ -78,6 +78,7 @@ export default class DictationChannel extends BaseChannel<
 		const dictation = await this.dictationService.create(userId, {
 			onPartial: (text) => this.broadcast('transcript:partial', { text }),
 			onFinal: (text) => this.broadcast('transcript:final', { text }),
+			onFinished: (text) => this.broadcast('transcript:finished', { text }),
 			onError: (event) => this.broadcast('transcript:error', event),
 		});
 		this.#dictation = dictation;

@@ -1,7 +1,4 @@
-type FinalizeDictationActions = {
-	cleanText: (text: string) => Promise<string>;
-	copyText: (text: string) => Promise<boolean>;
-};
+import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 
 type FinalizedDictation = {
 	text: string;
@@ -10,28 +7,14 @@ type FinalizedDictation = {
 };
 
 /**
- * Cleans the raw text, then copies the result. A failing cleanup falls back to
- * the raw text so a dictation is never lost; an empty text needs neither.
+ * Picks the text to keep, the cleaned one when the server produced it and the
+ * raw one otherwise, then copies it. An empty text is not copied.
  */
 export async function finalizeDictation(
-	rawText: string,
-	{ cleanText, copyText }: Readonly<FinalizeDictationActions>
+	{ rawText, cleanedText }: Readonly<DictationTranscript>,
+	copyText: (text: string) => Promise<boolean>
 ): Promise<FinalizedDictation> {
-	if (rawText.trim() === '') {
-		return { text: rawText, isCleaned: true, isCopied: false };
-	}
-	const { text, isCleaned } = await cleanOrKeep(rawText, cleanText);
-	const isCopied = await copyText(text);
-	return { text, isCleaned, isCopied };
-}
-
-async function cleanOrKeep(
-	rawText: string,
-	cleanText: FinalizeDictationActions['cleanText']
-): Promise<{ text: string; isCleaned: boolean }> {
-	try {
-		return { text: await cleanText(rawText), isCleaned: true };
-	} catch {
-		return { text: rawText, isCleaned: false };
-	}
+	const text = cleanedText ?? rawText;
+	const isCopied = text.trim() === '' ? false : await copyText(text);
+	return { text, isCleaned: cleanedText !== null, isCopied };
 }

@@ -29,7 +29,8 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
 /**
  * `final` text is append-only and `partial` text replaces the previous
  * partial, matching the server's transcript contract. Cleaning always ends
- * in `done`: cancel and failure do not apply to it. An event that does not
+ * in `done`, also from `finishing` when the finished event never arrived:
+ * cancel and failure do not apply to it. An event that does not
  * apply to the current state is ignored, so late events never resurrect a
  * dictation that already ended.
  */
@@ -70,7 +71,7 @@ export function dictationReducer(
 				? { status: 'cleaning', rawText: event.text }
 				: state;
 		case 'cleaned':
-			return state.status === 'cleaning'
+			return state.status === 'cleaning' || state.status === 'finishing'
 				? { status: 'done', text: event.text, isCleaned: event.isCleaned }
 				: state;
 		case 'cancelRequested':

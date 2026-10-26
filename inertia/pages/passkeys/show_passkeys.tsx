@@ -1,11 +1,11 @@
 import type { Data } from '@generated/data';
 
 import { AddPasskeyForm } from '~/passkeys/show_passkeys/add_passkey_form';
-import { BackToDictationLink } from '~/passkeys/show_passkeys/back_to_dictation_link';
 import { PasskeyRow } from '~/passkeys/show_passkeys/passkey_row';
 import { useDeletePasskey } from '~/passkeys/show_passkeys/use_delete_passkey';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
+import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
 
 type ShowPasskeysProps = {
 	passkeys: Data.Passkey[];

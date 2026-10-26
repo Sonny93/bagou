@@ -15,6 +15,8 @@
 		"#app/*": "./app/*.js",
 		"#dictation/*": "./app/dictation/*.js",
 		"#dictation_quota/*": "./app/dictation_quota/*.js",
+		"#shared/*": "./app/shared/*.js",
+		"#transcription_history/*": "./app/transcription_history/*.js",
 		"#transcription/*": "./app/transcription/*.js",
 		"#text_cleanup/*": "./app/text_cleanup/*.js",
 		"#stt_bench/*": "./app/stt_bench/*.js",

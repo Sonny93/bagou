@@ -20,17 +20,43 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/dictation/show_dictation_controller').default['render']>>>
     }
   }
-  'text_cleanup.clean_text': {
-    methods: ["POST"]
-    pattern: '/dictation/cleanup'
+  'transcription_history.show_transcripts': {
+    methods: ["GET","HEAD"]
+    pattern: '/history'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#text_cleanup/validators/clean_text_validator').cleanTextValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#text_cleanup/validators/clean_text_validator').cleanTextValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/text_cleanup/clean_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: ExtractQueryForGet<InferInput<(typeof import('#transcription_history/validators/show_transcripts_validator').showTranscriptsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/show_transcripts_controller').default['render']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/show_transcripts_controller').default['render']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/show_transcripts_controller').default['render']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'transcription_history.delete_transcript': {
+    methods: ["DELETE"]
+    pattern: '/history/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcript_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcript_controller').default['execute']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcript_controller').default['execute']>>>
+    }
+  }
+  'transcription_history.delete_transcripts': {
+    methods: ["DELETE"]
+    pattern: '/history'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
     }
   }
   'auth.logout': {

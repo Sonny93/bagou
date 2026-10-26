@@ -54,6 +54,20 @@ describe('dictationReducer', () => {
 		expect(state).toEqual({ status: 'cleaning', rawText: 'bonjour' });
 	});
 
+	it('should end in done from finishing when the finished event never arrived', () => {
+		const state = reduce(finishing, {
+			type: 'cleaned',
+			text: 'Bonjour.',
+			isCleaned: true,
+		});
+
+		expect(state).toEqual({
+			status: 'done',
+			text: 'Bonjour.',
+			isCleaned: true,
+		});
+	});
+
 	it('should end cleaning in done with the raw text when the cleanup is unavailable', () => {
 		const state = reduce(cleaning, {
 			type: 'cleaned',

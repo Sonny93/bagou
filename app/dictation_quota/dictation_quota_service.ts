@@ -1,9 +1,9 @@
 import { inject } from '@adonisjs/core';
 
 import dictationConfig from '#config/dictation';
-import { Clock } from '#dictation_quota/clock';
 import type { DictationQuotaUsage } from '#dictation_quota/dictation_quota_usage';
 import DictationUsage from '#dictation_quota/dictation_usage';
+import { Clock } from '#shared/clock';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 
 const SECONDS_PER_MINUTE = 60;

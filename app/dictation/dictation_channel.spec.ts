@@ -8,9 +8,12 @@ import DictationChannel from '#app/dictation/dictation_channel';
 import { UserFactory } from '#database/factories/user_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { createFakeChannelSocket } from '#tests/helpers/fake_channel_socket';
+import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { FakeTranscriptionSession } from '#tests/helpers/fake_transcription_session';
+import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import { swapTranscriptionProvider } from '#tests/helpers/swap_transcription_provider';
+import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import { TranscriptionErrorCode } from '#transcription/transcription_error_code';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type User from '#users/user';
@@ -63,8 +66,10 @@ test.group('DictationChannel', (group) => {
 		session = new FakeTranscriptionSession('Bonjour le monde');
 		provider = new FakeTranscriptionProvider(session);
 		const restoreProvider = swapTranscriptionProvider(provider);
+		const restoreTextCleaner = swapTextCleaner(new FakeTextCleaner());
 		return () => {
 			restoreProvider();
+			restoreTextCleaner();
 			socketService.restore();
 		};
 	});
@@ -97,7 +102,7 @@ test.group('DictationChannel', (group) => {
 		await assert.doesNotReject(() => runMiddlewares(user, DICTATION_ID));
 	});
 
-	test('should relay transcripts to the dictation channel only and acknowledge the final text on stop', async ({
+	test('should relay transcripts to the dictation channel only and acknowledge the transcript on stop', async ({
 		assert,
 	}) => {
 		const fake = socketService.fake();
@@ -109,7 +114,10 @@ test.group('DictationChannel', (group) => {
 		session.simulateFinal('Bonjour');
 		const acknowledgement = await send('dictation:stop');
 
-		assert.deepEqual(acknowledgement, { text: 'Bonjour le monde' });
+		assert.deepEqual(acknowledgement, {
+			rawText: 'Bonjour le monde',
+			cleanedText: 'BONJOUR LE MONDE',
+		});
 		assert.deepEqual([...(session.sentAudio[0] ?? [])], [1, 0, 2, 0]);
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:partial', {
 			data: { text: ' le mon' },
@@ -117,8 +125,29 @@ test.group('DictationChannel', (group) => {
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:final', {
 			data: { text: 'Bonjour' },
 		});
-		fake.assertCount(2);
-		fake.assertCount(2, { target: 'channel', channel: CHANNEL_NAME });
+		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:finished', {
+			data: { text: 'Bonjour le monde' },
+		});
+		fake.assertCount(3);
+		fake.assertCount(3, { target: 'channel', channel: CHANNEL_NAME });
+	});
+
+	test('should acknowledge a null cleaned text on stop when the cleanup is unavailable', async ({
+		assert,
+	}) => {
+		const restoreTextCleaner = swapTextCleaner(
+			new FakeTextCleaner(new TextCleanupUnavailableException())
+		);
+		const { send } = await joinChannel();
+		await send('dictation:start');
+
+		const acknowledgement = await send('dictation:stop');
+
+		assert.deepEqual(acknowledgement, {
+			rawText: 'Bonjour le monde',
+			cleanedText: null,
+		});
+		restoreTextCleaner();
 	});
 
 	test('should broadcast a safe French error when the provider fails', async ({

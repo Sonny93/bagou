@@ -16,5 +16,6 @@ declare module '@adonisjs/inertia/types' {
     'passkeys/show_login': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_login.tsx'))['default']>
     'passkeys/show_passkey_invitation': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_passkey_invitation.tsx'))['default']>
     'passkeys/show_passkeys': ExtractProps<(typeof import('../../inertia/pages/passkeys/show_passkeys.tsx'))['default']>
+    'transcription_history/show_transcripts': ExtractProps<(typeof import('../../inertia/pages/transcription_history/show_transcripts.tsx'))['default']>
   }
 }

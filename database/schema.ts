@@ -94,6 +94,23 @@ export class SessionSchema extends BaseModel {
   declare userId: string | null
 }
 
+export class TranscriptSchema extends BaseModel {
+  static $columns = ['cleanedText', 'createdAt', 'id', 'rawText', 'searchVector', 'userId'] as const
+  $columns = TranscriptSchema.$columns
+  @column()
+  declare cleanedText: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare rawText: string
+  @column()
+  declare searchVector: string | null
+  @column()
+  declare userId: number
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'updatedAt'] as const
   $columns = UserSchema.$columns

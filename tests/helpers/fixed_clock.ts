@@ -1,6 +1,6 @@
 import type { DateTime } from 'luxon';
 
-import { Clock } from '#dictation_quota/clock';
+import { Clock } from '#shared/clock';
 
 /** A clock that tells the time a spec decided, and can be moved. */
 export class FixedClock extends Clock {

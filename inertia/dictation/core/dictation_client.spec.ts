@@ -12,14 +12,16 @@ const FRAME_BASE64 = 'AQACAA==';
 function createClient(transport = new FakeDictationTransport()) {
 	const partials: string[] = [];
 	const finals: string[] = [];
+	const finisheds: string[] = [];
 	const errors: DictationClientError[] = [];
 	const listener: DictationClientListener = {
 		onPartial: (text) => partials.push(text),
 		onFinal: (text) => finals.push(text),
+		onFinished: (text) => finisheds.push(text),
 		onError: (error) => errors.push(error),
 	};
 	const client = new DictationClient(transport, listener, () => DICTATION_ID);
-	return { client, transport, partials, finals, errors };
+	return { client, transport, partials, finals, finisheds, errors };
 }
 
 describe('DictationClient', () => {
@@ -69,13 +71,35 @@ describe('DictationClient', () => {
 		expect(partials).toEqual([' le mo']);
 	});
 
-	it('should resolve the acknowledged text on stop and disconnect', async () => {
+	it('should relay the finished text to the listener', async () => {
+		const { client, transport, finisheds } = createClient();
+		await client.start();
+
+		transport.listener?.onFinished('texte brut');
+
+		expect(finisheds).toEqual(['texte brut']);
+	});
+
+	it('should ignore the finished text once the dictation ended', async () => {
+		const { client, transport, finisheds } = createClient();
+		await client.start();
+		client.cancel();
+
+		transport.listener?.onFinished('texte brut');
+
+		expect(finisheds).toEqual([]);
+	});
+
+	it('should resolve the acknowledged transcript on stop and disconnect', async () => {
 		const { client, transport } = createClient();
 		await client.start();
 
-		const text = await client.stop();
+		const transcript = await client.stop();
 
-		expect(text).toBe('texte final');
+		expect(transcript).toEqual({
+			rawText: 'texte final',
+			cleanedText: 'Texte final.',
+		});
 		expect(transport.calls.at(-1)).toBe('disconnect');
 	});
 

@@ -1,6 +1,9 @@
+import type { DictationTranscript } from './dictation_transcript';
+
 export type TranscriptListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
+	onFinished(text: string): void;
 	onProviderError(message: string): void;
 };
 
@@ -8,7 +11,7 @@ export type TranscriptListener = {
 export type JoinedDictation = {
 	start(): Promise<void>;
 	sendAudio(base64Pcm: string): void;
-	stop(): Promise<string>;
+	stop(): Promise<DictationTranscript>;
 	cancel(): void;
 };
 

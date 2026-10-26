@@ -12,11 +12,23 @@ const routes = {
     tokens: [[0,"/"]],
     types: placeholder as Registry['dictation.show_dictation']['types'],
   },
-  'text_cleanup.clean_text': {
-    methods: ["POST"],
-    pattern: '/dictation/cleanup',
-    tokens: [[0,"dictation"],[0,"cleanup"]],
-    types: placeholder as Registry['text_cleanup.clean_text']['types'],
+  'transcription_history.show_transcripts': {
+    methods: ["GET","HEAD"],
+    pattern: '/history',
+    tokens: [[0,"history"]],
+    types: placeholder as Registry['transcription_history.show_transcripts']['types'],
+  },
+  'transcription_history.delete_transcript': {
+    methods: ["DELETE"],
+    pattern: '/history/:id',
+    tokens: [[0,"history"],[1,"id"]],
+    types: placeholder as Registry['transcription_history.delete_transcript']['types'],
+  },
+  'transcription_history.delete_transcripts': {
+    methods: ["DELETE"],
+    pattern: '/history',
+    tokens: [[0,"history"]],
+    types: placeholder as Registry['transcription_history.delete_transcripts']['types'],
   },
   'auth.logout': {
     methods: ["POST"],

@@ -4,6 +4,8 @@ import { IconButton, Menu, MenuItem } from '@minimalstuff/ui';
 import { urlFor } from '~/shared/lib/url_for';
 
 export function AccountMenu() {
+	const goToHistory = () =>
+		router.visit(urlFor('transcription_history.show_transcripts'));
 	const goToPasskeys = () => router.visit(urlFor('passkeys.show_passkeys'));
 	const logout = () => router.post(urlFor('auth.logout'));
 
@@ -19,6 +21,9 @@ export function AccountMenu() {
 				/>
 			}
 		>
+			<MenuItem icon="i-tabler-history" onClick={goToHistory}>
+				Historique
+			</MenuItem>
 			<MenuItem icon="i-tabler-fingerprint" onClick={goToPasskeys}>
 				Passkeys
 			</MenuItem>

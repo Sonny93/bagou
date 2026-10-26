@@ -7,12 +7,17 @@
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
 import type { InferSharedProps, InferFlashData } from '@adonisjs/inertia/types'
 import type PasskeyTransformer from '../../app/passkeys/passkey_transformer.ts'
+import type TranscriptTransformer from '../../app/transcription_history/transcript_transformer.ts'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
   export type Passkey = InferData<PasskeyTransformer>
   export namespace Passkey {
     export type Variants = InferVariants<PasskeyTransformer>
+  }
+  export type Transcript = InferData<TranscriptTransformer>
+  export namespace Transcript {
+    export type Variants = InferVariants<TranscriptTransformer>
   }
   export type SharedProps = InferSharedProps<InertiaMiddleware>
   export type FlashMessages = InferFlashData<InertiaMiddleware>

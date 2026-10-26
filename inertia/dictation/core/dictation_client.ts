@@ -1,5 +1,6 @@
 import { bytesToBase64 } from './bytes_to_base64';
 import { DictationClientError } from './dictation_client_error';
+import type { DictationTranscript } from './dictation_transcript';
 import type {
 	DictationTransport,
 	JoinedDictation,
@@ -10,6 +11,7 @@ export const MAX_BUFFERED_FRAMES = 100;
 export type DictationClientListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
+	onFinished(text: string): void;
 	onError(error: DictationClientError): void;
 };
 
@@ -58,7 +60,7 @@ export class DictationClient {
 		else if (this.#phase === 'starting') this.#buffer(base64Frame);
 	}
 
-	async stop(): Promise<string> {
+	async stop(): Promise<DictationTranscript> {
 		const joined = this.#joined;
 		if (this.#phase !== 'started' || !joined)
 			throw new DictationClientError('rejected');
@@ -90,6 +92,8 @@ export class DictationClient {
 				onPartial: (text) =>
 					this.#whileOpen(() => this.listener.onPartial(text)),
 				onFinal: (text) => this.#whileOpen(() => this.listener.onFinal(text)),
+				onFinished: (text) =>
+					this.#whileOpen(() => this.listener.onFinished(text)),
 				onProviderError: (message) =>
 					this.#failWith(new DictationClientError('provider_error', message)),
 			});

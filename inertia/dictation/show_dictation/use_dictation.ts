@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import { appendLevel } from './append_level';
-import { cleanDictationText } from './clean_dictation_text';
 import type { CopyStatus } from './copy_status';
-import { copyToClipboard } from './copy_to_clipboard';
 import { describeDictationError } from './describe_dictation_error';
 import { DICTATION_WORKLET_URL } from './dictation_worklet_url';
 import { finalizeDictation } from './finalize_dictation';
@@ -14,11 +12,18 @@ import {
 	INITIAL_DICTATION_STATE,
 	type DictationState,
 } from '~/dictation/core/dictation_state';
+import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
+import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
 
 const toCopyStatus = (text: string, isCopied: boolean): CopyStatus => {
 	if (isCopied) return 'copied';
 	return text.trim() === '' ? 'none' : 'failed';
+};
+
+const EMPTY_TRANSCRIPT: DictationTranscript = {
+	rawText: '',
+	cleanedText: '',
 };
 
 const CAN_START_FROM = new Set<DictationState['status']>([
@@ -79,6 +84,7 @@ export function useDictation({
 			{
 				onPartial: (text) => dispatch({ type: 'partialReceived', text }),
 				onFinal: (text) => dispatch({ type: 'finalReceived', text }),
+				onFinished: (text) => dispatch({ type: 'finished', text }),
 				onLevel: (level) =>
 					setLevels((previous) =>
 						appendLevel(previous, level, LEVEL_HISTORY_CAPACITY)
@@ -99,12 +105,11 @@ export function useDictation({
 		if (statusRef.current !== 'recording') return;
 		dispatch({ type: 'stopRequested' });
 		try {
-			const rawText = (await sessionRef.current?.stop()) ?? '';
-			dispatch({ type: 'finished', text: rawText });
-			const { text, isCleaned, isCopied } = await finalizeDictation(rawText, {
-				cleanText: cleanDictationText,
-				copyText: copyToClipboard,
-			});
+			const transcript = (await sessionRef.current?.stop()) ?? EMPTY_TRANSCRIPT;
+			const { text, isCleaned, isCopied } = await finalizeDictation(
+				transcript,
+				copyToClipboard
+			);
 			setCopyStatus(toCopyStatus(text, isCopied));
 			dispatch({ type: 'cleaned', text, isCleaned });
 		} catch (error) {
