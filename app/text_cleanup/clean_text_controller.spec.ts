@@ -8,6 +8,7 @@ import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavaila
 
 const CLEANUP_URL = '/dictation/cleanup';
 const TOO_LONG_TEXT_LENGTH = 20_001;
+const CLEANUP_REQUESTS_PER_MINUTE = 30;
 
 test.group('CleanTextController', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
@@ -103,5 +104,59 @@ test.group('CleanTextController', (group) => {
 			JSON.stringify(response.body()),
 			'Le nettoyage du texte est indisponible'
 		);
+	});
+
+	test('should answer 429 with a French message once the cleanup rate limit is exceeded', async ({
+		client,
+		cleanup,
+		assert,
+	}) => {
+		cleanup(swapTextCleaner(new FakeTextCleaner()));
+		const user = await UserFactory.create();
+		for (let attempt = 0; attempt < CLEANUP_REQUESTS_PER_MINUTE; attempt += 1) {
+			const allowed = await client
+				.post(CLEANUP_URL)
+				.withCsrfToken()
+				.loginAs(user)
+				.json({ text: 'bonjour' });
+			allowed.assertStatus(200);
+		}
+
+		const response = await client
+			.post(CLEANUP_URL)
+			.withCsrfToken()
+			.loginAs(user)
+			.header('Accept', 'application/json')
+			.json({ text: 'bonjour' });
+
+		response.assertStatus(429);
+		assert.equal(
+			response.body().errors[0].message,
+			'Trop de requêtes, patiente une minute'
+		);
+	});
+
+	test('should count the cleanup rate limit per user', async ({
+		client,
+		cleanup,
+	}) => {
+		cleanup(swapTextCleaner(new FakeTextCleaner()));
+		const user = await UserFactory.create();
+		const otherUser = await UserFactory.create();
+		for (let attempt = 0; attempt < CLEANUP_REQUESTS_PER_MINUTE; attempt += 1) {
+			await client
+				.post(CLEANUP_URL)
+				.withCsrfToken()
+				.loginAs(user)
+				.json({ text: 'bonjour' });
+		}
+
+		const response = await client
+			.post(CLEANUP_URL)
+			.withCsrfToken()
+			.loginAs(otherUser)
+			.json({ text: 'bonjour' });
+
+		response.assertStatus(200);
 	});
 });

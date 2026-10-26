@@ -11,6 +11,7 @@ import type { Config } from '@japa/runner/types';
 import { glob } from 'node:fs/promises';
 
 import env from '#start/env';
+import { resetRateLimits } from '#tests/helpers/reset_rate_limits';
 
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
@@ -92,6 +93,9 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
  * Learn more - https://japa.dev/docs/test-suites#lifecycle-hooks
  */
 export const configureSuite: Config['configureSuite'] = (suite) => {
+	suite.onGroup((group) => {
+		group.each.setup(resetRateLimits);
+	});
 	if (['browser', 'functional', 'e2e'].includes(suite.name)) {
 		return suite.setup(() => testUtils.httpServer().start());
 	}

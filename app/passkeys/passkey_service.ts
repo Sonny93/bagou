@@ -1,10 +1,12 @@
 import { inject } from '@adonisjs/core';
+import { Logger } from '@adonisjs/core/logger';
 import type {
 	AuthenticationResponseJSON,
 	PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/server';
 import { DateTime } from 'luxon';
 
+import { describeAuthenticationFailure } from '#passkeys/describe_authentication_failure';
 import LastPasskeyException from '#passkeys/last_passkey_exception';
 import Passkey from '#passkeys/passkey';
 import PasskeyAuthenticationFailedException from '#passkeys/passkey_authentication_failed_exception';
@@ -26,7 +28,8 @@ type AuthenticationInput = {
 export class PasskeyService {
 	constructor(
 		private readonly webauthnService: WebauthnService,
-		private readonly challengeService: PasskeyChallengeService
+		private readonly challengeService: PasskeyChallengeService,
+		private readonly logger: Logger
 	) {}
 
 	async listForUser(user: User): Promise<Passkey[]> {
@@ -48,7 +51,21 @@ export class PasskeyService {
 	/**
 	 * @returns The user owning the passkey that signed the challenge.
 	 */
-	async authenticate({
+	async authenticate(input: Readonly<AuthenticationInput>): Promise<User> {
+		try {
+			const user = await this.#verifyAuthentication(input);
+			this.logger.info({ userId: user.id }, 'Passkey login succeeded');
+			return user;
+		} catch (error) {
+			this.logger.warn(
+				{ failure: describeAuthenticationFailure(error) },
+				'Passkey login failed'
+			);
+			throw error;
+		}
+	}
+
+	async #verifyAuthentication({
 		response,
 		challenges,
 	}: Readonly<AuthenticationInput>): Promise<User> {

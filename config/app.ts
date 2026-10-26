@@ -1,5 +1,6 @@
 import { defineConfig } from '@adonisjs/core/http';
 import app from '@adonisjs/core/services/app';
+import proxyAddr from 'proxy-addr';
 
 /**
  * The configuration settings used by the HTTP server
@@ -7,6 +8,12 @@ import app from '@adonisjs/core/services/app';
 export const http = defineConfig({
 	generateRequestId: true,
 	allowMethodSpoofing: false,
+
+	/**
+	 * Behind the reverse proxy on a private docker network, so the client IP
+	 * (the key of the auth rate limit) is read from the forwarded header.
+	 */
+	trustProxy: proxyAddr.compile(['loopback', 'uniquelocal']),
 
 	/**
 	 * Enabling async local storage will let you access HTTP context

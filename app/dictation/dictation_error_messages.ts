@@ -18,4 +18,6 @@ export const DICTATION_ERROR_MESSAGES = {
 	[DictationErrorCode.sessionAborted]:
 		'La session de transcription a été interrompue.',
 	[DictationErrorCode.tooLong]: 'La dictée a atteint la durée maximale.',
+	[DictationErrorCode.quotaExceeded]:
+		'Le quota quotidien de dictée est atteint, réessaie demain.',
 } as const satisfies Record<DictationErrorCode, string>;

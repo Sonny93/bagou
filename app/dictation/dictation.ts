@@ -4,6 +4,7 @@ import { DictationErrorCode } from '#dictation/dictation_error_code';
 import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
+import type { DictationOptions } from '#dictation/dictation_options';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import type { TranscriptionProvider } from '#transcription/transcription_provider';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
@@ -13,14 +14,21 @@ const MAX_DICTATION_DURATION_MS = 10 * 60 * 1000;
 const SECONDS_DECIMAL_FACTOR = 100;
 
 type DictationPhase = 'created' | 'starting' | 'active' | 'finishing' | 'ended';
-type DictationOutcome = 'completed' | 'timed_out' | 'cancelled' | 'failed';
+type DictationOutcome =
+	| 'completed'
+	| 'timed_out'
+	| 'quota_exceeded'
+	| 'cancelled'
+	| 'failed';
 
 const ignoreRejection = (): void => undefined;
 
 /**
  * One dictation from the first audio to its end, over one provider session.
- * Counts the audio bytes received (the basis for the daily quota) and logs
- * duration, provider and outcome once at the end, never any text.
+ * Counts the audio bytes received (the basis for the daily quota): it finishes
+ * by itself when the remaining budget is spent, and hands the total to the
+ * usage recorder once at the end. Logs duration, provider and outcome once at
+ * the end, never any text.
  */
 export class Dictation {
 	#phase: DictationPhase = 'created';
@@ -33,7 +41,7 @@ export class Dictation {
 		private readonly provider: TranscriptionProvider,
 		private readonly logger: Logger,
 		private readonly listener: DictationListener,
-		private readonly maxDurationMs = MAX_DICTATION_DURATION_MS
+		private readonly options: Readonly<DictationOptions>
 	) {}
 
 	get isActive(): boolean {
@@ -55,8 +63,9 @@ export class Dictation {
 		this.#session = session;
 		this.#phase = 'active';
 		this.#maxDurationTimer = setTimeout(
-			() => this.#finishAtMaxDuration(session),
-			this.maxDurationMs
+			() =>
+				this.#finishAtLimit(session, DictationErrorCode.tooLong, 'timed_out'),
+			this.options.maxDurationMs ?? MAX_DICTATION_DURATION_MS
 		);
 	}
 
@@ -66,6 +75,9 @@ export class Dictation {
 		}
 		this.#receivedBytes += pcm.byteLength;
 		this.#session.sendAudio(pcm);
+		if (this.#receivedBytes >= this.options.remainingBytes) {
+			this.#finishAtQuota(this.#session);
+		}
 	}
 
 	stop(): Promise<string> {
@@ -118,13 +130,26 @@ export class Dictation {
 		);
 	}
 
-	#finishAtMaxDuration(session: TranscriptionSession): void {
+	#finishAtQuota(session: TranscriptionSession): void {
+		this.logger.warn(
+			{ dictationSeconds: this.#durationSeconds() },
+			'Daily dictation quota reached'
+		);
+		this.#finishAtLimit(
+			session,
+			DictationErrorCode.quotaExceeded,
+			'quota_exceeded'
+		);
+	}
+
+	#finishAtLimit(
+		session: TranscriptionSession,
+		code: DictationErrorCode,
+		outcome: DictationOutcome
+	): void {
 		if (this.#phase !== 'active') return;
-		this.listener.onError({
-			code: DictationErrorCode.tooLong,
-			message: DICTATION_ERROR_MESSAGES[DictationErrorCode.tooLong],
-		});
-		this.#beginFinishing(session, 'timed_out').catch(ignoreRejection);
+		this.listener.onError({ code, message: DICTATION_ERROR_MESSAGES[code] });
+		this.#beginFinishing(session, outcome).catch(ignoreRejection);
 	}
 
 	#beginFinishing(
@@ -163,6 +188,19 @@ export class Dictation {
 			},
 			'Dictation ended'
 		);
+		void this.#recordUsage();
+	}
+
+	async #recordUsage(): Promise<void> {
+		if (this.#receivedBytes === 0) return;
+		try {
+			await this.options.recordUsage(this.#receivedBytes);
+		} catch (error) {
+			this.logger.error(
+				{ err: error },
+				'Dictation usage could not be recorded'
+			);
+		}
 	}
 
 	#durationSeconds(): number {

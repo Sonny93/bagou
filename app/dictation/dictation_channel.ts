@@ -31,21 +31,23 @@ export default class DictationChannel extends BaseChannel<
 	static middlewares = [ensureDictationAccess];
 
 	#dictation: Dictation | undefined;
+	#isStarting = false;
 
 	constructor(private readonly dictationService: DictationService) {
 		super();
 	}
 
 	@onMessage('dictation:start')
-	async start(_socket: AuthenticatedSocket<User>): Promise<void> {
-		if (this.#dictation?.isActive) throw new DictationAlreadyActiveException();
-		const dictation = this.dictationService.create({
-			onPartial: (text) => this.broadcast('transcript:partial', { text }),
-			onFinal: (text) => this.broadcast('transcript:final', { text }),
-			onError: (event) => this.broadcast('transcript:error', event),
-		});
-		this.#dictation = dictation;
-		await this.#startOrFail(dictation);
+	async start(socket: AuthenticatedSocket<User>): Promise<void> {
+		if (this.#isStarting || this.#dictation?.isActive) {
+			throw new DictationAlreadyActiveException();
+		}
+		this.#isStarting = true;
+		try {
+			await this.#createAndStart(socket.getUserOrFail().id);
+		} finally {
+			this.#isStarting = false;
+		}
 	}
 
 	@onMessage('dictation:audio')
@@ -70,6 +72,16 @@ export default class DictationChannel extends BaseChannel<
 
 	override async onLeave(): Promise<void> {
 		this.#dictation?.cancel();
+	}
+
+	async #createAndStart(userId: number): Promise<void> {
+		const dictation = await this.dictationService.create(userId, {
+			onPartial: (text) => this.broadcast('transcript:partial', { text }),
+			onFinal: (text) => this.broadcast('transcript:final', { text }),
+			onError: (event) => this.broadcast('transcript:error', event),
+		});
+		this.#dictation = dictation;
+		await this.#startOrFail(dictation);
 	}
 
 	async #startOrFail(dictation: Dictation): Promise<void> {

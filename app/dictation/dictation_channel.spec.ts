@@ -1,10 +1,12 @@
 import app from '@adonisjs/core/services/app';
+import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 import socketService from '@rlanz/socket/services/main';
 import type { MiddlewareContext } from '@rlanz/socket/types';
 
 import DictationChannel from '#app/dictation/dictation_channel';
 import { UserFactory } from '#database/factories/user_factory';
+import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { createFakeChannelSocket } from '#tests/helpers/fake_channel_socket';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { FakeTranscriptionSession } from '#tests/helpers/fake_transcription_session';
@@ -15,6 +17,8 @@ import type User from '#users/user';
 
 const DICTATION_ID = '7f9c1f5e-3b0a-4c43-9c66-2d6a53e8f1aa';
 const CHANNEL_NAME = `dictation/${DICTATION_ID}`;
+const START_REQUESTS_PER_MINUTE = 20;
+const DAILY_QUOTA_BYTES = 60 * 60 * 32_000;
 const VALID_CHUNK = Buffer.from(new Uint8Array([1, 0, 2, 0])).toString(
 	'base64'
 );
@@ -28,10 +32,11 @@ async function createChannel() {
 }
 
 async function joinChannel() {
-	const user = await UserFactory.make();
+	const user = await UserFactory.create();
 	const socket = createFakeChannelSocket(user);
 	const channel = await createChannel();
 	return {
+		user,
 		send: (event: string, data?: unknown) =>
 			channel.$handleMessage(socket, event, data),
 		leave: () => channel.$handleLeave(socket, DICTATION_ID),
@@ -53,6 +58,7 @@ test.group('DictationChannel', (group) => {
 	let session: FakeTranscriptionSession;
 	let provider: FakeTranscriptionProvider;
 
+	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
 	group.each.setup(() => {
 		session = new FakeTranscriptionSession('Bonjour le monde');
 		provider = new FakeTranscriptionProvider(session);
@@ -233,5 +239,68 @@ test.group('DictationChannel', (group) => {
 		await leave();
 
 		assert.equal(session.abortCount, 1);
+	});
+
+	test('should reject starting without opening the provider when the daily quota is spent', async ({
+		assert,
+	}) => {
+		const { send, user } = await joinChannel();
+		const quotaService = await app.container.make(DictationQuotaService);
+		await quotaService.record(user.id, DAILY_QUOTA_BYTES);
+
+		await assert.rejects(
+			() => send('dictation:start'),
+			'Quota quotidien de dictée atteint, réessaie demain'
+		);
+		assert.lengthOf(provider.openedWith, 0);
+	});
+
+	test('should reject starting once the start rate limit is exceeded', async ({
+		assert,
+	}) => {
+		const { send } = await joinChannel();
+		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
+			await send('dictation:start');
+			await send('dictation:cancel');
+		}
+
+		await assert.rejects(
+			() => send('dictation:start'),
+			'Trop de dictées lancées, patiente une minute'
+		);
+		assert.lengthOf(provider.openedWith, START_REQUESTS_PER_MINUTE);
+	});
+
+	test('should count the start rate limit per user', async ({ assert }) => {
+		const first = await joinChannel();
+		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
+			await first.send('dictation:start');
+			await first.send('dictation:cancel');
+		}
+		const second = await joinChannel();
+
+		await assert.doesNotReject(() => second.send('dictation:start'));
+	});
+
+	test('should accept exactly one of two starts sent without waiting for the first', async ({
+		assert,
+	}) => {
+		const { send } = await joinChannel();
+
+		const outcomes = await Promise.allSettled([
+			send('dictation:start'),
+			send('dictation:start'),
+		]);
+
+		assert.deepEqual(
+			outcomes.map(({ status }) => status),
+			['fulfilled', 'rejected']
+		);
+		const [, secondOutcome] = outcomes;
+		assert.equal(secondOutcome?.status, 'rejected');
+		if (secondOutcome?.status === 'rejected') {
+			assert.match(String(secondOutcome.reason), /dictée est déjà en cours/);
+		}
+		assert.lengthOf(provider.openedWith, 1);
 	});
 });

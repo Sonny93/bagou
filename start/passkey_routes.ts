@@ -2,6 +2,7 @@ import router from '@adonisjs/core/services/router';
 
 import { controllers } from '#generated/controllers';
 import { middleware } from '#start/kernel';
+import { authThrottle } from '#start/limiter';
 
 /**
  * Passkey (WebAuthn) authentication. This file and `app/passkeys/` are the
@@ -23,12 +24,14 @@ router
 				controllers.passkeys.CreateAuthenticationOptions,
 				'execute',
 			])
+			.use(authThrottle)
 			.as('passkeys.create_authentication_options');
 		router
 			.post('/passkeys/authentication/verify', [
 				controllers.passkeys.VerifyAuthentication,
 				'execute',
 			])
+			.use(authThrottle)
 			.as('passkeys.verify_authentication');
 		router
 			.get('/passkeys/invitations/:token', [
@@ -41,12 +44,14 @@ router
 				controllers.passkeys.CreateInvitationOptions,
 				'execute',
 			])
+			.use(authThrottle)
 			.as('passkeys.create_invitation_options');
 		router
 			.post('/passkeys/invitations/:token/verify', [
 				controllers.passkeys.VerifyInvitation,
 				'execute',
 			])
+			.use(authThrottle)
 			.as('passkeys.verify_invitation');
 	})
 	.middleware([middleware.guest()]);

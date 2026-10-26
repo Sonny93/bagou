@@ -7,6 +7,7 @@ import { generateRegistry } from '@tuyau/core/hooks';
 const DOMAINS = [
 	'auth',
 	'dictation',
+	'dictation_quota',
 	'passkeys',
 	'text_cleanup',
 	'transcription',
@@ -35,6 +36,7 @@ export default defineConfig({
 		() => import('@adonisjs/lucid/database_provider'),
 		() => import('@adonisjs/auth/auth_provider'),
 		() => import('@adonisjs/inertia/inertia_provider'),
+		() => import('@adonisjs/limiter/limiter_provider'),
 		() => import('#providers/transcription_provider'),
 		() => import('#providers/text_cleanup_provider'),
 		{
@@ -64,6 +66,7 @@ export default defineConfig({
 					'app/**/*_provider.spec.ts',
 					'app/**/parse_*.spec.ts',
 					'app/**/decode_*.spec.ts',
+					'app/**/describe_*.spec.ts',
 				],
 				name: 'unit',
 				timeout: 2000,
