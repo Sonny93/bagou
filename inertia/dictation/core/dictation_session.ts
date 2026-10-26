@@ -2,6 +2,7 @@ import { DictationClient } from './dictation_client';
 import type { DictationClientError } from './dictation_client_error';
 import type { DictationTranscript } from './dictation_transcript';
 import type { DictationTransport } from './dictation_transport';
+import type { DraftContext } from './draft_context';
 import { MicrophoneCapture } from './microphone_capture';
 
 export type DictationSessionListener = {
@@ -45,10 +46,10 @@ export class DictationSession {
 	}
 
 	/** Rejects with a `MicrophoneError` or a `DictationClientError`. */
-	async start(): Promise<void> {
+	async start(context: Readonly<DraftContext>): Promise<void> {
 		const results = await Promise.allSettled([
 			this.#capture.start(),
-			this.#client.start(),
+			this.#client.start(context),
 		]);
 		const failure = results.find((result) => result.status === 'rejected');
 		if (!failure && !this.#isCancelled) return;
@@ -56,7 +57,7 @@ export class DictationSession {
 		if (failure) throw failure.reason;
 	}
 
-	/** Sends the last audio, then resolves the raw and cleaned text. */
+	/** Sends the last audio, then resolves the raw segment and the cleaned draft. */
 	async stop(): Promise<DictationTranscript> {
 		await this.#capture.stop();
 		return this.#client.stop();

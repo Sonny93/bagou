@@ -14,6 +14,7 @@ import {
 	type DictationState,
 } from '~/dictation/core/dictation_state';
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
+import type { DraftContext } from '~/dictation/core/draft_context';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
 
@@ -24,12 +25,14 @@ const toCopyStatus = (text: string, isCopied: boolean): CopyStatus => {
 
 const EMPTY_TRANSCRIPT: DictationTranscript = {
 	rawText: '',
-	cleanedText: '',
+	cleanedDraft: null,
 };
 
 type UseDictationOptions = {
 	shouldAutoStart: boolean;
 	insertSegment: (segment: string) => string;
+	replaceDraft: (text: string) => string;
+	getDraftContext: () => DraftContext;
 };
 
 type UseDictationReturn = {
@@ -43,13 +46,16 @@ type UseDictationReturn = {
 };
 
 /**
- * Drives one dictation segment at a time, inserted into the draft through
- * `insertSegment` when it ends. Starts recording on mount only when
+ * Drives one dictation segment at a time, dictated into the draft described by
+ * `getDraftContext` and brought back into it when it ends, by `insertSegment`
+ * or, when the server cleaned the whole draft, by `replaceDraft`. Starts recording on mount only when
  * `shouldAutoStart` is true at that moment; later changes are ignored.
  */
 export function useDictation({
 	shouldAutoStart,
 	insertSegment,
+	replaceDraft,
+	getDraftContext,
 }: Readonly<UseDictationOptions>): UseDictationReturn {
 	const [state, dispatch] = useReducer(
 		dictationReducer,
@@ -91,12 +97,12 @@ export function useDictation({
 		);
 		sessionRef.current = session;
 		try {
-			await session.start();
+			await session.start(getDraftContext());
 			dispatch({ type: 'recordingStarted', startedAt: Date.now() });
 		} catch (error) {
 			fail(error);
 		}
-	}, [fail]);
+	}, [fail, getDraftContext]);
 
 	const finish = useCallback(async () => {
 		if (statusRef.current !== 'recording') return;
@@ -105,7 +111,7 @@ export function useDictation({
 			const transcript = (await sessionRef.current?.stop()) ?? EMPTY_TRANSCRIPT;
 			const { draftText, isCleaned, isCopied } = await finalizeDictation(
 				transcript,
-				insertSegment,
+				{ insertSegment, replaceDraft },
 				copyToClipboard
 			);
 			setCopyStatus(toCopyStatus(draftText, isCopied));
@@ -113,7 +119,7 @@ export function useDictation({
 		} catch (error) {
 			fail(error);
 		}
-	}, [fail, insertSegment]);
+	}, [fail, insertSegment, replaceDraft]);
 
 	const copyText = useCallback(async (text: string) => {
 		const isCopied = await copyToClipboard(text);

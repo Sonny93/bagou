@@ -51,6 +51,17 @@ export default class Transcript extends TranscriptSchema {
 			.first();
 	}
 
+	/** @returns The entry of the user's draft, if a segment of it was kept. */
+	static findByDraft(
+		userId: number,
+		draftId: string
+	): Promise<Transcript | null> {
+		return Transcript.query()
+			.where('userId', userId)
+			.where('draftId', draftId)
+			.first();
+	}
+
 	static async deleteOlderThan(
 		userId: number,
 		cutoff: DateTime

@@ -30,6 +30,12 @@ const routes = {
     tokens: [[0,"history"],[1,"id"],[0,"clean"]],
     types: placeholder as Registry['transcription_history.clean_transcript']['types'],
   },
+  'transcription_history.save_draft_text': {
+    methods: ["PUT"],
+    pattern: '/history/drafts/:draftId',
+    tokens: [[0,"history"],[0,"drafts"],[1,"draftId"]],
+    types: placeholder as Registry['transcription_history.save_draft_text']['types'],
+  },
   'transcription_history.delete_transcripts': {
     methods: ["DELETE"],
     pattern: '/history',

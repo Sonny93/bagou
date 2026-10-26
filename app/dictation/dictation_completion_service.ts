@@ -3,8 +3,11 @@ import { Logger } from '@adonisjs/core/logger';
 
 import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import type { DictationTranscript } from '#dictation/dictation_transcript';
+import type { DraftContext } from '#dictation/draft_context';
+import { joinDraft } from '#dictation/join_draft';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
+import type { DraftSegment } from '#transcription_history/draft_segment';
 import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
 
 @inject()
@@ -16,32 +19,40 @@ export class DictationCompletionService {
 	) {}
 
 	/**
-	 * A failing cleanup does not lose the dictation: it yields no cleaned text.
+	 * Cleans the whole draft around the new segment, then appends the segment to
+	 * the draft's history entry. A blank segment costs and stores nothing. A
+	 * failing cleanup does not lose the dictation: it yields no cleaned draft.
 	 * Neither does a failing save to the history.
 	 */
 	async complete(
 		userId: number,
-		rawText: string
+		draft: Readonly<DraftContext>,
+		rawSegment: string
 	): Promise<DictationTranscript> {
-		const transcript = {
-			rawText,
-			cleanedText: await this.#cleanOrNull(rawText),
-		};
-		await this.#saveOrLog(userId, transcript);
-		return transcript;
+		if (rawSegment.trim() === '') {
+			return { rawText: rawSegment, cleanedDraft: null };
+		}
+		const cleanedDraft = await this.#cleanOrNull(joinDraft(draft, rawSegment));
+		await this.#saveOrLog(userId, draft.draftId, { rawSegment, cleanedDraft });
+		return { rawText: rawSegment, cleanedDraft };
 	}
 
-	/** Saves the raw text of a cancelled dictation as is: no cleanup, so no credits spent. */
-	async keepRaw(userId: number, rawText: string): Promise<void> {
-		await this.#saveOrLog(userId, { rawText, cleanedText: null });
+	/** Appends the raw segment of a cancelled dictation as is: no cleanup, so no credits spent. */
+	async keepRaw(
+		userId: number,
+		draftId: string,
+		rawSegment: string
+	): Promise<void> {
+		await this.#saveOrLog(userId, draftId, { rawSegment, cleanedDraft: null });
 	}
 
 	async #saveOrLog(
 		userId: number,
-		transcript: Readonly<DictationTranscript>
+		draftId: string,
+		segment: Readonly<DraftSegment>
 	): Promise<void> {
 		try {
-			await this.historyService.save(userId, transcript);
+			await this.historyService.appendSegment(userId, draftId, segment);
 		} catch (error) {
 			this.logger.error(
 				describeErrorForLog(error),
@@ -50,9 +61,9 @@ export class DictationCompletionService {
 		}
 	}
 
-	async #cleanOrNull(rawText: string): Promise<string | null> {
+	async #cleanOrNull(draftText: string): Promise<string | null> {
 		try {
-			return await this.textCleanupService.clean(rawText);
+			return await this.textCleanupService.clean(draftText);
 		} catch (error) {
 			if (error instanceof TextCleanupUnavailableException) return null;
 			throw error;

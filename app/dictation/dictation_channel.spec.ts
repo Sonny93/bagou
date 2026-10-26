@@ -21,6 +21,11 @@ import Transcript from '#transcription_history/transcript';
 import type User from '#users/user';
 
 const DICTATION_ID = '7f9c1f5e-3b0a-4c43-9c66-2d6a53e8f1aa';
+const DRAFT_CONTEXT = {
+	draftId: '3f0a1c7e-9d54-4b6a-8e21-5c7d9a0b4f12',
+	textBefore: 'Avant.',
+	textAfter: '',
+};
 const CHANNEL_NAME = `dictation/${DICTATION_ID}`;
 const START_REQUESTS_PER_MINUTE = 20;
 const DAILY_QUOTA_BYTES = 60 * 60 * 32_000;
@@ -106,13 +111,25 @@ test.group('DictationChannel', (group) => {
 		await assert.doesNotReject(() => runMiddlewares(user, DICTATION_ID));
 	});
 
+	test('should reject starting with an invalid draft context without opening the provider', async ({
+		assert,
+	}) => {
+		const { send } = await joinChannel();
+
+		await assert.rejects(
+			() => send('dictation:start', { draftId: 'nope' }),
+			/brouillon est invalide/
+		);
+		assert.lengthOf(provider.openedWith, 0);
+	});
+
 	test('should relay transcripts to the dictation channel only and acknowledge the transcript on stop', async ({
 		assert,
 	}) => {
 		const fake = socketService.fake();
 		const { send } = await joinChannel();
 
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 		await send('dictation:audio', { chunk: VALID_CHUNK });
 		session.simulatePartial(' le mon');
 		session.simulateFinal('Bonjour');
@@ -120,7 +137,7 @@ test.group('DictationChannel', (group) => {
 
 		assert.deepEqual(acknowledgement, {
 			rawText: 'Bonjour le monde',
-			cleanedText: 'BONJOUR LE MONDE',
+			cleanedDraft: 'AVANT. BONJOUR LE MONDE',
 		});
 		assert.deepEqual([...(session.sentAudio[0] ?? [])], [1, 0, 2, 0]);
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:partial', {
@@ -143,13 +160,13 @@ test.group('DictationChannel', (group) => {
 			new FakeTextCleaner(new TextCleanupUnavailableException())
 		);
 		const { send } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		const acknowledgement = await send('dictation:stop');
 
 		assert.deepEqual(acknowledgement, {
 			rawText: 'Bonjour le monde',
-			cleanedText: null,
+			cleanedDraft: null,
 		});
 		restoreTextCleaner();
 	});
@@ -159,7 +176,7 @@ test.group('DictationChannel', (group) => {
 	}) => {
 		const fake = socketService.fake();
 		const { send } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		session.simulateError(
 			new TranscriptionProviderError(
@@ -181,7 +198,7 @@ test.group('DictationChannel', (group) => {
 		assert,
 	}) => {
 		const { send } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		await assert.rejects(
 			() => send('dictation:audio', { chunk: 'not base64 !' }),
@@ -194,10 +211,10 @@ test.group('DictationChannel', (group) => {
 		assert,
 	}) => {
 		const { send } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		await assert.rejects(
-			() => send('dictation:start'),
+			() => send('dictation:start', DRAFT_CONTEXT),
 			/dictée est déjà en cours/
 		);
 		assert.lengthOf(provider.openedWith, 1);
@@ -229,7 +246,7 @@ test.group('DictationChannel', (group) => {
 		const { send } = await joinChannel();
 
 		await assert.rejects(
-			() => send('dictation:start'),
+			() => send('dictation:start', DRAFT_CONTEXT),
 			'Impossible de joindre le service de transcription.'
 		);
 		restoreProvider();
@@ -246,7 +263,7 @@ test.group('DictationChannel', (group) => {
 		const { send } = await joinChannel();
 
 		await assert.rejects(
-			() => send('dictation:start'),
+			() => send('dictation:start', DRAFT_CONTEXT),
 			'La dictée est momentanément indisponible'
 		);
 		restoreProvider();
@@ -256,7 +273,7 @@ test.group('DictationChannel', (group) => {
 		assert,
 	}) => {
 		const { send } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		await send('dictation:cancel');
 		await settleCancellation();
@@ -271,7 +288,7 @@ test.group('DictationChannel', (group) => {
 		const textCleaner = new FakeTextCleaner();
 		const restoreTextCleaner = swapTextCleaner(textCleaner);
 		const { send, user } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		await send('dictation:cancel');
 		await settleCancellation();
@@ -287,7 +304,7 @@ test.group('DictationChannel', (group) => {
 		assert,
 	}) => {
 		const { send, leave, user } = await joinChannel();
-		await send('dictation:start');
+		await send('dictation:start', DRAFT_CONTEXT);
 
 		await leave();
 		await settleCancellation();
@@ -307,7 +324,7 @@ test.group('DictationChannel', (group) => {
 		await quotaService.record(user.id, DAILY_QUOTA_BYTES);
 
 		await assert.rejects(
-			() => send('dictation:start'),
+			() => send('dictation:start', DRAFT_CONTEXT),
 			'Quota quotidien de dictée atteint, réessaie demain'
 		);
 		assert.lengthOf(provider.openedWith, 0);
@@ -318,12 +335,12 @@ test.group('DictationChannel', (group) => {
 	}) => {
 		const { send } = await joinChannel();
 		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
-			await send('dictation:start');
+			await send('dictation:start', DRAFT_CONTEXT);
 			await send('dictation:cancel');
 		}
 
 		await assert.rejects(
-			() => send('dictation:start'),
+			() => send('dictation:start', DRAFT_CONTEXT),
 			'Trop de dictées lancées, patiente une minute'
 		);
 		assert.lengthOf(provider.openedWith, START_REQUESTS_PER_MINUTE);
@@ -332,12 +349,14 @@ test.group('DictationChannel', (group) => {
 	test('should count the start rate limit per user', async ({ assert }) => {
 		const first = await joinChannel();
 		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
-			await first.send('dictation:start');
+			await first.send('dictation:start', DRAFT_CONTEXT);
 			await first.send('dictation:cancel');
 		}
 		const second = await joinChannel();
 
-		await assert.doesNotReject(() => second.send('dictation:start'));
+		await assert.doesNotReject(() =>
+			second.send('dictation:start', DRAFT_CONTEXT)
+		);
 	});
 
 	test('should accept exactly one of two starts sent without waiting for the first', async ({
@@ -346,8 +365,8 @@ test.group('DictationChannel', (group) => {
 		const { send } = await joinChannel();
 
 		const outcomes = await Promise.allSettled([
-			send('dictation:start'),
-			send('dictation:start'),
+			send('dictation:start', DRAFT_CONTEXT),
+			send('dictation:start', DRAFT_CONTEXT),
 		]);
 
 		assert.deepEqual(

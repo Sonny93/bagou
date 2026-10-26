@@ -8,6 +8,7 @@ import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
 import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
 import { useRefreshRemainingQuota } from '~/dictation/show_dictation/use_refresh_remaining_quota';
+import { useSaveDraftText } from '~/dictation/show_dictation/use_save_draft_text';
 
 type ShowDictationProps = {
 	remainingMinutes: number;
@@ -22,7 +23,15 @@ export default function ShowDictation({
 		useDictation({
 			shouldAutoStart: isAutoStartEnabled,
 			insertSegment: draft.insert,
+			replaceDraft: draft.replace,
+			getDraftContext: draft.getContext,
 		});
+	useSaveDraftText({
+		draftId: draft.draftId,
+		text: draft.text,
+		cleanedText: draft.cleanedText,
+		status: state.status,
+	});
 	const { clear: clearDraft } = draft;
 	const startNew = useCallback(() => {
 		clearDraft();

@@ -4,6 +4,7 @@ import type {
 	JoinedDictation,
 	TranscriptListener,
 } from './dictation_transport';
+import type { DraftContext } from './draft_context';
 
 /**
  * In-memory transport recording every call and letting a spec play the
@@ -14,9 +15,10 @@ export class FakeDictationTransport implements DictationTransport {
 	readonly sentAudio: string[] = [];
 	readonly calls: string[] = [];
 	joinedId: string | undefined;
+	startContext: DraftContext | undefined;
 	stopTranscript: DictationTranscript = {
 		rawText: 'texte final',
-		cleanedText: 'Texte final.',
+		cleanedDraft: 'Texte final.',
 	};
 	connectError: Error | undefined;
 	startError: Error | undefined;
@@ -47,7 +49,7 @@ export class FakeDictationTransport implements DictationTransport {
 		this.joinedId = dictationId;
 		this.listener = listener;
 		return {
-			start: () => this.#start(),
+			start: (context) => this.#start(context),
 			sendAudio: (base64Pcm) => this.sentAudio.push(base64Pcm),
 			stop: async () => {
 				this.calls.push('stop');
@@ -66,8 +68,9 @@ export class FakeDictationTransport implements DictationTransport {
 		this.#connectionLostListener();
 	}
 
-	async #start(): Promise<void> {
+	async #start(context: Readonly<DraftContext>): Promise<void> {
 		this.calls.push('start');
+		this.startContext = context;
 		if (this.startError) throw this.startError;
 		if (!this.holdStart) return;
 		await new Promise<void>((resolve) => {

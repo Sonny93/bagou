@@ -16,6 +16,8 @@ import {
 
 const NOW = DateTime.fromISO('2026-06-01T10:00:00Z', { zone: 'utc' });
 const RETENTION_DAYS = 60;
+const DRAFT_ID = '3f0a1c7e-9d54-4b6a-8e21-5c7d9a0b4f12';
+const OTHER_DRAFT_ID = '9b2e4d68-1f3a-4c5b-8d7e-6a0f2c4e8b13';
 
 async function createService(textCleaner = new FakeTextCleaner()) {
 	const user = await UserFactory.create();
@@ -40,42 +42,123 @@ async function listTexts(
 test.group('TranscriptHistoryService', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
 
-	test('should keep the raw and the cleaned text of a dictation', async ({
+	test('should create the entry of a draft with the raw segment and the cleaned draft', async ({
 		assert,
 	}) => {
 		const { service, user } = await createService();
 
-		await service.save(user.id, {
-			rawText: 'euh bonjour',
-			cleanedText: 'Bonjour.',
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
 		});
 
 		const [transcript] = (await service.list(user.id, { page: 1 })).all();
 		assert.equal(transcript?.rawText, 'euh bonjour');
 		assert.equal(transcript?.cleanedText, 'Bonjour.');
+		assert.equal(transcript?.draftId, DRAFT_ID);
 		assert.equal(transcript?.createdAt.toMillis(), NOW.toMillis());
 	});
 
-	test('should keep a null cleaned text when the cleanup failed', async ({
+	test('should keep a null cleaned text when the first segment was not cleaned', async ({
 		assert,
 	}) => {
 		const { service, user } = await createService();
 
-		await service.save(user.id, { rawText: 'bonjour', cleanedText: null });
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'bonjour',
+			cleanedDraft: null,
+		});
 
 		const [transcript] = (await service.list(user.id, { page: 1 })).all();
 		assert.isNull(transcript?.cleanedText);
 	});
 
-	test('should skip a blank raw text', async ({ assert }) => {
+	test('should append a segment to the entry of its draft and replace the cleaned draft', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
+		});
+
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'et salut',
+			cleanedDraft: 'Bonjour. Et salut.',
+		});
+
+		const rows = await Transcript.query().where('userId', user.id);
+		assert.lengthOf(rows, 1);
+		assert.equal(rows[0]?.rawText, 'euh bonjour et salut');
+		assert.equal(rows[0]?.cleanedText, 'Bonjour. Et salut.');
+	});
+
+	test('should keep the cleaned draft already stored when a later segment was not cleaned', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
+		});
+
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'et salut',
+			cleanedDraft: null,
+		});
+
+		const [row] = await Transcript.query().where('userId', user.id);
+		assert.equal(row?.rawText, 'euh bonjour et salut');
+		assert.equal(row?.cleanedText, 'Bonjour.');
+	});
+
+	test('should keep one entry per draft', async ({ assert }) => {
 		const { service, user } = await createService();
 
-		await service.save(user.id, { rawText: '  \n', cleanedText: '' });
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'un',
+			cleanedDraft: 'Un.',
+		});
+		await service.appendSegment(user.id, OTHER_DRAFT_ID, {
+			rawSegment: 'deux',
+			cleanedDraft: 'Deux.',
+		});
+
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 2);
+	});
+
+	test('should not append to the entry of the same draft id of another user', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		const otherUser = await UserFactory.create();
+		await service.appendSegment(otherUser.id, DRAFT_ID, {
+			rawSegment: 'autre',
+			cleanedDraft: 'Autre.',
+		});
+
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'un',
+			cleanedDraft: 'Un.',
+		});
+
+		const [foreign] = await Transcript.query().where('userId', otherUser.id);
+		assert.equal(foreign?.rawText, 'autre');
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 1);
+	});
+
+	test('should skip a blank raw segment', async ({ assert }) => {
+		const { service, user } = await createService();
+
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: '  \n',
+			cleanedDraft: '',
+		});
 
 		assert.lengthOf((await service.list(user.id, { page: 1 })).all(), 0);
 	});
 
-	test('should purge the rows of the user older than the retention when saving', async ({
+	test('should purge the rows of the user older than the retention when appending a segment', async ({
 		assert,
 	}) => {
 		const { service, user } = await createService();
@@ -89,11 +172,92 @@ test.group('TranscriptHistoryService', (group) => {
 			createdAt: daysAgo(RETENTION_DAYS + 1),
 		}).create();
 
-		await service.save(user.id, { rawText: 'neuf', cleanedText: 'Neuf.' });
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'neuf',
+			cleanedDraft: 'Neuf.',
+		});
 
 		const rows = await Transcript.query().where('userId', user.id);
 		assert.lengthOf(rows, 1);
 		assert.isNotNull(await Transcript.find(foreign.id));
+	});
+
+	test('should start a new entry when the entry of the draft is past the retention', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await TranscriptFactory.merge({
+			userId: user.id,
+			draftId: DRAFT_ID,
+			rawText: 'vieux',
+			createdAt: daysAgo(RETENTION_DAYS + 1),
+		}).create();
+
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'neuf',
+			cleanedDraft: 'Neuf.',
+		});
+
+		const [row, ...others] = await Transcript.query().where('userId', user.id);
+		assert.lengthOf(others, 0);
+		assert.equal(row?.rawText, 'neuf');
+	});
+
+	test('should replace the cleaned text of the entry of the draft with the text as the user left it', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
+		});
+
+		await service.saveDraftText(user.id, DRAFT_ID, 'Bonjour à tous.');
+
+		const [row] = await Transcript.query().where('userId', user.id);
+		assert.equal(row?.cleanedText, 'Bonjour à tous.');
+		assert.equal(row?.rawText, 'euh bonjour');
+	});
+
+	test('should clear the cleaned text when the saved draft text is blank', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
+		});
+
+		await service.saveDraftText(user.id, DRAFT_ID, '  ');
+
+		const [row] = await Transcript.query().where('userId', user.id);
+		assert.isNull(row?.cleanedText);
+	});
+
+	test('should save nothing when no segment of the draft was kept', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+
+		await service.saveDraftText(user.id, DRAFT_ID, 'Tapé à la main.');
+
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should not touch the entry of the same draft id of another user when saving the draft text', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		const otherUser = await UserFactory.create();
+		await service.appendSegment(otherUser.id, DRAFT_ID, {
+			rawSegment: 'autre',
+			cleanedDraft: 'Autre.',
+		});
+
+		await service.saveDraftText(user.id, DRAFT_ID, 'Modifié.');
+
+		const [foreign] = await Transcript.query().where('userId', otherUser.id);
+		assert.equal(foreign?.cleanedText, 'Autre.');
 	});
 
 	test('should not list a row past the retention even when it is not purged', async ({

@@ -6,17 +6,40 @@ type FinalizedDictation = {
 	isCopied: boolean;
 };
 
+type DraftEditor = {
+	insertSegment: (segment: string) => string;
+	replaceDraft: (text: string) => string;
+};
+
+type DraftUpdate = Pick<FinalizedDictation, 'draftText' | 'isCleaned'>;
+
+const isBlank = (text: string): boolean => text.trim() === '';
+
+function updateDraft(
+	{ rawText, cleanedDraft }: Readonly<DictationTranscript>,
+	{ insertSegment, replaceDraft }: Readonly<DraftEditor>
+): DraftUpdate {
+	if (isBlank(rawText)) {
+		return { draftText: insertSegment(rawText), isCleaned: true };
+	}
+	if (cleanedDraft !== null) {
+		return { draftText: replaceDraft(cleanedDraft), isCleaned: true };
+	}
+	return { draftText: insertSegment(rawText), isCleaned: false };
+}
+
 /**
- * Inserts the segment into the draft, the cleaned text when the server
- * produced it and the raw one otherwise, then copies the whole draft. A blank
- * draft is not copied.
+ * Brings the server's answer into the draft: a blank segment leaves it
+ * untouched, a cleaned draft replaces it as a whole, and without one the raw
+ * segment is inserted at the caret. Then copies the whole draft; a blank draft
+ * is not copied.
  */
 export async function finalizeDictation(
-	{ rawText, cleanedText }: Readonly<DictationTranscript>,
-	insertSegment: (segment: string) => string,
+	transcript: Readonly<DictationTranscript>,
+	draftEditor: Readonly<DraftEditor>,
 	copyText: (text: string) => Promise<boolean>
 ): Promise<FinalizedDictation> {
-	const draftText = insertSegment(cleanedText ?? rawText);
-	const isCopied = draftText.trim() === '' ? false : await copyText(draftText);
-	return { draftText, isCleaned: cleanedText !== null, isCopied };
+	const { draftText, isCleaned } = updateDraft(transcript, draftEditor);
+	const isCopied = isBlank(draftText) ? false : await copyText(draftText);
+	return { draftText, isCleaned, isCopied };
 }

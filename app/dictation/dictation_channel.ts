@@ -12,7 +12,9 @@ import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
 import type { DictationTranscript } from '#dictation/dictation_transcript';
 import DictationUnavailableException from '#dictation/dictation_unavailable_exception';
+import type { DraftContext } from '#dictation/draft_context';
 import { ensureDictationAccess } from '#dictation/ensure_dictation_access';
+import { parseDraftContext } from '#dictation/parse_draft_context';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type User from '#users/user';
 
@@ -39,13 +41,17 @@ export default class DictationChannel extends BaseChannel<
 	}
 
 	@onMessage('dictation:start')
-	async start(socket: AuthenticatedSocket<User>): Promise<void> {
+	async start(
+		socket: AuthenticatedSocket<User>,
+		payload: DraftContext
+	): Promise<void> {
 		if (this.#isStarting || this.#dictation?.isActive) {
 			throw new DictationAlreadyActiveException();
 		}
 		this.#isStarting = true;
 		try {
-			await this.#createAndStart(socket.getUserOrFail().id);
+			const draft = await parseDraftContext(payload);
+			await this.#createAndStart(socket.getUserOrFail().id, draft);
 		} finally {
 			this.#isStarting = false;
 		}
@@ -74,8 +80,11 @@ export default class DictationChannel extends BaseChannel<
 		this.#dictation?.cancel();
 	}
 
-	async #createAndStart(userId: number): Promise<void> {
-		const dictation = await this.dictationService.create(userId, {
+	async #createAndStart(
+		userId: number,
+		draft: Readonly<DraftContext>
+	): Promise<void> {
+		const dictation = await this.dictationService.create(userId, draft, {
 			onPartial: (text) => this.broadcast('transcript:partial', { text }),
 			onFinal: (text) => this.broadcast('transcript:final', { text }),
 			onFinished: (text) => this.broadcast('transcript:finished', { text }),

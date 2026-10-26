@@ -1,4 +1,5 @@
 import type { DictationTranscript } from './dictation_transcript';
+import type { DraftContext } from './draft_context';
 
 export type TranscriptListener = {
 	onPartial(text: string): void;
@@ -9,7 +10,7 @@ export type TranscriptListener = {
 
 /** One dictation channel, already subscribed. */
 export type JoinedDictation = {
-	start(): Promise<void>;
+	start(context: Readonly<DraftContext>): Promise<void>;
 	sendAudio(base64Pcm: string): void;
 	stop(): Promise<DictationTranscript>;
 	cancel(): void;

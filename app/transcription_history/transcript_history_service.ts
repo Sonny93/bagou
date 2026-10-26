@@ -5,11 +5,13 @@ import type { DateTime } from 'luxon';
 import transcriptionHistoryConfig from '#config/transcription_history';
 import { Clock } from '#shared/clock';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
+import type { DraftSegment } from '#transcription_history/draft_segment';
 import Transcript from '#transcription_history/transcript';
-import type { TranscriptContent } from '#transcription_history/transcript_content';
 import TranscriptNotFoundException from '#transcription_history/transcript_not_found_exception';
 
 export const TRANSCRIPTS_PER_PAGE = 20;
+
+const RAW_SEGMENT_SEPARATOR = ' ';
 
 type TranscriptListing = {
 	query?: string;
@@ -23,19 +25,50 @@ export class TranscriptHistoryService {
 		private readonly textCleanupService: TextCleanupService
 	) {}
 
-	/** Keeps a finished dictation, then purges what this user no longer may keep. A blank one is skipped. */
-	async save(
+	/**
+	 * Appends a segment to the entry of its draft, created on the first one:
+	 * the raw segments are kept in order, one space apart, and the cleaned draft
+	 * replaces the entry's text only when there is one. Purges what this user no
+	 * longer may keep first, so an expired entry of the same draft is not
+	 * revived. A blank segment is skipped.
+	 */
+	async appendSegment(
 		userId: number,
-		{ rawText, cleanedText }: Readonly<TranscriptContent>
+		draftId: string,
+		{ rawSegment, cleanedDraft }: Readonly<DraftSegment>
 	): Promise<void> {
-		if (rawText.trim() === '') return;
-		await Transcript.create({
-			userId,
-			rawText,
-			cleanedText,
-			createdAt: this.clock.now(),
-		});
+		if (rawSegment.trim() === '') return;
 		await Transcript.deleteOlderThan(userId, this.#retentionStart());
+		const transcript = await Transcript.findByDraft(userId, draftId);
+		if (!transcript) {
+			await Transcript.create({
+				userId,
+				draftId,
+				rawText: rawSegment,
+				cleanedText: cleanedDraft,
+				createdAt: this.clock.now(),
+			});
+			return;
+		}
+		transcript.rawText = `${transcript.rawText}${RAW_SEGMENT_SEPARATOR}${rawSegment}`;
+		if (cleanedDraft !== null) transcript.cleanedText = cleanedDraft;
+		await transcript.save();
+	}
+
+	/**
+	 * Stores the draft text as the user left it, hand edits included, in the
+	 * entry of its draft; a blank text clears it. Does nothing when no segment
+	 * of that draft was dictated yet.
+	 */
+	async saveDraftText(
+		userId: number,
+		draftId: string,
+		text: string
+	): Promise<void> {
+		const transcript = await Transcript.findByDraft(userId, draftId);
+		if (!transcript) return;
+		transcript.cleanedText = text.trim() === '' ? null : text;
+		await transcript.save();
 	}
 
 	/** Never lists a row past the retention, even when it is not purged yet. */

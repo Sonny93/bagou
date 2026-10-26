@@ -67,6 +67,7 @@ export default defineConfig({
 					'app/**/*_cleaner.spec.ts',
 					'app/**/*_provider.spec.ts',
 					'app/**/parse_*.spec.ts',
+					'app/**/join_*.spec.ts',
 					'app/**/decode_*.spec.ts',
 					'app/**/describe_*.spec.ts',
 					'app/stt_bench/**/*.spec.ts',

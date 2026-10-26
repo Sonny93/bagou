@@ -59,6 +59,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/clean_transcript_controller').default['execute']>>>
     }
   }
+  'transcription_history.save_draft_text': {
+    methods: ["PUT"]
+    pattern: '/history/drafts/:draftId'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#transcription_history/validators/save_draft_text_validator').saveDraftTextValidator)>>
+      paramsTuple: [ParamValue]
+      params: { draftId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#transcription_history/validators/save_draft_text_validator').saveDraftTextValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/save_draft_text_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/save_draft_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/save_draft_text_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'transcription_history.delete_transcripts': {
     methods: ["DELETE"]
     pattern: '/history'

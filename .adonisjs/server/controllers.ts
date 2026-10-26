@@ -26,6 +26,7 @@ export const controllers = {
     CleanTranscript: () => import('#app/transcription_history/clean_transcript_controller'),
     DeleteTranscript: () => import('#app/transcription_history/delete_transcript_controller'),
     DeleteTranscripts: () => import('#app/transcription_history/delete_transcripts_controller'),
+    SaveDraftText: () => import('#app/transcription_history/save_draft_text_controller'),
     ShowTranscripts: () => import('#app/transcription_history/show_transcripts_controller'),
   },
 }

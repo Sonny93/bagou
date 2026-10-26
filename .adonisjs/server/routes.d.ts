@@ -8,6 +8,7 @@ export type ScannedRoutes = {
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'transcription_history.delete_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'transcription_history.save_draft_text': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
     'transcription_history.delete_transcripts': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
@@ -49,6 +50,9 @@ export type ScannedRoutes = {
     'passkeys.verify_invitation': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'passkeys.create_registration_options': { paramsTuple?: []; params?: {} }
     'passkeys.verify_registration': { paramsTuple?: []; params?: {} }
+  }
+  PUT: {
+    'transcription_history.save_draft_text': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

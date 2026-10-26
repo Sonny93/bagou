@@ -30,8 +30,8 @@ export function createSocketDictationTransport(): DictationTransport {
 				);
 			await channel.subscribe();
 			return {
-				start: async () => {
-					await channel.sendWithAck('dictation:start');
+				start: async (context) => {
+					await channel.sendWithAck('dictation:start', context);
 				},
 				sendAudio: (chunk) => {
 					channel.send('dictation:audio', { chunk });

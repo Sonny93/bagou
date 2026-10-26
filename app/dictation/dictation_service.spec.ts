@@ -25,6 +25,11 @@ import { TranscriptionProviderError } from '#transcription/transcription_provide
 import type { TranscriptionSession } from '#transcription/transcription_session';
 import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
 
+const DRAFT_CONTEXT = {
+	draftId: '3f0a1c7e-9d54-4b6a-8e21-5c7d9a0b4f12',
+	textBefore: 'Avant.',
+	textAfter: '',
+};
 const SHORT_MAX_DURATION_MS = 20;
 const DAILY_QUOTA_SECONDS = 60 * 60;
 const DAILY_QUOTA_BYTES = DAILY_QUOTA_SECONDS * PCM_AUDIO_FORMAT.bytesPerSecond;
@@ -43,7 +48,7 @@ const completeWithUppercase = async (
 	rawText: string
 ): Promise<DictationTranscript> => ({
 	rawText,
-	cleanedText: rawText.toUpperCase(),
+	cleanedDraft: rawText.toUpperCase(),
 });
 
 function createDictation(
@@ -172,7 +177,7 @@ test.group('Dictation', () => {
 
 		assert.deepEqual(transcript, {
 			rawText: 'texte secret',
-			cleanedText: 'TEXTE SECRET',
+			cleanedDraft: 'TEXTE SECRET',
 		});
 		const logs = readLogs(lines);
 		assert.lengthOf(logs, 1);
@@ -195,7 +200,7 @@ test.group('Dictation', () => {
 		const { dictation, finisheds } = createDictation(provider, {
 			complete: async (rawText) => {
 				completedTexts.push(rawText);
-				return { rawText, cleanedText: null };
+				return { rawText, cleanedDraft: null };
 			},
 		});
 		await dictation.start();
@@ -222,7 +227,7 @@ test.group('Dictation', () => {
 		assert.deepEqual(finisheds, ['texte long']);
 		assert.deepEqual(await dictation.stop(), {
 			rawText: 'texte long',
-			cleanedText: 'TEXTE LONG',
+			cleanedDraft: 'TEXTE LONG',
 		});
 	});
 
@@ -526,7 +531,7 @@ test.group('Dictation usage', () => {
 		const { dictation } = createDictation(undefined, {
 			complete: async (rawText) => {
 				completeCount += 1;
-				return { rawText, cleanedText: null };
+				return { rawText, cleanedDraft: null };
 			},
 		});
 		await dictation.start();
@@ -566,7 +571,7 @@ test.group('Dictation usage', () => {
 		dictation.cancel();
 		const transcript = await stopping;
 
-		assert.deepEqual(transcript, { rawText: 'texte', cleanedText: 'TEXTE' });
+		assert.deepEqual(transcript, { rawText: 'texte', cleanedDraft: 'TEXTE' });
 		assert.equal(provider.session.finishCount, 1);
 		assert.lengthOf(keptRawTexts, 0);
 	});
@@ -709,7 +714,7 @@ test.group('DictationService', (group) => {
 	}) => {
 		const { service, user, provider } = await createService();
 
-		const dictation = await service.create(user.id, listener);
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
 
 		assert.isFalse(dictation.isActive);
 		await dictation.start();
@@ -720,7 +725,7 @@ test.group('DictationService', (group) => {
 		assert,
 	}) => {
 		const { service, quotaService, user } = await createService();
-		const dictation = await service.create(user.id, listener);
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
 		await dictation.start();
 		dictation.appendAudio(new Uint8Array(3200));
 
@@ -730,23 +735,23 @@ test.group('DictationService', (group) => {
 		assert.equal((await quotaService.getUsage(user.id)).usedBytes, 3200);
 	});
 
-	test('should complete the dictation text with the injected text cleaner', async ({
+	test('should clean the whole draft around the segment with the injected text cleaner', async ({
 		assert,
 	}) => {
 		const provider = new FakeTranscriptionProvider(
 			new FakeTranscriptionSession('euh bonjour')
 		);
 		const { service, user, textCleaner } = await createService(provider);
-		const dictation = await service.create(user.id, listener);
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
 		await dictation.start();
 
 		const transcript = await dictation.stop();
 
 		assert.deepEqual(transcript, {
 			rawText: 'euh bonjour',
-			cleanedText: 'EUH BONJOUR',
+			cleanedDraft: 'AVANT. EUH BONJOUR',
 		});
-		assert.deepEqual(textCleaner.cleaned, ['euh bonjour']);
+		assert.deepEqual(textCleaner.cleaned, ['Avant. euh bonjour']);
 	});
 
 	test('should refuse to create a dictation once the daily quota is spent, logging the user', async ({
@@ -757,7 +762,7 @@ test.group('DictationService', (group) => {
 		await quotaService.record(user.id, DAILY_QUOTA_BYTES);
 
 		await assert.rejects(
-			() => service.create(user.id, listener),
+			() => service.create(user.id, DRAFT_CONTEXT, listener),
 			/Quota quotidien de dictée atteint/
 		);
 
@@ -774,7 +779,7 @@ test.group('DictationService', (group) => {
 		const { service, quotaService, user } = await createService();
 		await quotaService.record(user.id, DAILY_QUOTA_BYTES - 3200);
 		const errors: DictationErrorEvent[] = [];
-		const dictation = await service.create(user.id, {
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, {
 			...listener,
 			onError: (event) => errors.push(event),
 		});

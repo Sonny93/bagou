@@ -5,6 +5,7 @@ import type {
 	DictationTransport,
 	JoinedDictation,
 } from './dictation_transport';
+import type { DraftContext } from './draft_context';
 
 export const MAX_BUFFERED_FRAMES = 100;
 
@@ -37,12 +38,12 @@ export class DictationClient {
 		private readonly createDictationId: () => string = () => crypto.randomUUID()
 	) {}
 
-	async start(): Promise<void> {
+	async start(context: Readonly<DraftContext>): Promise<void> {
 		if (this.#phase !== 'idle') throw new DictationClientError('rejected');
 		this.#phase = 'starting';
 		this.transport.onConnectionLost(this.#handleConnectionLost);
 		try {
-			await this.#open();
+			await this.#open(context);
 		} catch (error) {
 			this.#close();
 			throw this.#isConnectionLost
@@ -81,7 +82,7 @@ export class DictationClient {
 		this.#close();
 	}
 
-	async #open(): Promise<void> {
+	async #open(context: Readonly<DraftContext>): Promise<void> {
 		try {
 			await this.transport.connect();
 		} catch {
@@ -97,7 +98,7 @@ export class DictationClient {
 				onProviderError: (message) =>
 					this.#failWith(new DictationClientError('provider_error', message)),
 			});
-			await this.#joined.start();
+			await this.#joined.start(context);
 		} catch (error) {
 			throw new DictationClientError('rejected', readMessage(error));
 		}

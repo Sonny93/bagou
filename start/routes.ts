@@ -33,6 +33,12 @@ router
 					.use(cleanupThrottle)
 					.as('transcription_history.clean_transcript');
 				router
+					.put('/drafts/:draftId', [
+						controllers.transcriptionHistory.SaveDraftText,
+						'execute',
+					])
+					.as('transcription_history.save_draft_text');
+				router
 					.delete('/', [
 						controllers.transcriptionHistory.DeleteTranscripts,
 						'execute',

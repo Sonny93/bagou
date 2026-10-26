@@ -6,6 +6,7 @@ import { DictationCompletionService } from '#dictation/dictation_completion_serv
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationQuotaExceededException from '#dictation/dictation_quota_exceeded_exception';
 import { DictationStartLimiter } from '#dictation/dictation_start_limiter';
+import type { DraftContext } from '#dictation/draft_context';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
@@ -22,10 +23,12 @@ export class DictationService {
 
 	/**
 	 * Refuses a user who started too many dictations or spent today's quota,
-	 * before any provider session is opened.
+	 * before any provider session is opened. The completion and the raw
+	 * keeping of the dictation are bound to the draft it is dictated into.
 	 */
 	async create(
 		userId: number,
+		draft: Readonly<DraftContext>,
 		listener: DictationListener
 	): Promise<Dictation> {
 		await this.startLimiter.consume(userId);
@@ -43,8 +46,10 @@ export class DictationService {
 			remainingBytes,
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
-			complete: (rawText) => this.completionService.complete(userId, rawText),
-			keepRaw: (rawText) => this.completionService.keepRaw(userId, rawText),
+			complete: (rawText) =>
+				this.completionService.complete(userId, draft, rawText),
+			keepRaw: (rawText) =>
+				this.completionService.keepRaw(userId, draft.draftId, rawText),
 		});
 	}
 }

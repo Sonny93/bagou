@@ -95,12 +95,14 @@ export class SessionSchema extends BaseModel {
 }
 
 export class TranscriptSchema extends BaseModel {
-  static $columns = ['cleanedText', 'createdAt', 'id', 'rawText', 'searchVector', 'userId'] as const
+  static $columns = ['cleanedText', 'createdAt', 'draftId', 'id', 'rawText', 'searchVector', 'userId'] as const
   $columns = TranscriptSchema.$columns
   @column()
   declare cleanedText: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  @column()
+  declare draftId: string | null
   @column({ isPrimary: true })
   declare id: number
   @column()
