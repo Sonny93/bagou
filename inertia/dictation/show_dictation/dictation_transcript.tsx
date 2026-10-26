@@ -4,36 +4,52 @@ import { cn } from '~/shared/lib/cn';
 const PLACEHOLDER = "Parle, le texte s'écrit ici.";
 
 type DictationTranscriptProps = {
+	textBefore: string;
+	textAfter: string;
 	committedText: string;
 	partialText: string;
 	hasPlaceholder?: boolean;
 	hasCaret?: boolean;
-	className?: string;
+	segmentClassName?: string;
 };
 
+/**
+ * Read-only view of the draft around the insertion point, with the segment
+ * being dictated in between.
+ */
 export function DictationTranscript({
+	textBefore,
+	textAfter,
 	committedText,
 	partialText,
 	hasPlaceholder = false,
 	hasCaret = false,
-	className,
+	segmentClassName,
 }: Readonly<DictationTranscriptProps>) {
-	const isEmpty = committedText === '' && partialText === '';
+	const visibleCommittedText = committedText.trimStart();
+	const visiblePartialText =
+		visibleCommittedText === '' ? partialText.trimStart() : partialText;
+	const isEmpty =
+		textBefore === '' &&
+		textAfter === '' &&
+		visibleCommittedText === '' &&
+		visiblePartialText === '';
 	const placeholder =
 		isEmpty && hasPlaceholder ? (
 			<span className="text-muted">{PLACEHOLDER}</span>
 		) : null;
 
 	return (
-		<p
-			aria-live="polite"
-			className={cn('dictation-text whitespace-pre-wrap', className)}
-		>
+		<p aria-live="polite" className="dictation-text whitespace-pre-wrap">
 			{isEmpty && hasCaret && <LiveCaret />}
 			{placeholder}
-			<span>{committedText}</span>
-			<span className="text-muted">{partialText}</span>
+			<span>{textBefore}</span>
+			<span className={segmentClassName}>{visibleCommittedText}</span>
+			<span className={cn('text-muted', segmentClassName)}>
+				{visiblePartialText}
+			</span>
 			{!isEmpty && hasCaret && <LiveCaret />}
+			<span>{textAfter}</span>
 		</p>
 	);
 }

@@ -8,11 +8,11 @@ export function CancelledNotice({
 	hasKeptText,
 }: Readonly<CancelledNoticeProps>) {
 	if (!hasKeptText) {
-		return <p className="dictation-text my-auto text-muted">Dictée annulée.</p>;
+		return <p className="dictation-text text-muted">Dictée annulée.</p>;
 	}
 
 	return (
-		<p className="dictation-text my-auto text-muted">
+		<p className="dictation-text text-muted">
 			Dictée annulée. Le texte brut est gardé dans l'historique, tu peux l'y
 			nettoyer.{' '}
 			<Link

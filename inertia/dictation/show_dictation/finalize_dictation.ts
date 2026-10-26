@@ -1,20 +1,22 @@
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 
 type FinalizedDictation = {
-	text: string;
+	draftText: string;
 	isCleaned: boolean;
 	isCopied: boolean;
 };
 
 /**
- * Picks the text to keep, the cleaned one when the server produced it and the
- * raw one otherwise, then copies it. An empty text is not copied.
+ * Inserts the segment into the draft, the cleaned text when the server
+ * produced it and the raw one otherwise, then copies the whole draft. A blank
+ * draft is not copied.
  */
 export async function finalizeDictation(
 	{ rawText, cleanedText }: Readonly<DictationTranscript>,
+	insertSegment: (segment: string) => string,
 	copyText: (text: string) => Promise<boolean>
 ): Promise<FinalizedDictation> {
-	const text = cleanedText ?? rawText;
-	const isCopied = text.trim() === '' ? false : await copyText(text);
-	return { text, isCleaned: cleanedText !== null, isCopied };
+	const draftText = insertSegment(cleanedText ?? rawText);
+	const isCopied = draftText.trim() === '' ? false : await copyText(draftText);
+	return { draftText, isCleaned: cleanedText !== null, isCopied };
 }

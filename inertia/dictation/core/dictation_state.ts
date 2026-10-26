@@ -9,7 +9,7 @@ export type DictationState =
 	  }
 	| { status: 'finishing'; committedText: string; partialText: string }
 	| { status: 'cleaning'; rawText: string }
-	| { status: 'done'; text: string; isCleaned: boolean }
+	| { status: 'done'; isCleaned: boolean }
 	| { status: 'cancelled'; hasKeptText: boolean }
 	| { status: 'error'; message: string };
 
@@ -20,9 +20,13 @@ export type DictationEvent =
 	| { type: 'partialReceived'; text: string }
 	| { type: 'stopRequested' }
 	| { type: 'finished'; text: string }
-	| { type: 'cleaned'; text: string; isCleaned: boolean }
+	| { type: 'cleaned'; isCleaned: boolean }
 	| { type: 'cancelRequested' }
 	| { type: 'failed'; message: string };
+
+/** Statuses a new dictation segment may start from. */
+export const STARTABLE_STATUSES: ReadonlySet<DictationState['status']> =
+	new Set(['idle', 'done', 'cancelled', 'error']);
 
 export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
 
@@ -41,7 +45,7 @@ export function dictationReducer(
 ): DictationState {
 	switch (event.type) {
 		case 'startRequested':
-			return isEnded(state) || state.status === 'idle'
+			return STARTABLE_STATUSES.has(state.status)
 				? { status: 'connecting' }
 				: state;
 		case 'recordingStarted':
@@ -73,7 +77,7 @@ export function dictationReducer(
 				: state;
 		case 'cleaned':
 			return state.status === 'cleaning' || state.status === 'finishing'
-				? { status: 'done', text: event.text, isCleaned: event.isCleaned }
+				? { status: 'done', isCleaned: event.isCleaned }
 				: state;
 		case 'cancelRequested':
 			if (state.status === 'connecting') {
@@ -99,12 +103,4 @@ function hasText(
 	state: Extract<DictationState, { status: 'recording' | 'finishing' }>
 ): boolean {
 	return (state.committedText + state.partialText).trim() !== '';
-}
-
-function isEnded(state: DictationState): boolean {
-	return (
-		state.status === 'done' ||
-		state.status === 'cancelled' ||
-		state.status === 'error'
-	);
 }

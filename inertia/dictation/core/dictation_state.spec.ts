@@ -38,14 +38,10 @@ describe('dictationReducer', () => {
 			{ type: 'finalReceived', text: 'Bonjour' },
 			{ type: 'stopRequested' },
 			{ type: 'finished', text: 'bonjour le monde' },
-			{ type: 'cleaned', text: 'Bonjour le monde.', isCleaned: true }
+			{ type: 'cleaned', isCleaned: true }
 		);
 
-		expect(state).toEqual({
-			status: 'done',
-			text: 'Bonjour le monde.',
-			isCleaned: true,
-		});
+		expect(state).toEqual({ status: 'done', isCleaned: true });
 	});
 
 	it('should keep the raw text while cleaning after the dictation finished', () => {
@@ -55,31 +51,15 @@ describe('dictationReducer', () => {
 	});
 
 	it('should end in done from finishing when the finished event never arrived', () => {
-		const state = reduce(finishing, {
-			type: 'cleaned',
-			text: 'Bonjour.',
-			isCleaned: true,
-		});
+		const state = reduce(finishing, { type: 'cleaned', isCleaned: true });
 
-		expect(state).toEqual({
-			status: 'done',
-			text: 'Bonjour.',
-			isCleaned: true,
-		});
+		expect(state).toEqual({ status: 'done', isCleaned: true });
 	});
 
-	it('should end cleaning in done with the raw text when the cleanup is unavailable', () => {
-		const state = reduce(cleaning, {
-			type: 'cleaned',
-			text: 'bonjour',
-			isCleaned: false,
-		});
+	it('should end cleaning in done as raw when the cleanup is unavailable', () => {
+		const state = reduce(cleaning, { type: 'cleaned', isCleaned: false });
 
-		expect(state).toEqual({
-			status: 'done',
-			text: 'bonjour',
-			isCleaned: false,
-		});
+		expect(state).toEqual({ status: 'done', isCleaned: false });
 	});
 
 	it.each<DictationEvent>([
@@ -158,7 +138,7 @@ describe('dictationReducer', () => {
 	});
 
 	it.each<[string, DictationState]>([
-		['done', { status: 'done', text: 'x', isCleaned: true }],
+		['done', { status: 'done', isCleaned: true }],
 		['cancelled', { status: 'cancelled', hasKeptText: false }],
 		['error', { status: 'error', message: 'm' }],
 	])('should start a new dictation from %s', (_name, state) => {
@@ -168,7 +148,7 @@ describe('dictationReducer', () => {
 	});
 
 	it('should ignore events that do not apply to the current state', () => {
-		const done: DictationState = { status: 'done', text: 'x', isCleaned: true };
+		const done: DictationState = { status: 'done', isCleaned: true };
 		const cancelled: DictationState = {
 			status: 'cancelled',
 			hasKeptText: false,

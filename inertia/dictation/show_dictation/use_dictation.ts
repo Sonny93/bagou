@@ -10,6 +10,7 @@ import { DictationSession } from '~/dictation/core/dictation_session';
 import {
 	dictationReducer,
 	INITIAL_DICTATION_STATE,
+	STARTABLE_STATUSES,
 	type DictationState,
 } from '~/dictation/core/dictation_state';
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
@@ -26,15 +27,9 @@ const EMPTY_TRANSCRIPT: DictationTranscript = {
 	cleanedText: '',
 };
 
-const CAN_START_FROM = new Set<DictationState['status']>([
-	'idle',
-	'done',
-	'cancelled',
-	'error',
-]);
-
 type UseDictationOptions = {
 	shouldAutoStart: boolean;
+	insertSegment: (segment: string) => string;
 };
 
 type UseDictationReturn = {
@@ -48,11 +43,13 @@ type UseDictationReturn = {
 };
 
 /**
- * Drives one dictation at a time. Starts recording on mount only when
+ * Drives one dictation segment at a time, inserted into the draft through
+ * `insertSegment` when it ends. Starts recording on mount only when
  * `shouldAutoStart` is true at that moment; later changes are ignored.
  */
 export function useDictation({
 	shouldAutoStart,
+	insertSegment,
 }: Readonly<UseDictationOptions>): UseDictationReturn {
 	const [state, dispatch] = useReducer(
 		dictationReducer,
@@ -72,7 +69,7 @@ export function useDictation({
 	}, []);
 
 	const start = useCallback(async () => {
-		if (!CAN_START_FROM.has(statusRef.current)) return;
+		if (!STARTABLE_STATUSES.has(statusRef.current)) return;
 		dispatch({ type: 'startRequested' });
 		setLevels([]);
 		setCopyStatus('none');
@@ -106,16 +103,17 @@ export function useDictation({
 		dispatch({ type: 'stopRequested' });
 		try {
 			const transcript = (await sessionRef.current?.stop()) ?? EMPTY_TRANSCRIPT;
-			const { text, isCleaned, isCopied } = await finalizeDictation(
+			const { draftText, isCleaned, isCopied } = await finalizeDictation(
 				transcript,
+				insertSegment,
 				copyToClipboard
 			);
-			setCopyStatus(toCopyStatus(text, isCopied));
-			dispatch({ type: 'cleaned', text, isCleaned });
+			setCopyStatus(toCopyStatus(draftText, isCopied));
+			dispatch({ type: 'cleaned', isCleaned });
 		} catch (error) {
 			fail(error);
 		}
-	}, [fail]);
+	}, [fail, insertSegment]);
 
 	const copyText = useCallback(async (text: string) => {
 		const isCopied = await copyToClipboard(text);
