@@ -12,7 +12,8 @@ type UseTranscriptSearchReturn = {
 
 /**
  * Keeps the typed text locally and, once typing paused, reloads the list for
- * it without piling up browser history entries.
+ * it without piling up browser history entries. The list is an infinite
+ * scroll prop that Inertia appends to, so a new search resets it first.
  */
 export function useTranscriptSearch(
 	appliedQuery: string
@@ -30,6 +31,7 @@ export function useTranscriptSearch(
 					preserveState: true,
 					replace: true,
 					only: ['transcripts', 'query'],
+					reset: ['transcripts'],
 				}
 			);
 		}, SEARCH_DEBOUNCE_MS);
