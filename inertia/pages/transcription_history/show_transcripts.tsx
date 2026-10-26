@@ -14,15 +14,17 @@ import { useTranscriptSearch } from '~/transcription_history/show_transcripts/us
 type ShowTranscriptsProps = {
 	transcripts: { data: Data.Transcript[] };
 	query: string;
+	transcriptCount: number;
 };
 
 export default function ShowTranscripts({
 	transcripts,
 	query,
+	transcriptCount,
 }: Readonly<ShowTranscriptsProps>) {
 	const { searchText, setSearchText } = useTranscriptSearch(query);
 	const deleteTranscript = useDeleteTranscript();
-	const deleteAllTranscripts = useDeleteAllTranscripts();
+	const deleteAllTranscripts = useDeleteAllTranscripts(transcriptCount);
 	const hasTranscripts = transcripts.data.length > 0;
 
 	return (
@@ -37,14 +39,16 @@ export default function ShowTranscripts({
 						<h1 className="text-2xl font-semibold">Historique</h1>
 						<p className="text-muted">Tes dictées des 60 derniers jours.</p>
 					</div>
-					<Button
-						variant="ghost"
-						color="danger"
-						startIcon="i-tabler-trash"
-						onClick={deleteAllTranscripts}
-					>
-						Tout effacer
-					</Button>
+					{transcriptCount > 0 && (
+						<Button
+							variant="ghost"
+							color="danger"
+							startIcon="i-tabler-trash"
+							onClick={deleteAllTranscripts}
+						>
+							Tout effacer
+						</Button>
+					)}
 				</div>
 				<TranscriptSearchInput value={searchText} onChange={setSearchText} />
 				{hasTranscripts ? (

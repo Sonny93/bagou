@@ -12,18 +12,20 @@ export default class ShowTranscriptsController {
 	) {}
 
 	async render({ auth, inertia, request }: HttpContext) {
+		const userId = auth.getUserOrFail().id;
 		const { q: query, page = 1 } = await request.validateUsing(
 			showTranscriptsValidator
 		);
-		const transcripts = await this.transcriptHistoryService.list(
-			auth.getUserOrFail().id,
-			{ query, page }
-		);
+		const transcripts = await this.transcriptHistoryService.list(userId, {
+			query,
+			page,
+		});
 		return inertia.render('transcription_history/show_transcripts', {
 			transcripts: inertia.scroll(() =>
 				TranscriptTransformer.paginate(transcripts.all(), transcripts.getMeta())
 			),
 			query: query ?? '',
+			transcriptCount: await this.transcriptHistoryService.count(userId),
 		});
 	}
 }

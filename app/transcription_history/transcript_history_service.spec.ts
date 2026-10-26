@@ -206,6 +206,26 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.deepEqual(await listTexts(service, user.id, 'dictée'), []);
 	});
 
+	test('should count every row of the user, past the retention too, and no other', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await TranscriptFactory.merge({ userId: user.id }).createMany(2);
+		await TranscriptFactory.merge({
+			userId: user.id,
+			createdAt: daysAgo(RETENTION_DAYS + 1),
+		}).create();
+		await TranscriptFactory.with('user').create();
+
+		assert.equal(await service.count(user.id), 3);
+	});
+
+	test('should count zero when the user has no row', async ({ assert }) => {
+		const { service, user } = await createService();
+
+		assert.equal(await service.count(user.id), 0);
+	});
+
 	test('should delete a row of the user', async ({ assert }) => {
 		const { service, user } = await createService();
 		const transcript = await TranscriptFactory.merge({

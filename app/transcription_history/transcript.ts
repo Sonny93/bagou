@@ -57,6 +57,15 @@ export default class Transcript extends TranscriptSchema {
 		return Number(deletedCount) > 0;
 	}
 
+	/** Counts every row of the user, exactly what `deleteAllOwned` deletes. */
+	static async countOwned(userId: number): Promise<number> {
+		const counted = await Transcript.query()
+			.where('userId', userId)
+			.count('* as total')
+			.first();
+		return Number(counted?.$extras.total ?? 0);
+	}
+
 	static async deleteAllOwned(userId: number): Promise<void> {
 		await Transcript.query().where('userId', userId).delete();
 	}

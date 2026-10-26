@@ -43,6 +43,30 @@ test.group('ShowTranscriptsController', (group) => {
 		assert.equal(response.inertiaProps.query, '');
 	});
 
+	test('should give the count of all the transcripts of the user, whatever the search', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: 'Une dictée sur Adonis.',
+		}).create();
+		await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: 'Les courses du soir.',
+		}).create();
+		await TranscriptFactory.with('user').create();
+
+		const response = await client
+			.get('/history')
+			.qs({ q: 'adonis' })
+			.loginAs(user)
+			.withInertia();
+
+		assert.equal(response.inertiaProps.transcriptCount, 2);
+	});
+
 	test('should filter by the q param and echo it back', async ({
 		client,
 		assert,

@@ -48,6 +48,10 @@ export class TranscriptHistoryService {
 		});
 	}
 
+	count(userId: number): Promise<number> {
+		return Transcript.countOwned(userId);
+	}
+
 	async delete(userId: number, id: number): Promise<void> {
 		const isDeleted = await Transcript.deleteOwned(userId, id);
 		if (!isDeleted) throw new TranscriptNotFoundException();

@@ -5,7 +5,7 @@ import { TranscriptRow } from './transcript_row';
 
 type TranscriptFeedProps = {
 	transcripts: Data.Transcript[];
-	onDelete: (transcriptId: number) => void;
+	onDelete: (transcript: Data.Transcript) => void;
 };
 
 export const TranscriptFeed = ({

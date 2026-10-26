@@ -7,7 +7,7 @@ import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
 
 type TranscriptRowProps = {
 	transcript: Data.Transcript;
-	onDelete: (transcriptId: number) => void;
+	onDelete: (transcript: Data.Transcript) => void;
 };
 
 export function TranscriptRow({
@@ -18,7 +18,7 @@ export function TranscriptRow({
 	const displayedText = cleanedText ?? rawText;
 
 	const handleCopy = () => void copyToClipboard(displayedText);
-	const handleDelete = () => onDelete(transcript.id);
+	const handleDelete = () => onDelete(transcript);
 
 	return (
 		<li className="flex flex-col gap-2 px-4 py-3">
