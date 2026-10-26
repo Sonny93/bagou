@@ -32,8 +32,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - '${PORT}:3333'
 
 volumes:
   postgres-volume:
