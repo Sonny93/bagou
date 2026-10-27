@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-27
+
 ### Fixed
 
 - Dictation works again behind a reverse proxy such as Cloudflare or Traefik.
@@ -30,5 +32,6 @@ First public release.
 - Install it as an app and open it with a global keyboard shortcut.
 - Run your own copy with the ready-made Docker image.
 
-[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Sonny93/bagou/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Sonny93/bagou/releases/tag/v1.0.0
