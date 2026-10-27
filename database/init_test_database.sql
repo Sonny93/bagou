@@ -1,1 +1,1 @@
-CREATE DATABASE vts_pwa_test;
+CREATE DATABASE bagou_test;

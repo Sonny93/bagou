@@ -37,7 +37,7 @@ describe('auto start preference', () => {
 
 	it('should return false when the stored value is unparseable', () => {
 		const storage = createFakeStorage({
-			'vts-pwa:dictation:auto-start': 'garbage',
+			'bagou:dictation:auto-start': 'garbage',
 		});
 
 		expect(readAutoStartPreference(storage)).toBe(false);

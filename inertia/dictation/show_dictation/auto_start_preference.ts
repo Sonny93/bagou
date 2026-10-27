@@ -1,4 +1,4 @@
-const AUTO_START_STORAGE_KEY = 'vts-pwa:dictation:auto-start';
+const AUTO_START_STORAGE_KEY = 'bagou:dictation:auto-start';
 const ENABLED_VALUE = 'true';
 const DISABLED_VALUE = 'false';
 

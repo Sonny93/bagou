@@ -13,13 +13,13 @@ jobs:
       postgres:
         image: postgres:18
         env:
-          POSTGRES_DB: vts_pwa_test
+          POSTGRES_DB: bagou_test
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root
         ports:
           - 5434:5432
         options: >-
-          --health-cmd "pg_isready -U root -d vts_pwa_test"
+          --health-cmd "pg_isready -U root -d bagou_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10

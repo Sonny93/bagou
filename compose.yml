@@ -1,4 +1,4 @@
-name: vts-pwa-prod
+name: bagou-prod
 services:
   postgres:
     restart: always
@@ -17,7 +17,7 @@ services:
     volumes:
       - postgres-volume:/var/lib/postgresql
 
-  vts-pwa:
+  bagou:
     restart: always
     build:
       context: .

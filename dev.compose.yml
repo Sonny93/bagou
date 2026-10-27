@@ -1,4 +1,4 @@
-name: vts-pwa-dev
+name: bagou-dev
 services:
   postgres:
     restart: always
