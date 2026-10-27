@@ -27,7 +27,7 @@ release *args:
 	@pnpm release {{args}}
 
 prod:
-	@docker compose up -d --build --wait
+	@docker compose -f compose.yml -f local.compose.yml up -d --build --wait
 
 down:
 	@-docker compose down

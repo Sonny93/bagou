@@ -1,0 +1,5 @@
+# Local override for `just prod`: publishes the port that Traefik reaches internally on Dokploy
+services:
+  bagou:
+    ports:
+      - '127.0.0.1:3333:3333'
