@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Dictation works again behind a reverse proxy such as Cloudflare or Traefik.
+
 ## [1.0.0] - 2026-10-27
 
 First public release.

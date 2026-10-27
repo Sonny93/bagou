@@ -8,6 +8,7 @@ import { apiClient } from '@japa/api-client';
 import { assert } from '@japa/assert';
 import { pluginAdonisJS } from '@japa/plugin-adonisjs';
 import type { Config } from '@japa/runner/types';
+import SocketProvider from '@rlanz/socket/provider';
 import { glob } from 'node:fs/promises';
 
 import env from '#start/env';
@@ -89,6 +90,17 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
 };
 
 /**
+ * The socket provider attaches to the HTTP server in its `ready` hook, which
+ * runs before the test HTTP server exists. Attaching it again once the server
+ * listens gives the functional suite the same WebSocket endpoint as production.
+ */
+async function startHttpServerWithSocket() {
+	const closeHttpServer = await testUtils.httpServer().start();
+	await new SocketProvider(app).ready();
+	return closeHttpServer;
+}
+
+/**
  * Configure suites by tapping into the test suite instance.
  * Learn more - https://japa.dev/docs/test-suites#lifecycle-hooks
  */
@@ -97,6 +109,6 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
 		group.each.setup(resetRateLimits);
 	});
 	if (['browser', 'functional', 'e2e'].includes(suite.name)) {
-		return suite.setup(() => testUtils.httpServer().start());
+		return suite.setup(startHttpServerWithSocket);
 	}
 };

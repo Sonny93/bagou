@@ -82,6 +82,7 @@ export default defineConfig({
 				files: [
 					'app/**/*_controller.spec.ts',
 					'app/**/*_channel.spec.ts',
+					'app/**/*_upgrade.spec.ts',
 					'app/exceptions/**/*.spec.ts',
 					'app/middleware/**/*.spec.ts',
 				],
