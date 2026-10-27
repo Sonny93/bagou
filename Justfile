@@ -23,6 +23,9 @@ check:
 build:
 	@pnpm run build
 
+release *args:
+	@pnpm release {{args}}
+
 prod:
 	@docker compose up -d --build --wait
 

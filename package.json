@@ -91,7 +91,7 @@
 		"@lingui/vite-plugin": "^6.10.1",
 		"@minimalstuff/tooling": "^0.7.0",
 		"@poppinss/ts-exec": "^1.5.1",
-		"@release-it/conventional-changelog": "^12.0.2",
+		"@release-it/keep-a-changelog": "^8.0.1",
 		"@types/luxon": "^3.7.6",
 		"@types/node": "^26.6.5",
 		"@types/proxy-addr": "^2.0.3",
