@@ -18,6 +18,7 @@ export interface ApiDefinition {
   userSettings: {
     showSettings: typeof routes['user_settings.show_settings']
     updateSettings: typeof routes['user_settings.update_settings']
+    previewCleanup: typeof routes['user_settings.preview_cleanup']
   }
   auth: {
     logout: typeof routes['auth.logout']

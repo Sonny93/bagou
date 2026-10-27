@@ -42,6 +42,24 @@ export class DictationCompletionService {
 		return { rawText: rawSegment, cleanedDraft };
 	}
 
+	/**
+	 * Cleans the raw segment alone, for a preview of the settings: nothing is
+	 * joined to a draft nor saved. A blank segment costs nothing; a failing
+	 * cleanup yields no cleaned text.
+	 */
+	async completePreview(
+		rawSegment: string,
+		preferences: Readonly<CleanupPreferences>
+	): Promise<DictationTranscript> {
+		if (rawSegment.trim() === '') {
+			return { rawText: rawSegment, cleanedDraft: null };
+		}
+		return {
+			rawText: rawSegment,
+			cleanedDraft: await this.#cleanOrNull(rawSegment, preferences),
+		};
+	}
+
 	/** Appends the raw segment of a cancelled dictation as is: no cleanup, so no credits spent. */
 	async keepRaw(
 		userId: number,

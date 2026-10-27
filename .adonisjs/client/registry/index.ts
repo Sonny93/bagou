@@ -60,6 +60,12 @@ const routes = {
     tokens: [[0,"settings"]],
     types: placeholder as Registry['user_settings.update_settings']['types'],
   },
+  'user_settings.preview_cleanup': {
+    methods: ["POST"],
+    pattern: '/settings/preview',
+    tokens: [[0,"settings"],[0,"preview"]],
+    types: placeholder as Registry['user_settings.preview_cleanup']['types'],
+  },
   'auth.logout': {
     methods: ["POST"],
     pattern: '/logout',

@@ -54,6 +54,7 @@ msgstr "Démarrage auto"
 
 #: inertia/dictation/show_dictation/recording_actions.tsx:12
 #: inertia/layouts/app_ui_provider.tsx:17
+#: inertia/user_settings/show_settings/dictation_preview.tsx:62
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -61,15 +62,25 @@ msgstr "Annuler"
 msgid "Cannot delete the last passkey"
 msgstr "Impossible de supprimer la dernière passkey"
 
+#: inertia/user_settings/show_settings/dictation_preview_result.tsx:57
+msgid "Clean again"
+msgstr "Nettoyer à nouveau"
+
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
+
+#: inertia/user_settings/show_settings/dictation_preview_result.tsx:42
+#: inertia/user_settings/show_settings/text_preview.tsx:64
+msgid "Cleaned text"
+msgstr "Texte nettoyé"
 
 #: inertia/dictation/show_dictation/dictation_dock.tsx:31
 msgid "Cleaning the text…"
 msgstr "Nettoyage du texte…"
 
 #: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:4
+#: inertia/user_settings/show_settings/dictation_preview_result.tsx:43
 msgid "Cleanup failed, try again"
 msgstr "Le nettoyage a échoué, réessaie"
 
@@ -110,7 +121,7 @@ msgstr "Confirmer"
 msgid "Connecting…"
 msgstr "Connexion…"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:35
+#: inertia/dictation/show_dictation/mic_button.tsx:39
 msgid "Continue the dictation"
 msgstr "Continuer la dictée"
 
@@ -131,7 +142,7 @@ msgstr "Copie impossible"
 msgid "Copy the text"
 msgstr "Copier le texte"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
 msgid "Could not reach the transcription service"
 msgstr "Impossible de joindre le service de transcription"
 
@@ -182,6 +193,7 @@ msgstr "Texte dicté"
 
 #: inertia/shared/ui/app_header.tsx:39
 #: inertia/shared/ui/back_to_dictation_link.tsx:16
+#: inertia/user_settings/show_settings/settings_preview.tsx:36
 msgid "Dictation"
 msgstr "Dictée"
 
@@ -213,7 +225,7 @@ msgstr "Chaque terme est limité à {maxTermLength} caractères"
 msgid "English"
 msgstr "Anglais"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:65
+#: inertia/dictation/show_dictation/mic_button.tsx:74
 msgid "Enter"
 msgstr "Entrée"
 
@@ -221,7 +233,7 @@ msgstr "Entrée"
 msgid "Esc"
 msgstr "Échap"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:33
+#: inertia/dictation/show_dictation/mic_button.tsx:37
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
 
@@ -294,6 +306,10 @@ msgstr "non nettoyé"
 msgid "Not cleaned"
 msgstr "Non nettoyé"
 
+#: inertia/user_settings/show_settings/dictation_preview_result.tsx:31
+msgid "Nothing was heard."
+msgstr "Rien n'a été entendu."
+
 #: inertia/user_settings/show_settings/vocabulary_field.tsx:31
 msgid "One term per line. It helps the speech engine and the cleanup spell names, products and jargon correctly."
 msgstr "Un terme par ligne. Aide le moteur de reconnaissance et le nettoyage à bien écrire noms, produits et jargon."
@@ -318,6 +334,10 @@ msgstr "Passkey introuvable"
 msgid "Passkeys"
 msgstr "Passkeys"
 
+#: inertia/user_settings/show_settings/text_preview.tsx:43
+msgid "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
+msgstr "Collez un texte brut, comme s'il venait d'être dicté. Ctrl+Entrée lance le test."
+
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:28
 msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 msgstr "Préférences pour le nettoyage, par exemple la façon d'écrire les nombres ou les guillemets. Elles ne lui font jamais reformuler ton texte."
@@ -327,6 +347,7 @@ msgid "Press Enter or the mic to dictate."
 msgstr "Appuie sur Entrée ou sur le micro pour dicter."
 
 #: inertia/transcription_history/show_transcripts/transcript_raw_text.tsx:12
+#: inertia/user_settings/show_settings/dictation_preview_result.tsx:39
 msgid "Raw text"
 msgstr "Texte brut"
 
@@ -338,7 +359,11 @@ msgstr "Enregistrer une passkey"
 msgid "required"
 msgstr "obligatoire"
 
-#: inertia/user_settings/show_settings/settings_form.tsx:67
+#: inertia/user_settings/show_settings/text_preview.tsx:42
+msgid "Sample text"
+msgstr "Texte d'exemple"
+
+#: inertia/user_settings/show_settings/settings_form.tsx:69
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -391,7 +416,7 @@ msgstr "Une erreur s'est produite, réessaie"
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
 
-#: inertia/dictation/show_dictation/mic_button.tsx:36
+#: inertia/dictation/show_dictation/mic_button.tsx:40
 msgid "Start the dictation"
 msgstr "Démarrer la dictée"
 
@@ -407,6 +432,19 @@ msgstr "Langue du système"
 msgid "System theme"
 msgstr "Thème du système"
 
+#: inertia/user_settings/show_settings/settings_preview.tsx:45
+#: inertia/user_settings/show_settings/text_preview.tsx:57
+msgid "Test"
+msgstr "Tester"
+
+#: inertia/user_settings/show_settings/dictation_preview.tsx:79
+msgid "Test cancelled, nothing was kept."
+msgstr "Test annulé, rien n'a été conservé."
+
+#: inertia/user_settings/show_settings/settings_preview.tsx:26
+msgid "Text"
+msgstr "Texte"
+
 #: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:7
 msgid "Text cleanup is unavailable"
 msgstr "Le nettoyage du texte est indisponible"
@@ -419,7 +457,7 @@ msgstr "Le segment audio est invalide ou trop volumineux"
 msgid "The browser blocks audio, click in the page then start the dictation again"
 msgstr "Le navigateur bloque l'audio, clique dans la page puis relance la dictée"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
 msgid "The connection to the transcription service was interrupted"
 msgstr "La connexion au service de transcription a été interrompue"
 
@@ -473,22 +511,27 @@ msgstr "La valeur choisie n'est pas disponible"
 
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:12
 #: inertia/passkeys/describe_passkey_error.ts:10
+#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:7
 msgid "The server is unreachable"
 msgstr "Le serveur est injoignable"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
+msgid "The settings to test are invalid"
+msgstr "Les réglages à tester sont invalides"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
 msgid "The transcription service did not answer in time"
 msgstr "Le service de transcription n'a pas répondu à temps"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
 msgid "The transcription service refused the dictation"
 msgstr "Le service de transcription a refusé la dictée"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
 msgid "The transcription session is no longer active"
 msgstr "La session de transcription n'est plus active"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:23
 msgid "The transcription session was interrupted"
 msgstr "La session de transcription a été interrompue"
 
@@ -534,8 +577,13 @@ msgid "Too many dictations started, wait a minute"
 msgstr "Trop de dictées lancées, patiente une minute"
 
 #: inertia/passkeys/describe_passkey_error.ts:19
+#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:9
 msgid "Too many requests, wait a minute"
 msgstr "Trop de requêtes, patiente une minute"
+
+#: inertia/user_settings/show_settings/settings_preview.tsx:48
+msgid "Try the values above, saved or not. Tested settings are not saved until you click Save."
+msgstr "Essayez les valeurs ci-dessus, enregistrées ou non. Les réglages testés ne sont enregistrés que lorsque vous cliquez sur Enregistrer."
 
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:20
 msgid "Unable to use the microphone"

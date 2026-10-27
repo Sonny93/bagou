@@ -124,6 +124,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/update_settings_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'user_settings.preview_cleanup': {
+    methods: ["POST"]
+    pattern: '/settings/preview'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#user_settings/validators/preview_cleanup_validator').previewCleanupValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#user_settings/validators/preview_cleanup_validator').previewCleanupValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/user_settings/preview_cleanup_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/user_settings/preview_cleanup_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/preview_cleanup_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'auth.logout': {
     methods: ["POST"]
     pattern: '/logout'

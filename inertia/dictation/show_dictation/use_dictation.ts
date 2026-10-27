@@ -97,7 +97,7 @@ export function useDictation({
 		);
 		sessionRef.current = session;
 		try {
-			await session.start(getDraftContext());
+			await session.start({ kind: 'draft', context: getDraftContext() });
 			dispatch({ type: 'recordingStarted', startedAt: Date.now() });
 		} catch (error) {
 			fail(error);

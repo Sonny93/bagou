@@ -2,6 +2,7 @@ import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
 
 import userSettingsConfig from '#config/user_settings';
+import { MAX_DRAFT_TEXT_LENGTH } from '#dictation/validators/start_dictation_validator';
 import { DICTATION_LANGUAGES } from '#shared/dictation_language';
 import { INTERFACE_LANGUAGES } from '#user_settings/interface_language';
 import { UserSettingsService } from '#user_settings/user_settings_service';
@@ -21,6 +22,7 @@ export default class ShowSettingsController {
 				maxVocabularyTerms: userSettingsConfig.maxVocabularyTerms,
 				maxTermLength: userSettingsConfig.maxTermLength,
 				maxInstructionsLength: userSettingsConfig.maxInstructionsLength,
+				maxSampleTextLength: MAX_DRAFT_TEXT_LENGTH,
 			},
 			options: {
 				dictationLanguages: [...DICTATION_LANGUAGES],

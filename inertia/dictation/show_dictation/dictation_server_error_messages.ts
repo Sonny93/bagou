@@ -14,6 +14,7 @@ export const DICTATION_SERVER_ERROR_MESSAGES: Readonly<
 	E_INVALID_AUDIO_CHUNK: msg`The audio segment is invalid or too large`,
 	E_INVALID_DICTATION_ID: msg`The dictation identifier is invalid`,
 	E_INVALID_DRAFT_CONTEXT: msg`The draft is invalid or too large`,
+	E_INVALID_PREVIEW_SETTINGS: msg`The settings to test are invalid`,
 	E_TRANSCRIPTION_CONNECTION_FAILED: msg`Could not reach the transcription service`,
 	E_TRANSCRIPTION_CONNECTION_CLOSED: msg`The connection to the transcription service was interrupted`,
 	E_TRANSCRIPTION_PROVIDER_REJECTED: msg`The transcription service refused the dictation`,

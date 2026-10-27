@@ -6,6 +6,7 @@ import type { AuthenticatedSocket } from '@rlanz/socket/types';
 import { decodeAudioChunk } from '#dictation/decode_audio_chunk';
 import type { Dictation } from '#dictation/dictation';
 import DictationAlreadyActiveException from '#dictation/dictation_already_active_exception';
+import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
@@ -14,7 +15,9 @@ import DictationUnavailableException from '#dictation/dictation_unavailable_exce
 import type { DraftContext } from '#dictation/draft_context';
 import { ensureDictationAccess } from '#dictation/ensure_dictation_access';
 import { parseDraftContext } from '#dictation/parse_draft_context';
+import { parsePreviewSettings } from '#dictation/parse_preview_settings';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
+import type { PreviewSettings } from '#user_settings/preview_settings';
 import type User from '#users/user';
 
 /**
@@ -35,6 +38,13 @@ export default class DictationChannel extends BaseChannel<
 	#dictation: Dictation | undefined;
 	#isStarting = false;
 
+	readonly #listener: DictationListener = {
+		onPartial: (text) => this.broadcast('transcript:partial', { text }),
+		onFinal: (text) => this.broadcast('transcript:final', { text }),
+		onFinished: (text) => this.broadcast('transcript:finished', { text }),
+		onError: (event) => this.broadcast('transcript:error', event),
+	};
+
 	constructor(private readonly dictationService: DictationService) {
 		super();
 	}
@@ -44,16 +54,30 @@ export default class DictationChannel extends BaseChannel<
 		socket: AuthenticatedSocket<User>,
 		payload: DraftContext
 	): Promise<void> {
-		if (this.#isStarting || this.#dictation?.isActive) {
-			throw new DictationAlreadyActiveException();
-		}
-		this.#isStarting = true;
-		try {
+		await this.#startOnce(async () => {
 			const draft = await parseDraftContext(payload);
-			await this.#createAndStart(socket.getUserOrFail().id, draft);
-		} finally {
-			this.#isStarting = false;
-		}
+			return this.dictationService.create(
+				socket.getUserOrFail().id,
+				draft,
+				this.#listener
+			);
+		});
+	}
+
+	/** Dictates with the given settings instead of the saved ones; nothing is saved. */
+	@onMessage('dictation:preview')
+	async startPreview(
+		socket: AuthenticatedSocket<User>,
+		payload: PreviewSettings
+	): Promise<void> {
+		await this.#startOnce(async () => {
+			const settings = await parsePreviewSettings(payload);
+			return this.dictationService.createPreview(
+				socket.getUserOrFail().id,
+				settings,
+				this.#listener
+			);
+		});
 	}
 
 	@onMessage('dictation:audio')
@@ -79,18 +103,18 @@ export default class DictationChannel extends BaseChannel<
 		this.#dictation?.cancel();
 	}
 
-	async #createAndStart(
-		userId: number,
-		draft: Readonly<DraftContext>
-	): Promise<void> {
-		const dictation = await this.dictationService.create(userId, draft, {
-			onPartial: (text) => this.broadcast('transcript:partial', { text }),
-			onFinal: (text) => this.broadcast('transcript:final', { text }),
-			onFinished: (text) => this.broadcast('transcript:finished', { text }),
-			onError: (event) => this.broadcast('transcript:error', event),
-		});
-		this.#dictation = dictation;
-		await this.#startOrFail(dictation);
+	async #startOnce(createDictation: () => Promise<Dictation>): Promise<void> {
+		if (this.#isStarting || this.#dictation?.isActive) {
+			throw new DictationAlreadyActiveException();
+		}
+		this.#isStarting = true;
+		try {
+			const dictation = await createDictation();
+			this.#dictation = dictation;
+			await this.#startOrFail(dictation);
+		} finally {
+			this.#isStarting = false;
+		}
 	}
 
 	async #startOrFail(dictation: Dictation): Promise<void> {

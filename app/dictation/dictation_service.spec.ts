@@ -24,7 +24,9 @@ import { TranscriptionErrorCode } from '#transcription/transcription_error_code'
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type { TranscriptionSession } from '#transcription/transcription_session';
+import Transcript from '#transcription_history/transcript';
 import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
+import UserSetting from '#user_settings/user_setting';
 import { UserSettingsService } from '#user_settings/user_settings_service';
 
 const DRAFT_CONTEXT = {
@@ -32,6 +34,12 @@ const DRAFT_CONTEXT = {
 	textBefore: 'Avant.',
 	textAfter: '',
 };
+const PREVIEW_SETTINGS = {
+	dictationLanguage: 'fr',
+	vocabulary: ['Adonis', 'Voxtral'],
+	cleanupInstructions: 'Use bullet points',
+} as const;
+const START_REQUESTS_PER_MINUTE = 20;
 const SHORT_MAX_DURATION_MS = 20;
 const DAILY_QUOTA_SECONDS = 60 * 60;
 const DAILY_QUOTA_BYTES = DAILY_QUOTA_SECONDS * PCM_AUDIO_FORMAT.bytesPerSecond;
@@ -853,6 +861,124 @@ test.group('DictationService', (group) => {
 		assert.deepEqual(
 			errors.map(({ code }) => code),
 			[DictationErrorCode.quotaExceeded]
+		);
+	});
+
+	test('should open the preview session with the given language and vocabulary, not the saved ones', async ({
+		assert,
+	}) => {
+		const { service, user, provider } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			dictationLanguage: 'en',
+			vocabulary: ['Saved'],
+		}).create();
+
+		const dictation = await service.createPreview(
+			user.id,
+			PREVIEW_SETTINGS,
+			listener
+		);
+		await dictation.start();
+
+		assert.deepEqual(provider.openedWith, [
+			{ language: 'fr', vocabulary: ['Adonis', 'Voxtral'] },
+		]);
+	});
+
+	test('should clean only the raw segment with the given preferences and keep the history untouched', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('euh bonjour')
+		);
+		const { service, user, textCleaner } = await createService(provider);
+		const dictation = await service.createPreview(
+			user.id,
+			PREVIEW_SETTINGS,
+			listener
+		);
+		await dictation.start();
+
+		const transcript = await dictation.stop();
+
+		assert.deepEqual(transcript, {
+			rawText: 'euh bonjour',
+			cleanedDraft: 'EUH BONJOUR',
+		});
+		assert.deepEqual(textCleaner.cleaned, ['euh bonjour']);
+		assert.deepEqual(textCleaner.receivedPreferences, [
+			{
+				language: 'fr',
+				vocabulary: ['Adonis', 'Voxtral'],
+				instructions: 'Use bullet points',
+			},
+		]);
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+		assert.lengthOf(await UserSetting.query().where('userId', user.id), 0);
+	});
+
+	test('should keep nothing when a preview is cancelled', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		const dictation = await service.createPreview(
+			user.id,
+			PREVIEW_SETTINGS,
+			listener
+		);
+		await dictation.start();
+
+		dictation.cancel();
+		await sleep(50);
+
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should count the audio of a preview in the daily quota', async ({
+		assert,
+	}) => {
+		const { service, quotaService, user } = await createService();
+		const dictation = await service.createPreview(
+			user.id,
+			PREVIEW_SETTINGS,
+			listener
+		);
+		await dictation.start();
+		dictation.appendAudio(new Uint8Array(3200));
+
+		await dictation.stop();
+		await sleep(50);
+
+		assert.equal((await quotaService.getUsage(user.id)).usedBytes, 3200);
+	});
+
+	test('should refuse to create a preview once the daily quota is spent', async ({
+		assert,
+	}) => {
+		const { service, quotaService, user, provider } = await createService();
+		await quotaService.record(user.id, DAILY_QUOTA_BYTES);
+
+		await assert.rejects(
+			() => service.createPreview(user.id, PREVIEW_SETTINGS, listener),
+			/E_DICTATION_QUOTA_EXCEEDED/
+		);
+
+		assert.lengthOf(provider.openedWith, 0);
+	});
+
+	test('should share the start rate limit between dictations and previews', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
+			await service.create(user.id, DRAFT_CONTEXT, listener);
+		}
+
+		await assert.rejects(
+			() => service.createPreview(user.id, PREVIEW_SETTINGS, listener),
+			/E_DICTATION_RATE_LIMITED/
 		);
 	});
 });

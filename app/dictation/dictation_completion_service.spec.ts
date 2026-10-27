@@ -298,4 +298,53 @@ test.group('DictationCompletionService', (group) => {
 		});
 		assert.notInclude(lines.join('').toLowerCase(), 'secret');
 	});
+
+	test('should clean the raw segment alone and save nothing when completing a preview', async ({
+		assert,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		const { service, user } = await createService(textCleaner);
+
+		const transcript = await service.completePreview(
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES
+		);
+
+		assert.deepEqual(transcript, {
+			rawText: 'euh bonjour',
+			cleanedDraft: 'EUH BONJOUR',
+		});
+		assert.deepEqual(textCleaner.cleaned, ['euh bonjour']);
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should not call the cleaner for a blank preview segment', async ({
+		assert,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		const { service } = await createService(textCleaner);
+
+		const transcript = await service.completePreview(
+			'  ',
+			FRENCH_CLEANUP_PREFERENCES
+		);
+
+		assert.deepEqual(transcript, { rawText: '  ', cleanedDraft: null });
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should yield no cleaned text when the preview cleanup is unavailable', async ({
+		assert,
+	}) => {
+		const { service } = await createService(
+			new FakeTextCleaner(new TextCleanupUnavailableException())
+		);
+
+		const transcript = await service.completePreview(
+			'bonjour',
+			FRENCH_CLEANUP_PREFERENCES
+		);
+
+		assert.deepEqual(transcript, { rawText: 'bonjour', cleanedDraft: null });
+	});
 });

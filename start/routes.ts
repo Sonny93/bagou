@@ -57,6 +57,13 @@ router
 			.put('/settings', [controllers.userSettings.UpdateSettings, 'execute'])
 			.as('user_settings.update_settings');
 		router
+			.post('/settings/preview', [
+				controllers.userSettings.PreviewCleanup,
+				'execute',
+			])
+			.use(cleanupThrottle)
+			.as('user_settings.preview_cleanup');
+		router
 			.post('/logout', [controllers.auth.Logout, 'execute'])
 			.as('auth.logout');
 	})

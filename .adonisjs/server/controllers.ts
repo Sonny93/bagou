@@ -33,6 +33,7 @@ export const controllers = {
     ShowTranscripts: () => import('#app/transcription_history/show_transcripts_controller'),
   },
   userSettings: {
+    PreviewCleanup: () => import('#app/user_settings/preview_cleanup_controller'),
     ShowSettings: () => import('#app/user_settings/show_settings_controller'),
     UpdateSettings: () => import('#app/user_settings/update_settings_controller'),
   },

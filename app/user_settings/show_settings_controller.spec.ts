@@ -42,6 +42,7 @@ test.group('ShowSettingsController', (group) => {
 			maxVocabularyTerms: 100,
 			maxTermLength: 100,
 			maxInstructionsLength: 2000,
+			maxSampleTextLength: 100_000,
 		});
 		assert.deepEqual(response.inertiaProps.options, {
 			dictationLanguages: ['fr', 'en'],

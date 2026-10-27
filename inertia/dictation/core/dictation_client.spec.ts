@@ -12,6 +12,15 @@ const DRAFT_CONTEXT = {
 	textBefore: 'Avant.',
 	textAfter: 'Après.',
 };
+const DRAFT_REQUEST = { kind: 'draft', context: DRAFT_CONTEXT } as const;
+const PREVIEW_REQUEST = {
+	kind: 'preview',
+	settings: {
+		dictationLanguage: 'fr',
+		vocabulary: ['Adonis'],
+		cleanupInstructions: 'Use bullet points',
+	},
+} as const;
 const FRAME_BASE64 = 'AQACAA==';
 
 function createClient(transport = new FakeDictationTransport()) {
@@ -33,7 +42,7 @@ describe('DictationClient', () => {
 	it('should connect, join the dictation channel and start it', async () => {
 		const { client, transport } = createClient();
 
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		expect(transport.joinedId).toBe(DICTATION_ID);
 		expect(transport.calls).toEqual(['connect', 'start']);
@@ -42,14 +51,22 @@ describe('DictationClient', () => {
 	it('should hand the draft context to the server when starting', async () => {
 		const { client, transport } = createClient();
 
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
-		expect(transport.startContext).toEqual(DRAFT_CONTEXT);
+		expect(transport.startRequest).toEqual(DRAFT_REQUEST);
+	});
+
+	it('should hand the preview settings to the server when starting a preview', async () => {
+		const { client, transport } = createClient();
+
+		await client.start(PREVIEW_REQUEST);
+
+		expect(transport.startRequest).toEqual(PREVIEW_REQUEST);
 	});
 
 	it('should send audio as base64 once started', async () => {
 		const { client, transport } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		client.sendAudio(FRAME);
 
@@ -61,7 +78,7 @@ describe('DictationClient', () => {
 		transport.holdStart = true;
 		const { client } = createClient(transport);
 
-		const starting = client.start(DRAFT_CONTEXT);
+		const starting = client.start(DRAFT_REQUEST);
 		await Promise.resolve();
 		client.sendAudio(FRAME);
 		client.sendAudio(new Uint8Array([3, 0]));
@@ -75,7 +92,7 @@ describe('DictationClient', () => {
 
 	it('should relay partial and final transcripts to the listener', async () => {
 		const { client, transport, partials, finals } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		transport.listener?.onFinal('Bonjour');
 		transport.listener?.onPartial(' le mo');
@@ -86,7 +103,7 @@ describe('DictationClient', () => {
 
 	it('should relay the finished text to the listener', async () => {
 		const { client, transport, finisheds } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		transport.listener?.onFinished('texte brut');
 
@@ -95,7 +112,7 @@ describe('DictationClient', () => {
 
 	it('should ignore the finished text once the dictation ended', async () => {
 		const { client, transport, finisheds } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 		client.cancel();
 
 		transport.listener?.onFinished('texte brut');
@@ -105,7 +122,7 @@ describe('DictationClient', () => {
 
 	it('should resolve the acknowledged transcript on stop and disconnect', async () => {
 		const { client, transport } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		const transcript = await client.stop();
 
@@ -118,7 +135,7 @@ describe('DictationClient', () => {
 
 	it('should send a cancel to the server and disconnect when cancelled', async () => {
 		const { client, transport } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		client.cancel();
 		client.cancel();
@@ -131,7 +148,7 @@ describe('DictationClient', () => {
 
 	it('should report a provider error from the server and end the dictation', async () => {
 		const { client, transport, errors } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		transport.listener?.onProviderError('E_TRANSCRIPTION_CONNECTION_CLOSED');
 		client.sendAudio(FRAME);
@@ -146,7 +163,7 @@ describe('DictationClient', () => {
 
 	it('should fail with an error instead of resuming when the connection is lost', async () => {
 		const { client, transport, errors } = createClient();
-		await client.start(DRAFT_CONTEXT);
+		await client.start(DRAFT_REQUEST);
 
 		transport.simulateConnectionLost();
 
@@ -159,7 +176,7 @@ describe('DictationClient', () => {
 		transport.connectError = new Error('refused');
 		const { client } = createClient(transport);
 
-		await expect(client.start(DRAFT_CONTEXT)).rejects.toMatchObject({
+		await expect(client.start(DRAFT_REQUEST)).rejects.toMatchObject({
 			code: 'connection_failed',
 		});
 		expect(transport.calls).toContain('disconnect');
@@ -170,7 +187,7 @@ describe('DictationClient', () => {
 		transport.startError = new Error('E_DICTATION_UNAVAILABLE');
 		const { client } = createClient(transport);
 
-		await expect(client.start(DRAFT_CONTEXT)).rejects.toMatchObject({
+		await expect(client.start(DRAFT_REQUEST)).rejects.toMatchObject({
 			code: 'rejected',
 			serverCode: 'E_DICTATION_UNAVAILABLE',
 		});
@@ -181,7 +198,7 @@ describe('DictationClient', () => {
 		transport.startError = new Error('E_DICTATION_RATE_LIMITED');
 		const { client, errors } = createClient(transport);
 
-		await expect(client.start(DRAFT_CONTEXT)).rejects.toMatchObject({
+		await expect(client.start(DRAFT_REQUEST)).rejects.toMatchObject({
 			code: 'rejected',
 			serverCode: 'E_DICTATION_RATE_LIMITED',
 		});
@@ -193,7 +210,7 @@ describe('DictationClient', () => {
 		transport.holdStart = true;
 		const { client, errors } = createClient(transport);
 
-		const starting = client.start(DRAFT_CONTEXT);
+		const starting = client.start(DRAFT_REQUEST);
 		await flushTimers();
 		for (let index = 0; index <= MAX_BUFFERED_FRAMES; index += 1)
 			client.sendAudio(FRAME);

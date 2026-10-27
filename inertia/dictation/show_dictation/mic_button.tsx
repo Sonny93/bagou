@@ -11,6 +11,10 @@ type MicButtonProps = {
 	isRecording: boolean;
 	isBusy: boolean;
 	hasDraftText: boolean;
+	/** Takes the focus when mounted; off where the page has other things to focus first. */
+	isFocusedOnMount?: boolean;
+	/** Shows the Enter key in the tooltip; off where Enter does not toggle the dictation. */
+	hasEnterHint?: boolean;
 	onStart: () => void;
 	onFinish: () => void;
 };
@@ -41,6 +45,8 @@ export function MicButton({
 	isRecording,
 	isBusy,
 	hasDraftText,
+	isFocusedOnMount = true,
+	hasEnterHint = true,
 	onStart,
 	onFinish,
 }: Readonly<MicButtonProps>) {
@@ -48,8 +54,8 @@ export function MicButton({
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
-		buttonRef.current?.focus();
-	}, []);
+		if (isFocusedOnMount) buttonRef.current?.focus();
+	}, [isFocusedOnMount]);
 
 	const label = getLabel(isRecording, hasDraftText, i18n);
 	const handleClick = isRecording ? onFinish : onStart;
@@ -60,10 +66,15 @@ export function MicButton({
 			disabled={isBusy}
 			content={
 				<>
-					{label}{' '}
-					<Kbd>
-						<Trans>Enter</Trans>
-					</Kbd>
+					{label}
+					{hasEnterHint && (
+						<>
+							{' '}
+							<Kbd>
+								<Trans>Enter</Trans>
+							</Kbd>
+						</>
+					)}
 				</>
 			}
 		>

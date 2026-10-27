@@ -7,6 +7,7 @@ const LIMITS: SettingsLimits = {
 	maxVocabularyTerms: 2,
 	maxTermLength: 5,
 	maxInstructionsLength: 100,
+	maxSampleTextLength: 1000,
 };
 
 describe('findVocabularyProblem', () => {

@@ -9,6 +9,7 @@ import { formatVocabulary } from './format_vocabulary';
 import { parseVocabulary } from './parse_vocabulary';
 import { pickVocabularyError } from './pick_vocabulary_error';
 import type { SettingsLimits } from './settings_limits';
+import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
 import { urlFor } from '~/shared/lib/url_for';
 
 type SettingsFormData = {
@@ -37,6 +38,7 @@ type UseSettingsFormReturn = {
 	setCleanupInstructions: (cleanupInstructions: string) => void;
 	termCount: number;
 	fieldErrors: FieldErrors;
+	previewSettings: PreviewSettings;
 	isSubmitDisabled: boolean;
 	isProcessing: boolean;
 	isSaved: boolean;
@@ -96,6 +98,11 @@ export function useSettingsForm(
 			form.setData('cleanupInstructions', cleanupInstructions),
 		termCount: terms.length,
 		fieldErrors,
+		previewSettings: {
+			dictationLanguage: form.data.dictationLanguage,
+			vocabulary: terms,
+			cleanupInstructions: form.data.cleanupInstructions,
+		},
 		isSubmitDisabled: vocabularyProblem !== null,
 		isProcessing: form.processing,
 		isSaved: form.recentlySuccessful,

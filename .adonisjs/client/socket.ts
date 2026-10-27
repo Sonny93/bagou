@@ -16,6 +16,8 @@ export interface AppSocket {
 
         readonly 'dictation:start': 'start'
 
+        readonly 'dictation:preview': 'startPreview'
+
         readonly 'dictation:audio': 'appendAudio'
 
         readonly 'dictation:stop': 'stop'

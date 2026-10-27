@@ -26,6 +26,11 @@ const DRAFT_CONTEXT = {
 	textBefore: 'Avant.',
 	textAfter: '',
 };
+const PREVIEW_SETTINGS = {
+	dictationLanguage: 'fr',
+	vocabulary: ['Adonis'],
+	cleanupInstructions: '',
+};
 const CHANNEL_NAME = `dictation/${DICTATION_ID}`;
 const START_REQUESTS_PER_MINUTE = 20;
 const DAILY_QUOTA_BYTES = 60 * 60 * 32_000;
@@ -381,5 +386,102 @@ test.group('DictationChannel', (group) => {
 			assert.match(String(secondOutcome.reason), /E_DICTATION_ALREADY_ACTIVE/);
 		}
 		assert.lengthOf(provider.openedWith, 1);
+	});
+
+	test('should reject a preview with invalid settings without opening the provider', async ({
+		assert,
+	}) => {
+		const { send } = await joinChannel();
+
+		await assert.rejects(
+			() =>
+				send('dictation:preview', {
+					...PREVIEW_SETTINGS,
+					dictationLanguage: 'de',
+				}),
+			/E_INVALID_PREVIEW_SETTINGS/
+		);
+		assert.lengthOf(provider.openedWith, 0);
+	});
+
+	test('should dictate with the given settings, clean only the segment and save nothing on a preview', async ({
+		assert,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		const restoreTextCleaner = swapTextCleaner(textCleaner);
+		const { send, user } = await joinChannel();
+
+		await send('dictation:preview', PREVIEW_SETTINGS);
+		await send('dictation:audio', { chunk: VALID_CHUNK });
+		const acknowledgement = await send('dictation:stop');
+
+		assert.deepEqual(provider.openedWith, [
+			{ language: 'fr', vocabulary: ['Adonis'] },
+		]);
+		assert.deepEqual(acknowledgement, {
+			rawText: 'Bonjour le monde',
+			cleanedDraft: 'BONJOUR LE MONDE',
+		});
+		assert.deepEqual(textCleaner.receivedPreferences, [
+			{ language: 'fr', vocabulary: ['Adonis'], instructions: '' },
+		]);
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+		restoreTextCleaner();
+	});
+
+	test('should acknowledge a null cleaned text on a preview when the cleanup is unavailable', async ({
+		assert,
+	}) => {
+		const restoreTextCleaner = swapTextCleaner(
+			new FakeTextCleaner(new TextCleanupUnavailableException())
+		);
+		const { send } = await joinChannel();
+		await send('dictation:preview', PREVIEW_SETTINGS);
+
+		const acknowledgement = await send('dictation:stop');
+
+		assert.deepEqual(acknowledgement, {
+			rawText: 'Bonjour le monde',
+			cleanedDraft: null,
+		});
+		restoreTextCleaner();
+	});
+
+	test('should keep nothing when a preview is cancelled', async ({
+		assert,
+	}) => {
+		const { send, user } = await joinChannel();
+		await send('dictation:preview', PREVIEW_SETTINGS);
+
+		await send('dictation:cancel');
+		await settleCancellation();
+
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should reject a preview while a dictation is active', async ({
+		assert,
+	}) => {
+		const { send } = await joinChannel();
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		await assert.rejects(
+			() => send('dictation:preview', PREVIEW_SETTINGS),
+			/E_DICTATION_ALREADY_ACTIVE/
+		);
+	});
+
+	test('should reject a preview without opening the provider when the daily quota is spent', async ({
+		assert,
+	}) => {
+		const { send, user } = await joinChannel();
+		const quotaService = await app.container.make(DictationQuotaService);
+		await quotaService.record(user.id, DAILY_QUOTA_BYTES);
+
+		await assert.rejects(
+			() => send('dictation:preview', PREVIEW_SETTINGS),
+			'E_DICTATION_QUOTA_EXCEEDED'
+		);
+		assert.lengthOf(provider.openedWith, 0);
 	});
 });

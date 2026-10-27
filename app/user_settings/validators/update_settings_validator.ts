@@ -1,28 +1,13 @@
 import vine from '@vinejs/vine';
 
-import userSettingsConfig from '#config/user_settings';
-import { DICTATION_LANGUAGES } from '#shared/dictation_language';
 import { INTERFACE_LANGUAGES } from '#user_settings/interface_language';
+import { cleanupInstructionsField } from '#user_settings/validators/cleanup_instructions_field';
+import { dictationLanguageField } from '#user_settings/validators/dictation_language_field';
+import { vocabularyField } from '#user_settings/validators/vocabulary_field';
 
-/**
- * Cleanup instructions are nullable because the body parser turns an empty
- * string into `null`.
- */
 export const updateSettingsValidator = vine.create({
-	dictationLanguage: vine.enum(DICTATION_LANGUAGES),
+	dictationLanguage: dictationLanguageField(),
 	interfaceLanguage: vine.enum(INTERFACE_LANGUAGES),
-	vocabulary: vine
-		.array(
-			vine
-				.string()
-				.trim()
-				.minLength(1)
-				.maxLength(userSettingsConfig.maxTermLength)
-		)
-		.maxLength(userSettingsConfig.maxVocabularyTerms),
-	cleanupInstructions: vine
-		.string()
-		.trim()
-		.maxLength(userSettingsConfig.maxInstructionsLength)
-		.nullable(),
+	vocabulary: vocabularyField(),
+	cleanupInstructions: cleanupInstructionsField(),
 });
