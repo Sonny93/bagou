@@ -1,17 +1,19 @@
 import { inject } from '@adonisjs/core';
-import { BaseChannel, SocketResponseError } from '@rlanz/socket';
+import { Logger } from '@adonisjs/core/logger';
+import { BaseChannel } from '@rlanz/socket';
 import { onMessage } from '@rlanz/socket/decorators';
 import type { AuthenticatedSocket } from '@rlanz/socket/types';
 
 import { decodeAudioChunk } from '#dictation/decode_audio_chunk';
+import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import type { Dictation } from '#dictation/dictation';
 import DictationAlreadyActiveException from '#dictation/dictation_already_active_exception';
+import { DictationErrorCode } from '#dictation/dictation_error_code';
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
 import type { DictationTranscript } from '#dictation/dictation_transcript';
-import DictationUnavailableException from '#dictation/dictation_unavailable_exception';
 import type { DraftContext } from '#dictation/draft_context';
 import { ensureDictationAccess } from '#dictation/ensure_dictation_access';
 import { parseDraftContext } from '#dictation/parse_draft_context';
@@ -25,7 +27,11 @@ import type User from '#users/user';
  * browser subscribes to a fresh id for each dictation, so transcript events
  * (which are channel broadcasts) reach only the tab that started it. The
  * container builds one instance per subscription, which owns that
- * subscription's dictation.
+ * subscription's dictation. Handlers acknowledge as soon as the request is
+ * accepted: what takes time (opening the provider session, finishing and
+ * cleaning the text) is reported later by `dictation:ready`,
+ * `dictation:completed` or `transcript:error`, so no outcome depends on how
+ * long the client is willing to wait for an acknowledgement.
  */
 @inject()
 export default class DictationChannel extends BaseChannel<
@@ -45,7 +51,10 @@ export default class DictationChannel extends BaseChannel<
 		onError: (event) => this.broadcast('transcript:error', event),
 	};
 
-	constructor(private readonly dictationService: DictationService) {
+	constructor(
+		private readonly dictationService: DictationService,
+		private readonly logger: Logger
+	) {
 		super();
 	}
 
@@ -90,8 +99,9 @@ export default class DictationChannel extends BaseChannel<
 	}
 
 	@onMessage('dictation:stop')
-	async stop(_socket: AuthenticatedSocket<User>): Promise<DictationTranscript> {
-		return this.#requireDictation().stop();
+	async stop(_socket: AuthenticatedSocket<User>): Promise<void> {
+		const completion = this.#requireDictation().stop();
+		void this.#broadcastOutcome(completion);
 	}
 
 	@onMessage('dictation:cancel')
@@ -111,22 +121,47 @@ export default class DictationChannel extends BaseChannel<
 		try {
 			const dictation = await createDictation();
 			this.#dictation = dictation;
-			await this.#startOrFail(dictation);
+			void this.#openInBackground(dictation);
 		} finally {
 			this.#isStarting = false;
 		}
 	}
 
-	async #startOrFail(dictation: Dictation): Promise<void> {
+	async #openInBackground(dictation: Dictation): Promise<void> {
 		try {
 			await dictation.start();
 		} catch (error) {
-			if (error instanceof SocketResponseError) throw error;
-			if (error instanceof TranscriptionProviderError) {
-				throw new DictationUnavailableException(error.code);
-			}
-			throw new DictationUnavailableException();
+			this.#reportStartFailure(error);
+			return;
 		}
+		this.broadcast('dictation:ready', {});
+	}
+
+	#reportStartFailure(error: unknown): void {
+		if (error instanceof DictationNotActiveException) return;
+		this.broadcast('transcript:error', { code: this.#toErrorCode(error) });
+	}
+
+	async #broadcastOutcome(
+		completion: Promise<DictationTranscript>
+	): Promise<void> {
+		try {
+			this.broadcast('dictation:completed', await completion);
+		} catch (error) {
+			if (!(error instanceof TranscriptionProviderError)) {
+				this.logger.error(
+					describeErrorForLog(error),
+					'Dictation could not be completed'
+				);
+			}
+			this.broadcast('transcript:error', { code: this.#toErrorCode(error) });
+		}
+	}
+
+	#toErrorCode(error: unknown): DictationErrorCode {
+		return error instanceof TranscriptionProviderError
+			? error.code
+			: DictationErrorCode.unavailable;
 	}
 
 	#requireDictation(): Dictation {

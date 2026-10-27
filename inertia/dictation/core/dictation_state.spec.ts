@@ -62,9 +62,14 @@ describe('dictationReducer', () => {
 		expect(state).toEqual({ status: 'done', isCleaned: false });
 	});
 
+	it('should end cleaning in error when the stop fails', () => {
+		const state = reduce(cleaning, { type: 'failed', message: 'Oups' });
+
+		expect(state).toEqual({ status: 'error', message: 'Oups' });
+	});
+
 	it.each<DictationEvent>([
 		{ type: 'cancelRequested' },
-		{ type: 'failed', message: 'Oups' },
 		{ type: 'startRequested' },
 		{ type: 'finalReceived', text: 'late' },
 		{ type: 'finished', text: 'late' },

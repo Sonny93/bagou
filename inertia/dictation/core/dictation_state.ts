@@ -87,7 +87,9 @@ export function dictationReducer(
 				? { status: 'cancelled', hasKeptText: hasText(state) }
 				: state;
 		case 'failed':
-			return state.status === 'connecting' || isLive(state)
+			return state.status === 'connecting' ||
+				state.status === 'cleaning' ||
+				isLive(state)
 				? { status: 'error', message: event.message }
 				: state;
 	}

@@ -2,7 +2,9 @@ export type DictationClientErrorCode =
 	| 'connection_failed'
 	| 'connection_lost'
 	| 'rejected'
-	| 'provider_error';
+	| 'provider_error'
+	| 'start_timed_out'
+	| 'completion_timed_out';
 
 /**
  * `serverCode` is the stable error code sent by the server, set for

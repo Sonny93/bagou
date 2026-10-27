@@ -12,6 +12,7 @@ import { createFakeChannelSocket } from '#tests/helpers/fake_channel_socket';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { FakeTranscriptionSession } from '#tests/helpers/fake_transcription_session';
+import { SlowTranscriptionProvider } from '#tests/helpers/slow_transcription_provider';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import { swapTranscriptionProvider } from '#tests/helpers/swap_transcription_provider';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
@@ -39,6 +40,14 @@ const VALID_CHUNK = Buffer.from(new Uint8Array([1, 0, 2, 0])).toString(
 );
 
 const settleCancellation = (): Promise<void> => sleep(50);
+const settleOpening = (): Promise<void> => sleep(0);
+const settleCompletion = (): Promise<void> => sleep(50);
+
+const settleAfter: Readonly<Record<string, () => Promise<void>>> = {
+	'dictation:start': settleOpening,
+	'dictation:preview': settleOpening,
+	'dictation:stop': settleCompletion,
+};
 
 async function createChannel() {
 	const channel = await app.container.make(DictationChannel);
@@ -54,8 +63,11 @@ async function joinChannel() {
 	const channel = await createChannel();
 	return {
 		user,
-		send: (event: string, data?: unknown) =>
-			channel.$handleMessage(socket, event, data),
+		send: async (event: string, data?: unknown) => {
+			const acknowledgement = await channel.$handleMessage(socket, event, data);
+			await settleAfter[event]?.();
+			return acknowledgement;
+		},
 		leave: () => channel.$handleLeave(socket, DICTATION_ID),
 	};
 }
@@ -128,7 +140,7 @@ test.group('DictationChannel', (group) => {
 		assert.lengthOf(provider.openedWith, 0);
 	});
 
-	test('should relay transcripts to the dictation channel only and acknowledge the transcript on stop', async ({
+	test('should relay transcripts to the dictation channel only and broadcast the completed transcript on stop', async ({
 		assert,
 	}) => {
 		const fake = socketService.fake();
@@ -140,10 +152,7 @@ test.group('DictationChannel', (group) => {
 		session.simulateFinal('Bonjour');
 		const acknowledgement = await send('dictation:stop');
 
-		assert.deepEqual(acknowledgement, {
-			rawText: 'Bonjour le monde',
-			cleanedDraft: 'AVANT. BONJOUR LE MONDE',
-		});
+		assert.isUndefined(acknowledgement);
 		assert.deepEqual([...(session.sentAudio[0] ?? [])], [1, 0, 2, 0]);
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:partial', {
 			data: { text: ' le mon' },
@@ -154,24 +163,28 @@ test.group('DictationChannel', (group) => {
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:finished', {
 			data: { text: 'Bonjour le monde' },
 		});
-		fake.assertCount(3);
-		fake.assertCount(3, { target: 'channel', channel: CHANNEL_NAME });
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:completed', {
+			data: {
+				rawText: 'Bonjour le monde',
+				cleanedDraft: 'AVANT. BONJOUR LE MONDE',
+			},
+		});
+		fake.assertCount(5);
+		fake.assertCount(5, { target: 'channel', channel: CHANNEL_NAME });
 	});
 
-	test('should acknowledge a null cleaned text on stop when the cleanup is unavailable', async ({
-		assert,
-	}) => {
+	test('should broadcast a null cleaned text on stop when the cleanup is unavailable', async () => {
+		const fake = socketService.fake();
 		const restoreTextCleaner = swapTextCleaner(
 			new FakeTextCleaner(new TextCleanupUnavailableException())
 		);
 		const { send } = await joinChannel();
 		await send('dictation:start', DRAFT_CONTEXT);
 
-		const acknowledgement = await send('dictation:stop');
+		await send('dictation:stop');
 
-		assert.deepEqual(acknowledgement, {
-			rawText: 'Bonjour le monde',
-			cleanedDraft: null,
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:completed', {
+			data: { rawText: 'Bonjour le monde', cleanedDraft: null },
 		});
 		restoreTextCleaner();
 	});
@@ -239,9 +252,8 @@ test.group('DictationChannel', (group) => {
 		);
 	});
 
-	test('should acknowledge a provider start failure with the provider error code', async ({
-		assert,
-	}) => {
+	test('should broadcast the provider error code when opening the provider session fails', async () => {
+		const fake = socketService.fake();
 		const failingProvider = new FakeTranscriptionProvider(
 			session,
 			new TranscriptionProviderError(
@@ -252,16 +264,16 @@ test.group('DictationChannel', (group) => {
 		const restoreProvider = swapTranscriptionProvider(failingProvider);
 		const { send } = await joinChannel();
 
-		await assert.rejects(
-			() => send('dictation:start', DRAFT_CONTEXT),
-			TranscriptionErrorCode.connectionFailed
-		);
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:error', {
+			data: { code: TranscriptionErrorCode.connectionFailed },
+		});
 		restoreProvider();
 	});
 
-	test('should acknowledge an unexpected start failure with a generic unavailable error', async ({
-		assert,
-	}) => {
+	test('should broadcast a generic unavailable error when opening the provider session fails unexpectedly', async () => {
+		const fake = socketService.fake();
 		const failingProvider = new FakeTranscriptionProvider(
 			session,
 			new Error('boom')
@@ -269,10 +281,84 @@ test.group('DictationChannel', (group) => {
 		const restoreProvider = swapTranscriptionProvider(failingProvider);
 		const { send } = await joinChannel();
 
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:error', {
+			data: { code: 'E_DICTATION_UNAVAILABLE' },
+		});
+		restoreProvider();
+	});
+
+	test('should broadcast ready once the provider session is open', async () => {
+		const fake = socketService.fake();
+		const { send } = await joinChannel();
+
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:ready', { data: {} });
+	});
+
+	test('should acknowledge the start before the provider session is open', async ({
+		assert,
+	}) => {
+		const fake = socketService.fake();
+		const slowProvider = new SlowTranscriptionProvider(session);
+		const restoreProvider = swapTranscriptionProvider(slowProvider);
+		const { send } = await joinChannel();
+
+		await send('dictation:start', DRAFT_CONTEXT);
+		assert.lengthOf(fake.emissions, 0);
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			'E_DICTATION_UNAVAILABLE'
+			/E_DICTATION_ALREADY_ACTIVE/
 		);
+		slowProvider.release();
+		await settleOpening();
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:ready', { data: {} });
+		restoreProvider();
+	});
+
+	test('should broadcast the provider error code when the completion fails', async () => {
+		const fake = socketService.fake();
+		const failingSession = new FakeTranscriptionSession();
+		failingSession.finish = async () => {
+			throw new TranscriptionProviderError(
+				TranscriptionErrorCode.finishTimeout,
+				'internal detail'
+			);
+		};
+		const restoreProvider = swapTranscriptionProvider(
+			new FakeTranscriptionProvider(failingSession)
+		);
+		const { send } = await joinChannel();
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		await send('dictation:stop');
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:error', {
+			data: { code: TranscriptionErrorCode.finishTimeout },
+		});
+		restoreProvider();
+	});
+
+	test('should broadcast a generic unavailable error when the completion fails unexpectedly', async () => {
+		const fake = socketService.fake();
+		const failingSession = new FakeTranscriptionSession();
+		failingSession.finish = async () => {
+			throw new Error('boom');
+		};
+		const restoreProvider = swapTranscriptionProvider(
+			new FakeTranscriptionProvider(failingSession)
+		);
+		const { send } = await joinChannel();
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		await send('dictation:stop');
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:error', {
+			data: { code: 'E_DICTATION_UNAVAILABLE' },
+		});
 		restoreProvider();
 	});
 
@@ -411,16 +497,17 @@ test.group('DictationChannel', (group) => {
 		const restoreTextCleaner = swapTextCleaner(textCleaner);
 		const { send, user } = await joinChannel();
 
+		const fake = socketService.fake();
+
 		await send('dictation:preview', PREVIEW_SETTINGS);
 		await send('dictation:audio', { chunk: VALID_CHUNK });
-		const acknowledgement = await send('dictation:stop');
+		await send('dictation:stop');
 
 		assert.deepEqual(provider.openedWith, [
 			{ language: 'fr', vocabulary: ['Adonis'] },
 		]);
-		assert.deepEqual(acknowledgement, {
-			rawText: 'Bonjour le monde',
-			cleanedDraft: 'BONJOUR LE MONDE',
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:completed', {
+			data: { rawText: 'Bonjour le monde', cleanedDraft: 'BONJOUR LE MONDE' },
 		});
 		assert.deepEqual(textCleaner.receivedPreferences, [
 			{ language: 'fr', vocabulary: ['Adonis'], instructions: '' },
@@ -429,20 +516,18 @@ test.group('DictationChannel', (group) => {
 		restoreTextCleaner();
 	});
 
-	test('should acknowledge a null cleaned text on a preview when the cleanup is unavailable', async ({
-		assert,
-	}) => {
+	test('should broadcast a null cleaned text on a preview when the cleanup is unavailable', async () => {
+		const fake = socketService.fake();
 		const restoreTextCleaner = swapTextCleaner(
 			new FakeTextCleaner(new TextCleanupUnavailableException())
 		);
 		const { send } = await joinChannel();
 		await send('dictation:preview', PREVIEW_SETTINGS);
 
-		const acknowledgement = await send('dictation:stop');
+		await send('dictation:stop');
 
-		assert.deepEqual(acknowledgement, {
-			rawText: 'Bonjour le monde',
-			cleanedDraft: null,
+		fake.assertEmittedTo(CHANNEL_NAME, 'dictation:completed', {
+			data: { rawText: 'Bonjour le monde', cleanedDraft: null },
 		});
 		restoreTextCleaner();
 	});

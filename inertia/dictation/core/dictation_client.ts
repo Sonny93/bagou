@@ -6,8 +6,25 @@ import type {
 	DictationTransport,
 	JoinedDictation,
 } from './dictation_transport';
+import { PendingOutcome } from './pending_outcome';
 
 export const MAX_BUFFERED_FRAMES = 100;
+
+/**
+ * How long the client waits for the server to announce the provider session
+ * ready after acknowledging the start. The server bound is 10 s (provider
+ * `readyMs`), plus a margin.
+ */
+export const READY_TIMEOUT_MS = 20_000;
+
+/**
+ * How long the client waits for the completed transcript after the server
+ * acknowledged the stop. The server bound is the provider finish (10 s) plus
+ * two cleanup attempts of 15 s each, plus a margin. Past it the client gives
+ * up and disconnects, while the server still completes and saves the
+ * dictation to the history.
+ */
+export const COMPLETION_TIMEOUT_MS = 60_000;
 
 export type DictationClientListener = {
 	onPartial(text: string): void;
@@ -21,16 +38,27 @@ type ClientPhase = 'idle' | 'starting' | 'started' | 'ended';
 const readServerCode = (error: unknown): string =>
 	error instanceof Error ? error.message : String(error);
 
+const toClientError = (error: unknown): DictationClientError =>
+	error instanceof DictationClientError
+		? error
+		: new DictationClientError('rejected', readServerCode(error));
+
 /**
  * One dictation over one socket. Audio produced while the session is still
  * opening is buffered and sent, in order, once the server acknowledged the
- * start; a lost connection ends the dictation with an error.
+ * start. The server acknowledges fast; `start` resolves once the session is
+ * also announced ready and `stop` once the completed transcript arrived, each
+ * within a bound. An error that strikes while one of them waits rejects it;
+ * otherwise it goes to the listener, so it is reported exactly once. A lost
+ * connection ends the dictation with an error.
  */
 export class DictationClient {
 	#phase: ClientPhase = 'idle';
 	#joined: JoinedDictation | undefined;
 	#bufferedFrames: string[] = [];
 	#isConnectionLost = false;
+	#readiness: PendingOutcome<void> | undefined;
+	#completion: PendingOutcome<DictationTranscript> | undefined;
 
 	constructor(
 		private readonly transport: DictationTransport,
@@ -65,13 +93,24 @@ export class DictationClient {
 		const joined = this.#joined;
 		if (this.#phase !== 'started' || !joined)
 			throw new DictationClientError('rejected');
+		const completion = new PendingOutcome<DictationTranscript>(
+			COMPLETION_TIMEOUT_MS,
+			() => new DictationClientError('completion_timed_out')
+		);
+		this.#completion = completion;
 		try {
-			return await joined.stop();
+			const [, transcript] = await Promise.all([
+				joined.stop(),
+				completion.promise,
+			]);
+			return transcript;
 		} catch (error) {
 			throw this.#isConnectionLost
 				? new DictationClientError('connection_lost')
-				: new DictationClientError('rejected', readServerCode(error));
+				: toClientError(error);
 		} finally {
+			completion.dispose();
+			this.#completion = undefined;
 			this.#close();
 		}
 	}
@@ -80,9 +119,30 @@ export class DictationClient {
 		if (this.#phase === 'ended') return;
 		this.#joined?.cancel();
 		this.#close();
+		this.#readiness?.resolve();
+		this.#completion?.reject(new DictationClientError('rejected'));
 	}
 
 	async #open(request: Readonly<DictationStartRequest>): Promise<void> {
+		const readiness = new PendingOutcome<void>(
+			READY_TIMEOUT_MS,
+			() => new DictationClientError('start_timed_out')
+		);
+		this.#readiness = readiness;
+		try {
+			await this.#connectAndStart(request, readiness);
+		} catch (error) {
+			throw toClientError(error);
+		} finally {
+			readiness.dispose();
+			this.#readiness = undefined;
+		}
+	}
+
+	async #connectAndStart(
+		request: Readonly<DictationStartRequest>,
+		readiness: PendingOutcome<void>
+	): Promise<void> {
 		try {
 			await this.transport.connect();
 		} catch {
@@ -95,12 +155,14 @@ export class DictationClient {
 				onFinal: (text) => this.#whileOpen(() => this.listener.onFinal(text)),
 				onFinished: (text) =>
 					this.#whileOpen(() => this.listener.onFinished(text)),
+				onReady: () => readiness.resolve(),
+				onCompleted: (transcript) => this.#completion?.resolve(transcript),
 				onProviderError: (code) =>
 					this.#failWith(new DictationClientError('provider_error', code)),
 			});
-			await this.#joined.start(request);
+			await Promise.all([this.#joined.start(request), readiness.promise]);
 		} catch (error) {
-			throw new DictationClientError('rejected', readServerCode(error));
+			throw toClientError(error);
 		}
 	}
 
@@ -126,7 +188,9 @@ export class DictationClient {
 	#failWith(error: DictationClientError): void {
 		if (this.#phase === 'ended') return;
 		this.#close();
-		this.listener.onError(error);
+		const pending = this.#readiness ?? this.#completion;
+		if (pending) pending.reject(error);
+		else this.listener.onError(error);
 	}
 
 	#hasEnded(): boolean {
@@ -138,6 +202,7 @@ export class DictationClient {
 	}
 
 	#close(): void {
+		if (this.#phase === 'ended') return;
 		this.#phase = 'ended';
 		this.#bufferedFrames = [];
 		this.transport.disconnect();

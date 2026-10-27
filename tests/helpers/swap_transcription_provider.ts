@@ -1,6 +1,5 @@
 import app from '@adonisjs/core/services/app';
 
-import type { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 
 /**
@@ -8,7 +7,7 @@ import { TranscriptionProvider } from '#transcription/transcription_provider';
  * restores the real binding, meant for the test's `cleanup`.
  */
 export function swapTranscriptionProvider(
-	provider: FakeTranscriptionProvider
+	provider: TranscriptionProvider
 ): () => void {
 	app.container.swap(TranscriptionProvider, () => provider);
 	return () => app.container.restore(TranscriptionProvider);

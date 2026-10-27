@@ -5,14 +5,20 @@ export type TranscriptListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
+	onReady(): void;
+	onCompleted(transcript: DictationTranscript): void;
 	onProviderError(code: string): void;
 };
 
-/** One dictation channel, already subscribed. */
+/**
+ * One dictation channel, already subscribed. `start` and `stop` resolve once
+ * the server acknowledged the request; their outcome comes later through
+ * `onReady` and `onCompleted`.
+ */
 export type JoinedDictation = {
 	start(request: Readonly<DictationStartRequest>): Promise<void>;
 	sendAudio(base64Pcm: string): void;
-	stop(): Promise<DictationTranscript>;
+	stop(): Promise<void>;
 	cancel(): void;
 };
 

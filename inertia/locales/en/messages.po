@@ -265,7 +265,7 @@ msgstr "Interface language"
 msgid "Light theme"
 msgstr "Light theme"
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:16
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:18
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "Microphone access was denied, allow it in the browser"
 
@@ -285,7 +285,7 @@ msgstr "No dictation is in progress"
 msgid "No dictations yet."
 msgstr "No dictations yet."
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:17
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:19
 msgid "No microphone detected"
 msgstr "No microphone detected"
 
@@ -452,15 +452,19 @@ msgstr "Text cleanup is unavailable"
 msgid "The audio segment is invalid or too large"
 msgstr "The audio segment is invalid or too large"
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:19
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:21
 msgid "The browser blocks audio, click in the page then start the dictation again"
 msgstr "The browser blocks audio, click in the page then start the dictation again"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:14
+msgid "The cleanup is taking too long, your dictation will be in the history"
+msgstr "The cleanup is taking too long, your dictation will be in the history"
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
 msgid "The connection to the transcription service was interrupted"
 msgstr "The connection to the transcription service was interrupted"
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:13
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:15
 msgid "The connection was interrupted, the dictation is lost"
 msgstr "The connection was interrupted, the dictation is lost"
 
@@ -479,6 +483,10 @@ msgstr "The dictation identifier is invalid"
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
 msgid "The dictation reached the maximum duration"
 msgstr "The dictation reached the maximum duration"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:13
+msgid "The dictation service is not responding, try again"
+msgstr "The dictation service is not responding, try again"
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
 msgid "The draft is invalid or too large"
@@ -555,7 +563,7 @@ msgstr "The vocabulary is limited to {maxTermCount} terms"
 msgid "There are too many items"
 msgstr "There are too many items"
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:18
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:20
 msgid "This browser cannot record the microphone"
 msgstr "This browser cannot record the microphone"
 
@@ -584,7 +592,7 @@ msgstr "Too many requests, wait a minute"
 msgid "Try the values above, saved or not. Tested settings are not saved until you click Save."
 msgstr "Try the values above, saved or not. Tested settings are not saved until you click Save."
 
-#: inertia/dictation/show_dictation/describe_dictation_error.ts:20
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:22
 msgid "Unable to use the microphone"
 msgstr "Unable to use the microphone"
 

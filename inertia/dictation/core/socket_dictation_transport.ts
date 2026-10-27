@@ -25,6 +25,10 @@ export function createSocketDictationTransport(): DictationTransport {
 				.listen('transcript:partial', ({ text }) => listener.onPartial(text))
 				.listen('transcript:final', ({ text }) => listener.onFinal(text))
 				.listen('transcript:finished', ({ text }) => listener.onFinished(text))
+				.listen('dictation:ready', () => listener.onReady())
+				.listen('dictation:completed', (transcript) =>
+					listener.onCompleted(transcript)
+				)
 				.listen('transcript:error', ({ code }) =>
 					listener.onProviderError(code)
 				);
@@ -40,7 +44,9 @@ export function createSocketDictationTransport(): DictationTransport {
 				sendAudio: (chunk) => {
 					channel.send('dictation:audio', { chunk });
 				},
-				stop: () => channel.sendWithAck('dictation:stop'),
+				stop: async () => {
+					await channel.sendWithAck('dictation:stop');
+				},
 				cancel: () => {
 					channel.send('dictation:cancel');
 				},

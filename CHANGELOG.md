@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The cleaned text no longer gets stuck behind an endless loader after a long or slow dictation.
+- A slow start of the transcription service no longer makes the dictation fail.
+
 ## [1.0.1] - 2026-10-27
 
 ### Fixed

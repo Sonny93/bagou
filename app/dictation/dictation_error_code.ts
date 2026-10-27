@@ -4,6 +4,7 @@ export const DictationErrorCode = {
 	...TranscriptionErrorCode,
 	tooLong: 'E_DICTATION_TOO_LONG',
 	quotaExceeded: 'E_DICTATION_QUOTA_EXCEEDED',
+	unavailable: 'E_DICTATION_UNAVAILABLE',
 } as const;
 
 export type DictationErrorCode =

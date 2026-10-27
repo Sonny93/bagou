@@ -10,6 +10,8 @@ import { DICTATION_SERVER_ERROR_MESSAGES } from '~/dictation/show_dictation/dict
 
 const GENERIC_MESSAGE = msg`Something went wrong during the dictation`;
 const CONNECTION_FAILED_MESSAGE = msg`The server is unreachable`;
+const START_TIMED_OUT_MESSAGE = msg`The dictation service is not responding, try again`;
+const COMPLETION_TIMED_OUT_MESSAGE = msg`The cleanup is taking too long, your dictation will be in the history`;
 const CONNECTION_LOST_MESSAGE = msg`The connection was interrupted, the dictation is lost`;
 
 const MICROPHONE_MESSAGES: Record<MicrophoneErrorCode, MessageDescriptor> = {
@@ -28,6 +30,10 @@ const describeClientError = (
 		return i18n._(CONNECTION_FAILED_MESSAGE);
 	}
 	if (error.code === 'connection_lost') return i18n._(CONNECTION_LOST_MESSAGE);
+	if (error.code === 'start_timed_out') return i18n._(START_TIMED_OUT_MESSAGE);
+	if (error.code === 'completion_timed_out') {
+		return i18n._(COMPLETION_TIMED_OUT_MESSAGE);
+	}
 	if (error.serverCode === null) return i18n._(GENERIC_MESSAGE);
 	return i18n._(
 		DICTATION_SERVER_ERROR_MESSAGES[error.serverCode] ?? GENERIC_MESSAGE
