@@ -2,7 +2,7 @@
 
 PWA mono-utilisateur : un raccourci OS ouvre la fenêtre, l'enregistrement démarre, le texte partiel s'affiche en direct, Entrée termine, Claude Haiku nettoie le texte final, le résultat part dans le presse-papier. Rien de lourd côté client : tout passe par un seul conteneur Adonis.
 
-> Statut : étapes 1 à 8 terminées (dont le banc d'essai STT, `just bench`), puis nettoyage côté serveur et historique des dictées. Le banc est prêt et attend les échantillons de l'utilisateur dans `bench/samples/`.
+> Statut : étapes 1 à 8 terminées (dont le banc d'essai STT, `just bench`), puis nettoyage côté serveur, historique des dictées, réglages utilisateur (avec bloc de test) et i18n en/fr. Le banc est prêt et attend les échantillons de l'utilisateur dans `bench/samples/`.
 
 ## Conventions
 
