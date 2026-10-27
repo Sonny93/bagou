@@ -22,9 +22,6 @@ export const controllers = {
     VerifyInvitation: () => import('#app/passkeys/verify_invitation_controller'),
     VerifyRegistration: () => import('#app/passkeys/verify_registration_controller'),
   },
-  pwa: {
-    ShowManifest: () => import('#app/pwa/show_manifest_controller'),
-  },
   transcriptionHistory: {
     CleanTranscript: () => import('#app/transcription_history/clean_transcript_controller'),
     DeleteTranscript: () => import('#app/transcription_history/delete_transcript_controller'),

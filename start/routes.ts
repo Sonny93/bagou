@@ -5,10 +5,6 @@ import { middleware } from '#start/kernel';
 import { cleanupThrottle } from '#start/limiter';
 
 router
-	.get('/manifest.webmanifest', [controllers.pwa.ShowManifest, 'render'])
-	.as('pwa.show_manifest');
-
-router
 	.group(() => {
 		router
 			.get('/', [controllers.dictation.ShowDictation, 'render'])

@@ -1,6 +1,6 @@
 # Installation et raccourci clavier
 
-Cette page explique comment installer Dictée vocale comme application depuis Chrome, puis comment l'ouvrir avec un raccourci clavier global (Windows ou Linux).
+Cette page explique comment installer Bagou comme application depuis Chrome, puis comment l'ouvrir avec un raccourci clavier global (Windows ou Linux).
 
 ## Installer l'application
 
@@ -21,11 +21,11 @@ L'appli est déclarée avec `launch_handler: navigate-existing`. Quand le raccou
 Chrome crée un raccourci dans le menu Démarrer :
 
 ```
-%APPDATA%\Microsoft\Windows\Start Menu\Programs\Chrome Apps\Dictée vocale.lnk
+%APPDATA%\Microsoft\Windows\Start Menu\Programs\Chrome Apps\Bagou.lnk
 ```
 
 1. Ouvrir ce dossier (coller le chemin dans l'Explorateur).
-2. Clic droit sur **Dictée vocale** > **Propriétés**.
+2. Clic droit sur **Bagou** > **Propriétés**.
 3. Dans l'onglet **Raccourci**, cliquer dans **Touche de raccourci** et presser la combinaison voulue, par exemple `Ctrl+Alt+D`.
 4. Valider.
 
@@ -46,7 +46,7 @@ google-chrome --profile-directory=Default --app-id=<app-id>
 Retrouver le lanceur et la commande :
 
 ```sh
-grep -l "Dictée vocale" ~/.local/share/applications/chrome-*.desktop
+grep -l "Bagou" ~/.local/share/applications/chrome-*.desktop
 grep '^Exec=' ~/.local/share/applications/chrome-<app-id>-Default.desktop
 ```
 
@@ -54,7 +54,7 @@ Lier cette commande `Exec` à un raccourci global :
 
 ### GNOME
 
-Interface : **Paramètres** > **Clavier** > **Raccourcis personnalisés** > **+**. Nom : `Dictée vocale`, commande : la ligne `Exec`, raccourci : par exemple `Ctrl+Alt+D`.
+Interface : **Paramètres** > **Clavier** > **Raccourcis personnalisés** > **+**. Nom : `Bagou`, commande : la ligne `Exec`, raccourci : par exemple `Ctrl+Alt+D`.
 
 En ligne de commande :
 
@@ -62,7 +62,7 @@ En ligne de commande :
 KEY_PATH=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictee/
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['$KEY_PATH']"
 SCHEMA="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:$KEY_PATH"
-gsettings set "$SCHEMA" name 'Dictée vocale'
+gsettings set "$SCHEMA" name 'Bagou'
 gsettings set "$SCHEMA" command 'google-chrome --profile-directory=Default --app-id=<app-id>'
 gsettings set "$SCHEMA" binding '<Ctrl><Alt>d'
 ```

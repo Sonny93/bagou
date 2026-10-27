@@ -597,10 +597,6 @@ msgstr "Utilise une passkey enregistrée sur cet appareil."
 msgid "Vocabulary"
 msgstr "Vocabulaire"
 
-#: inertia/i18n/project_name.ts:3
-msgid "Voice dictation"
-msgstr "Dictée vocale"
-
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:29
 msgid "Write numbers as digits.\n"
 "Use French quotation marks."

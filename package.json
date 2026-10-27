@@ -1,5 +1,5 @@
 {
-	"name": "vts-pwa",
+	"name": "bagou",
 	"version": "0.0.0",
 	"private": true,
 	"license": "MIT",
@@ -23,7 +23,6 @@
 		"#auth/*": "./app/auth/*.js",
 		"#passkeys/*": "./app/passkeys/*.js",
 		"#user_settings/*": "./app/user_settings/*.js",
-		"#pwa/*": "./app/pwa/*.js",
 		"#users/*": "./app/users/*.js",
 		"#exceptions/*": "./app/exceptions/*.js",
 		"#middleware/*": "./app/middleware/*.js",

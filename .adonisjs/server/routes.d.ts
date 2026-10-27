@@ -4,7 +4,6 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'pwa.show_manifest': { paramsTuple?: []; params?: {} }
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'transcription_history.delete_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -27,7 +26,6 @@ export type ScannedRoutes = {
     'passkeys.delete_passkey': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
-    'pwa.show_manifest': { paramsTuple?: []; params?: {} }
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }
@@ -36,7 +34,6 @@ export type ScannedRoutes = {
     'passkeys.show_passkeys': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
-    'pwa.show_manifest': { paramsTuple?: []; params?: {} }
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }

@@ -14,7 +14,7 @@ import PasskeyAuthenticationFailedException from '#passkeys/passkey_authenticati
 import PasskeyRegistrationFailedException from '#passkeys/passkey_registration_failed_exception';
 import env from '#start/env';
 
-const RELYING_PARTY_NAME = 'Dictée vocale';
+const RELYING_PARTY_NAME = 'Bagou';
 const OWNER_USER_NAME = 'owner';
 
 type CredentialDescriptor = {

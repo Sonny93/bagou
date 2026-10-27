@@ -2,9 +2,6 @@
 import type { routes } from './index.ts'
 
 export interface ApiDefinition {
-  pwa: {
-    showManifest: typeof routes['pwa.show_manifest']
-  }
   dictation: {
     showDictation: typeof routes['dictation.show_dictation']
   }

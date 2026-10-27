@@ -7,19 +7,6 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
-  'pwa.show_manifest': {
-    methods: ["GET","HEAD"]
-    pattern: '/manifest.webmanifest'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
-    }
-  }
   'dictation.show_dictation': {
     methods: ["GET","HEAD"]
     pattern: '/'

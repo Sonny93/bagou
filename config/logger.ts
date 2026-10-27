@@ -3,7 +3,7 @@ import app from '@adonisjs/core/services/app';
 
 import env from '#start/env';
 
-const LOGGER_NAME = 'vts-pwa';
+const LOGGER_NAME = 'bagou';
 
 const loggerConfig = defineConfig({
 	default: 'app',

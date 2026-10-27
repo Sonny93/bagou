@@ -1,4 +1,4 @@
-# Dictée vocale
+# Bagou
 
 Dictée vocale en temps réel : un raccourci ouvre la fenêtre, le texte s'affiche en direct, Entrée termine, Claude Haiku nettoie le texte et le résultat part dans le presse-papier.
 

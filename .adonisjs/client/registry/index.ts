@@ -6,12 +6,6 @@ import type { ApiDefinition } from './tree.d.ts'
 const placeholder: any = {}
 
 const routes = {
-  'pwa.show_manifest': {
-    methods: ["GET","HEAD"],
-    pattern: '/manifest.webmanifest',
-    tokens: [[0,"manifest.webmanifest"]],
-    types: placeholder as Registry['pwa.show_manifest']['types'],
-  },
   'dictation.show_dictation': {
     methods: ["GET","HEAD"],
     pattern: '/',
