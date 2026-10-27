@@ -1,4 +1,5 @@
 import type { Data } from '@generated/data';
+import { Trans } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 
 import { AppHeader } from '~/shared/ui/app_header';
@@ -36,8 +37,12 @@ export default function ShowTranscripts({
 			<main className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 py-6 sm:px-6">
 				<div className="flex items-start justify-between gap-3">
 					<div className="flex flex-col gap-1">
-						<h1 className="text-2xl font-semibold">Historique</h1>
-						<p className="text-muted">Tes dictées des 60 derniers jours.</p>
+						<h1 className="text-2xl font-semibold">
+							<Trans>History</Trans>
+						</h1>
+						<p className="text-muted">
+							<Trans>Your dictations from the last 60 days.</Trans>
+						</p>
 					</div>
 					{transcriptCount > 0 && (
 						<Button
@@ -46,7 +51,7 @@ export default function ShowTranscripts({
 							startIcon="i-tabler-trash"
 							onClick={deleteAllTranscripts}
 						>
-							Tout effacer
+							<Trans>Clear all</Trans>
 						</Button>
 					)}
 				</div>

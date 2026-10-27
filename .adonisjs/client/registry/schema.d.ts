@@ -7,6 +7,19 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
+  'pwa.show_manifest': {
+    methods: ["GET","HEAD"]
+    pattern: '/manifest.webmanifest'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/pwa/show_manifest_controller').default['render']>>>
+    }
+  }
   'dictation.show_dictation': {
     methods: ["GET","HEAD"]
     pattern: '/'
@@ -83,6 +96,32 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/delete_transcripts_controller').default['execute']>>>
+    }
+  }
+  'user_settings.show_settings': {
+    methods: ["GET","HEAD"]
+    pattern: '/settings'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/user_settings/show_settings_controller').default['render']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/user_settings/show_settings_controller').default['render']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/show_settings_controller').default['render']>>>
+    }
+  }
+  'user_settings.update_settings': {
+    methods: ["PUT"]
+    pattern: '/settings'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#user_settings/validators/update_settings_validator').updateSettingsValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#user_settings/validators/update_settings_validator').updateSettingsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/user_settings/update_settings_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/user_settings/update_settings_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/update_settings_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'auth.logout': {

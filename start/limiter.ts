@@ -1,7 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import limiter from '@adonisjs/limiter/services/main';
 
-const RATE_LIMIT_MESSAGE = 'Trop de requêtes, patiente une minute';
+/** The limiter answers `errors[].message`: the stable code, translated by the browser. */
+const RATE_LIMIT_MESSAGE = 'E_TOO_MANY_REQUESTS';
 const WINDOW = '1 minute';
 const AUTH_REQUESTS_PER_WINDOW = 10;
 const CLEANUP_REQUESTS_PER_WINDOW = 10;

@@ -1,9 +1,11 @@
 import { router } from '@inertiajs/react';
+import { useLingui } from '@lingui/react/macro';
 
 import { PasskeyLabelForm } from '~/passkeys/shared/passkey_label_form';
 import { usePasskeyRegistration } from '~/passkeys/use_passkey_registration';
 
 export function AddPasskeyForm() {
+	const { t } = useLingui();
 	const refreshPasskeys = () => router.reload({ only: ['passkeys'] });
 	const { isRegistering, errorMessage, register } = usePasskeyRegistration(
 		{ kind: 'owner' },
@@ -12,7 +14,7 @@ export function AddPasskeyForm() {
 
 	return (
 		<PasskeyLabelForm
-			submitLabel="Ajouter une passkey"
+			submitLabel={t`Add a passkey`}
 			isSubmitting={isRegistering}
 			errorMessage={errorMessage}
 			onSubmit={register}

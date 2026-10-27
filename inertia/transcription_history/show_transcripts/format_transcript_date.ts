@@ -1,8 +1,6 @@
-const DATE_FORMATTER = new Intl.DateTimeFormat('fr-FR', {
-	dateStyle: 'medium',
-	timeStyle: 'short',
-});
-
-export function formatTranscriptDate(isoDate: string): string {
-	return DATE_FORMATTER.format(new Date(isoDate));
+export function formatTranscriptDate(isoDate: string, locale: string): string {
+	return new Intl.DateTimeFormat(locale, {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+	}).format(new Date(isoDate));
 }

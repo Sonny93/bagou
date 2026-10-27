@@ -1,11 +1,12 @@
 import { SocketResponseError } from '@rlanz/socket';
 
-const DEFAULT_MESSAGE = 'La dictée est momentanément indisponible';
+const CODE = 'E_DICTATION_UNAVAILABLE';
 
+/** Carries the provider error code as message when there is one. */
 export default class DictationUnavailableException extends SocketResponseError {
-	readonly code = 'E_DICTATION_UNAVAILABLE';
+	readonly code = CODE;
 
-	constructor(message = DEFAULT_MESSAGE) {
+	constructor(message: string = CODE) {
 		super(message);
 	}
 }

@@ -20,7 +20,7 @@ export default class CleanTranscriptController {
 			);
 		} catch (error) {
 			if (!(error instanceof TextCleanupUnavailableException)) throw error;
-			session.flash('inputErrorsBag', { [CLEAN_ERROR_FIELD]: error.message });
+			session.flash('inputErrorsBag', { [CLEAN_ERROR_FIELD]: error.code });
 		}
 		return response.redirect().withQs().back();
 	}

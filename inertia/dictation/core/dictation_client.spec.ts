@@ -133,13 +133,13 @@ describe('DictationClient', () => {
 		const { client, transport, errors } = createClient();
 		await client.start(DRAFT_CONTEXT);
 
-		transport.listener?.onProviderError('Le service a échoué');
+		transport.listener?.onProviderError('E_TRANSCRIPTION_CONNECTION_CLOSED');
 		client.sendAudio(FRAME);
 
 		expect(errors).toHaveLength(1);
 		expect(errors[0]).toMatchObject({
 			code: 'provider_error',
-			message: 'Le service a échoué',
+			serverCode: 'E_TRANSCRIPTION_CONNECTION_CLOSED',
 		});
 		expect(transport.sentAudio).toEqual([]);
 	});
@@ -165,27 +165,25 @@ describe('DictationClient', () => {
 		expect(transport.calls).toContain('disconnect');
 	});
 
-	it('should reject start with the server message when the dictation is refused', async () => {
+	it('should reject start with the server code when the dictation is refused', async () => {
 		const transport = new FakeDictationTransport();
-		transport.startError = new Error(
-			'La dictée est momentanément indisponible'
-		);
+		transport.startError = new Error('E_DICTATION_UNAVAILABLE');
 		const { client } = createClient(transport);
 
 		await expect(client.start(DRAFT_CONTEXT)).rejects.toMatchObject({
 			code: 'rejected',
-			message: 'La dictée est momentanément indisponible',
+			serverCode: 'E_DICTATION_UNAVAILABLE',
 		});
 	});
 
 	it('should rethrow the start rejection, not connection_lost, when the server rejects the start', async () => {
 		const transport = new FakeDictationTransport();
-		transport.startError = new Error('Impossible de joindre le service');
+		transport.startError = new Error('E_DICTATION_RATE_LIMITED');
 		const { client, errors } = createClient(transport);
 
 		await expect(client.start(DRAFT_CONTEXT)).rejects.toMatchObject({
 			code: 'rejected',
-			message: 'Impossible de joindre le service',
+			serverCode: 'E_DICTATION_RATE_LIMITED',
 		});
 		expect(errors).toEqual([]);
 	});

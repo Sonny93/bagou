@@ -1,9 +1,11 @@
 import { SocketResponseError } from '@rlanz/socket';
 
+const CODE = 'E_INVALID_DRAFT_CONTEXT';
+
 export default class InvalidDraftContextException extends SocketResponseError {
-	readonly code = 'E_INVALID_DRAFT_CONTEXT';
+	readonly code = CODE;
 
 	constructor() {
-		super('Le brouillon est invalide ou trop volumineux');
+		super(CODE);
 	}
 }

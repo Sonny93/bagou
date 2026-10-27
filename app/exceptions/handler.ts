@@ -1,5 +1,10 @@
 import { ExceptionHandler, type HttpContext } from '@adonisjs/core/http';
 import app from '@adonisjs/core/services/app';
+import type { HttpError } from '@adonisjs/core/types/http';
+
+const SERVER_ERROR_STATUS = 500;
+const INTERNAL_SERVER_ERROR_CODE = 'E_INTERNAL_SERVER_ERROR';
+const INTERNAL_SERVER_ERROR_MESSAGE = 'Internal server error';
 
 export default class HttpExceptionHandler extends ExceptionHandler {
 	/**
@@ -14,6 +19,28 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 	 */
 	async handle(error: unknown, ctx: HttpContext) {
 		return super.handle(error, ctx);
+	}
+
+	/**
+	 * Every error response carries the stable `code` next to the developer
+	 * message, so clients translate by code. Never a stack trace, even in debug,
+	 * and never the message of a server error: it may come from a driver and
+	 * carry data.
+	 */
+	override async renderErrorAsJSON(
+		error: HttpError,
+		ctx: HttpContext
+	): Promise<void> {
+		if (error.status >= SERVER_ERROR_STATUS) {
+			ctx.response.status(error.status).send({
+				code: error.code ?? INTERNAL_SERVER_ERROR_CODE,
+				message: INTERNAL_SERVER_ERROR_MESSAGE,
+			});
+			return;
+		}
+		ctx.response
+			.status(error.status)
+			.send({ code: error.code, message: error.message });
 	}
 
 	/**

@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { Switch } from '@minimalstuff/ui';
 
 import { AccountMenu } from './account_menu';
@@ -13,14 +14,15 @@ export function DictationHeader({
 	isAutoStartEnabled,
 	onAutoStartChange,
 }: Readonly<DictationHeaderProps>) {
+	const { t } = useLingui();
 	const handleAutoStartChange = (event: React.ChangeEvent<HTMLInputElement>) =>
 		onAutoStartChange(event.target.checked);
 
 	return (
 		<AppHeader>
 			<Switch
-				label="Démarrage auto"
-				title="Démarre la dictée à l'ouverture, sur cet appareil"
+				label={t`Auto-start`}
+				title={t`Starts the dictation on opening, on this device`}
 				wrapperClassName="whitespace-nowrap"
 				checked={isAutoStartEnabled}
 				onChange={handleAutoStartChange}

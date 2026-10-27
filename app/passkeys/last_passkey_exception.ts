@@ -9,6 +9,6 @@ export default class LastPasskeyException extends Exception {
 	static code = 'E_LAST_PASSKEY';
 
 	constructor() {
-		super('Impossible de supprimer la dernière passkey');
+		super('The last passkey cannot be deleted');
 	}
 }

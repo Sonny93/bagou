@@ -112,7 +112,7 @@ test.group('CleanTranscriptController', (group) => {
 
 		response.assertStatus(302);
 		response.assertFlashMessage('inputErrorsBag', {
-			clean: 'Le nettoyage du texte est indisponible',
+			clean: 'E_TEXT_CLEANUP_UNAVAILABLE',
 		});
 		await transcript.refresh();
 		assert.isNull(transcript.cleanedText);

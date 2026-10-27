@@ -22,11 +22,18 @@ export const controllers = {
     VerifyInvitation: () => import('#app/passkeys/verify_invitation_controller'),
     VerifyRegistration: () => import('#app/passkeys/verify_registration_controller'),
   },
+  pwa: {
+    ShowManifest: () => import('#app/pwa/show_manifest_controller'),
+  },
   transcriptionHistory: {
     CleanTranscript: () => import('#app/transcription_history/clean_transcript_controller'),
     DeleteTranscript: () => import('#app/transcription_history/delete_transcript_controller'),
     DeleteTranscripts: () => import('#app/transcription_history/delete_transcripts_controller'),
     SaveDraftText: () => import('#app/transcription_history/save_draft_text_controller'),
     ShowTranscripts: () => import('#app/transcription_history/show_transcripts_controller'),
+  },
+  userSettings: {
+    ShowSettings: () => import('#app/user_settings/show_settings_controller'),
+    UpdateSettings: () => import('#app/user_settings/update_settings_controller'),
   },
 }

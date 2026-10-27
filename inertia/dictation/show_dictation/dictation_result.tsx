@@ -1,9 +1,8 @@
+import { useLingui } from '@lingui/react/macro';
 import { useLayoutEffect, useRef } from 'react';
 
 import type { DraftSelection } from '~/dictation/core/dictation_draft';
 import { cn } from '~/shared/lib/cn';
-
-const PLACEHOLDER = 'Appuie sur Entrée ou sur le micro pour dicter.';
 
 type DictationResultProps = {
 	text: string;
@@ -27,6 +26,7 @@ export function DictationResult({
 	onTextChange,
 	onSelectionChange,
 }: Readonly<DictationResultProps>) {
+	const { t } = useLingui();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	useLayoutEffect(() => {
@@ -49,8 +49,8 @@ export function DictationResult({
 	return (
 		<textarea
 			ref={textareaRef}
-			aria-label="Texte dicté"
-			placeholder={PLACEHOLDER}
+			aria-label={t`Dictated text`}
+			placeholder={t`Press Enter or the mic to dictate.`}
 			value={text}
 			onChange={handleChange}
 			onSelect={handleSelect}

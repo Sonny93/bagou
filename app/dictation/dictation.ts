@@ -2,7 +2,6 @@ import type { Logger } from '@adonisjs/core/logger';
 
 import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import { DictationErrorCode } from '#dictation/dictation_error_code';
-import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import type { DictationListener } from '#dictation/dictation_listener';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationOptions } from '#dictation/dictation_options';
@@ -109,7 +108,10 @@ export class Dictation {
 
 	async #openSession(): Promise<TranscriptionSession> {
 		try {
-			return await this.provider.open({ language: 'fr' });
+			return await this.provider.open({
+				language: this.options.language,
+				vocabulary: this.options.vocabulary,
+			});
 		} catch (error) {
 			if (error instanceof TranscriptionProviderError) {
 				this.#logProviderError(error);
@@ -127,10 +129,7 @@ export class Dictation {
 
 	#reportProviderError(error: TranscriptionProviderError): void {
 		this.#logProviderError(error);
-		this.listener.onError({
-			code: error.code,
-			message: DICTATION_ERROR_MESSAGES[error.code],
-		});
+		this.listener.onError({ code: error.code });
 		this.#end('failed');
 	}
 
@@ -167,7 +166,7 @@ export class Dictation {
 		outcome: DictationOutcome
 	): void {
 		if (this.#phase !== 'active') return;
-		this.listener.onError({ code, message: DICTATION_ERROR_MESSAGES[code] });
+		this.listener.onError({ code });
 		this.#beginFinishing(session, outcome).catch(this.#logUnexpectedFailure);
 	}
 

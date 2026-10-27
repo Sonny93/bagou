@@ -5,6 +5,6 @@ export default class PasskeyNotFoundException extends Exception {
 	static code = 'E_PASSKEY_NOT_FOUND';
 
 	constructor() {
-		super('Passkey introuvable');
+		super('Passkey not found');
 	}
 }

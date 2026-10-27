@@ -34,20 +34,26 @@ test.group('decodeAudioChunk', () => {
 
 		await assert.rejects(
 			() => decodeAudioChunk({ chunk: toBase64(tooLong) }),
-			/invalide ou trop volumineux/
+			/E_INVALID_AUDIO_CHUNK/
 		);
 	});
 
 	test('should reject a payload without a string chunk', async ({ assert }) => {
-		await assert.rejects(() => decodeAudioChunk({}), /invalide/);
-		await assert.rejects(() => decodeAudioChunk({ chunk: 12 }), /invalide/);
-		await assert.rejects(() => decodeAudioChunk(undefined), /invalide/);
+		await assert.rejects(() => decodeAudioChunk({}), /E_INVALID_AUDIO_CHUNK/);
+		await assert.rejects(
+			() => decodeAudioChunk({ chunk: 12 }),
+			/E_INVALID_AUDIO_CHUNK/
+		);
+		await assert.rejects(
+			() => decodeAudioChunk(undefined),
+			/E_INVALID_AUDIO_CHUNK/
+		);
 	});
 
 	test('should reject a chunk that is not base64', async ({ assert }) => {
 		await assert.rejects(
 			() => decodeAudioChunk({ chunk: 'not base64 !' }),
-			/invalide/
+			/E_INVALID_AUDIO_CHUNK/
 		);
 	});
 
@@ -56,7 +62,7 @@ test.group('decodeAudioChunk', () => {
 	}) => {
 		await assert.rejects(
 			() => decodeAudioChunk({ chunk: toBase64(new Uint8Array([1, 2, 3])) }),
-			/invalide/
+			/E_INVALID_AUDIO_CHUNK/
 		);
 	});
 });

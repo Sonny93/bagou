@@ -1,4 +1,6 @@
+import type { DictationLanguage } from '#shared/dictation_language';
+
 export type OpenTranscriptionOptions = {
-	language: 'fr';
+	language: DictationLanguage;
 	vocabulary?: readonly string[];
 };

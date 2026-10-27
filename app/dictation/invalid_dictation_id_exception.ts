@@ -1,9 +1,11 @@
 import { SocketResponseError } from '@rlanz/socket';
 
+const CODE = 'E_INVALID_DICTATION_ID';
+
 export default class InvalidDictationIdException extends SocketResponseError {
-	readonly code = 'E_INVALID_DICTATION_ID';
+	readonly code = CODE;
 
 	constructor() {
-		super("L'identifiant de dictée est invalide");
+		super(CODE);
 	}
 }

@@ -41,7 +41,7 @@ test.group('parseDraftContext', () => {
 					textBefore: '',
 					textAfter: '',
 				}),
-			/invalide/
+			/E_INVALID_DRAFT_CONTEXT/
 		);
 	});
 
@@ -53,15 +53,18 @@ test.group('parseDraftContext', () => {
 					textBefore: 'a'.repeat(MAX_DRAFT_TEXT_LENGTH + 1),
 					textAfter: '',
 				}),
-			/invalide ou trop volumineux/
+			/E_INVALID_DRAFT_CONTEXT/
 		);
 	});
 
 	test('should reject a payload without texts', async ({ assert }) => {
 		await assert.rejects(
 			() => parseDraftContext({ draftId: DRAFT_ID }),
-			/invalide/
+			/E_INVALID_DRAFT_CONTEXT/
 		);
-		await assert.rejects(() => parseDraftContext(undefined), /invalide/);
+		await assert.rejects(
+			() => parseDraftContext(undefined),
+			/E_INVALID_DRAFT_CONTEXT/
+		);
 	});
 });

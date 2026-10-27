@@ -1,3 +1,5 @@
+import { useLingui } from '@lingui/react/macro';
+
 type TranscriptSearchInputProps = {
 	value: string;
 	onChange: (value: string) => void;
@@ -7,6 +9,7 @@ export function TranscriptSearchInput({
 	value,
 	onChange,
 }: Readonly<TranscriptSearchInputProps>) {
+	const { t } = useLingui();
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
 		onChange(event.target.value);
 
@@ -18,8 +21,8 @@ export function TranscriptSearchInput({
 			/>
 			<input
 				type="search"
-				aria-label="Rechercher dans l'historique"
-				placeholder="Rechercher une dictée"
+				aria-label={t`Search the history`}
+				placeholder={t`Search a dictation`}
 				value={value}
 				onChange={handleChange}
 				className="h-10 w-full rounded-xl border border-line bg-surface pl-9 pr-3 text-sm text-ink placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:focus-visible:outline-accent-400"

@@ -1,6 +1,7 @@
 import { inject } from '@adonisjs/core';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import type { DictationLanguage } from '#shared/dictation_language';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 import type { TranscriptionProviderError } from '#transcription/transcription_provider_error';
@@ -8,6 +9,7 @@ import type { TranscriptionSession } from '#transcription/transcription_session'
 import type { TranscriptionStreamResult } from '#transcription/transcription_stream_result';
 
 export type StreamOptions = {
+	language: DictationLanguage;
 	pcm: Uint8Array;
 	chunkIntervalMs: number;
 	onFinal: (text: string) => void;
@@ -25,7 +27,7 @@ export class TranscriptionStreamService {
 	async stream(
 		options: Readonly<StreamOptions>
 	): Promise<TranscriptionStreamResult> {
-		const session = await this.provider.open({ language: 'fr' });
+		const session = await this.provider.open({ language: options.language });
 		const streamStartedAt = performance.now();
 		let timeToFirstFinalMs: number | undefined;
 		session.on('final', ({ text }) => {

@@ -1,9 +1,11 @@
 import { SocketResponseError } from '@rlanz/socket';
 
+const CODE = 'E_DICTATION_NOT_ACTIVE';
+
 export default class DictationNotActiveException extends SocketResponseError {
-	readonly code = 'E_DICTATION_NOT_ACTIVE';
+	readonly code = CODE;
 
 	constructor() {
-		super("Aucune dictée n'est en cours");
+		super(CODE);
 	}
 }

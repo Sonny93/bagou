@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Hors ligne — Dictée vocale</title>
+		<title>Offline — Voice dictation</title>
 		<style>
 			:root {
 				color-scheme: light dark;
@@ -37,11 +37,19 @@
 	</head>
 	<body>
 		<main>
-			<h1>Hors ligne</h1>
+			<h1>Offline</h1>
 			<p>
-				La dictée a besoin du serveur. Vérifiez votre connexion puis rechargez
-				la page.
+				Dictation needs the server. Check your connection then reload the page.
 			</p>
 		</main>
+		<script>
+			if (navigator.language.toLowerCase().startsWith('fr')) {
+				document.documentElement.lang = 'fr';
+				document.title = 'Hors ligne — Dictée vocale';
+				document.querySelector('h1').textContent = 'Hors ligne';
+				document.querySelector('p').textContent =
+					'La dictée a besoin du serveur. Vérifiez votre connexion puis rechargez la page.';
+			}
+		</script>
 	</body>
 </html>

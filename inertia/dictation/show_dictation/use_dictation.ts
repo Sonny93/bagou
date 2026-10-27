@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import { appendLevel } from './append_level';
@@ -51,6 +52,7 @@ export function useDictation({
 	getDraftContext,
 	copyDraft,
 }: Readonly<UseDictationOptions>): UseDictationReturn {
+	const { i18n } = useLingui();
 	const [state, dispatch] = useReducer(
 		dictationReducer,
 		INITIAL_DICTATION_STATE
@@ -63,9 +65,15 @@ export function useDictation({
 		statusRef.current = state.status;
 	}, [state.status]);
 
-	const fail = useCallback((error: unknown) => {
-		dispatch({ type: 'failed', message: describeDictationError(error) });
-	}, []);
+	const fail = useCallback(
+		(error: unknown) => {
+			dispatch({
+				type: 'failed',
+				message: describeDictationError(error, i18n),
+			});
+		},
+		[i18n]
+	);
 
 	const start = useCallback(async () => {
 		if (!STARTABLE_STATUSES.has(statusRef.current)) return;

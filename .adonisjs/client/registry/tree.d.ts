@@ -2,6 +2,9 @@
 import type { routes } from './index.ts'
 
 export interface ApiDefinition {
+  pwa: {
+    showManifest: typeof routes['pwa.show_manifest']
+  }
   dictation: {
     showDictation: typeof routes['dictation.show_dictation']
   }
@@ -11,6 +14,10 @@ export interface ApiDefinition {
     cleanTranscript: typeof routes['transcription_history.clean_transcript']
     saveDraftText: typeof routes['transcription_history.save_draft_text']
     deleteTranscripts: typeof routes['transcription_history.delete_transcripts']
+  }
+  userSettings: {
+    showSettings: typeof routes['user_settings.show_settings']
+    updateSettings: typeof routes['user_settings.update_settings']
   }
   auth: {
     logout: typeof routes['auth.logout']

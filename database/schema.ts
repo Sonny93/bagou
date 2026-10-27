@@ -113,6 +113,27 @@ export class TranscriptSchema extends BaseModel {
   declare userId: number
 }
 
+export class UserSettingSchema extends BaseModel {
+  static $columns = ['cleanupInstructions', 'createdAt', 'dictationLanguage', 'id', 'interfaceLanguage', 'updatedAt', 'userId', 'vocabulary'] as const
+  $columns = UserSettingSchema.$columns
+  @column()
+  declare cleanupInstructions: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare dictationLanguage: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare interfaceLanguage: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+  @column()
+  declare vocabulary: any
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'updatedAt'] as const
   $columns = UserSchema.$columns

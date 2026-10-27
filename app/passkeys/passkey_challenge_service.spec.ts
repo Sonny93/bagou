@@ -40,7 +40,7 @@ test.group('PasskeyChallengeService', (group) => {
 		assert.equal(challenge, 'challenge-1');
 		assert.throws(
 			() => service.consume(store, CEREMONIES.registration),
-			/expiré/
+			/expired/
 		);
 	});
 
@@ -75,7 +75,7 @@ test.group('PasskeyChallengeService', (group) => {
 
 		assert.throws(
 			() => service.consume(store, CEREMONIES.authentication),
-			/expiré/
+			/expired/
 		);
 	});
 
@@ -86,7 +86,7 @@ test.group('PasskeyChallengeService', (group) => {
 
 		assert.throws(
 			() => service.consume(store, CEREMONIES.registration),
-			/expiré/
+			/expired/
 		);
 	});
 });

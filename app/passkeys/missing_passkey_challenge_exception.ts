@@ -9,6 +9,6 @@ export default class MissingPasskeyChallengeException extends Exception {
 	static code = 'E_MISSING_PASSKEY_CHALLENGE';
 
 	constructor() {
-		super('La demande a expiré, recommence');
+		super('The passkey challenge is missing or has expired');
 	}
 }

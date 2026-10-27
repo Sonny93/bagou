@@ -1,3 +1,6 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
+
 import { BusyStatus } from './busy_status';
 import { CopyControls } from './copy_controls';
 import type { CopyStatus } from './copy_status';
@@ -23,10 +26,10 @@ type DictationDockProps = {
 };
 
 const BUSY_LABELS = {
-	connecting: 'Connexion…',
-	finishing: 'Finalisation…',
-	cleaning: 'Nettoyage du texte…',
-} as const satisfies Partial<Record<DictationState['status'], string>>;
+	connecting: msg`Connecting…`,
+	finishing: msg`Finishing…`,
+	cleaning: msg`Cleaning the text…`,
+} as const satisfies Partial<Record<DictationState['status'], unknown>>;
 
 export function DictationDock({
 	state,
@@ -40,6 +43,7 @@ export function DictationDock({
 	onFinish,
 	onCancel,
 }: Readonly<DictationDockProps>) {
+	const { i18n } = useLingui();
 	const mic = (
 		<MicButton
 			isRecording={state.status === 'recording'}
@@ -51,7 +55,7 @@ export function DictationDock({
 	);
 	const quota = (
 		<p className="truncate text-sm text-muted">
-			{formatRemainingQuota(remainingMinutes)}
+			{formatRemainingQuota(remainingMinutes, i18n)}
 		</p>
 	);
 
@@ -71,7 +75,7 @@ export function DictationDock({
 			return (
 				<DockLayout
 					mic={mic}
-					status={<BusyStatus label={BUSY_LABELS[state.status]} />}
+					status={<BusyStatus label={i18n._(BUSY_LABELS[state.status])} />}
 				/>
 			);
 		case 'idle':

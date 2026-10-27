@@ -30,7 +30,7 @@ test.group('DeletePasskeyController', (group) => {
 		assert.equal((await Passkey.all()).length, 1);
 	});
 
-	test('should return 409 and keep the passkey when it is the last one', async ({
+	test('should return 409 and keep the passkey, exposing the error code, when it is the last one', async ({
 		client,
 		assert,
 	}) => {
@@ -41,10 +41,12 @@ test.group('DeletePasskeyController', (group) => {
 
 		const response = await client
 			.delete(`/passkeys/${lastPasskey.id}`)
+			.header('Accept', 'application/json')
 			.loginAs(user)
 			.withCsrfToken();
 
 		response.assertStatus(409);
+		response.assertBodyContains({ code: 'E_LAST_PASSKEY' });
 		assert.isNotNull(await Passkey.find(lastPasskey.id));
 	});
 

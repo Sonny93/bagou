@@ -1,12 +1,16 @@
-import { args, BaseCommand } from '@adonisjs/core/ace';
+import { args, BaseCommand, flags } from '@adonisjs/core/ace';
 import type { CommandOptions } from '@adonisjs/core/types/ace';
 import { readFile } from 'node:fs/promises';
 
+import { parseDictationLanguage } from '#shared/parse_dictation_language';
+import { UnknownDictationLanguageError } from '#shared/unknown_dictation_language_error';
 import { InvalidWavFileError } from '#transcription/invalid_wav_file_error';
 import { parseWav } from '#transcription/parse_wav';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import { TranscriptionStreamService } from '#transcription/transcription_stream_service';
+
+const DEFAULT_LANGUAGE: string = 'fr';
 
 export default class StreamTranscription extends BaseCommand {
 	static commandName = 'transcription:stream';
@@ -17,12 +21,19 @@ export default class StreamTranscription extends BaseCommand {
 	@args.string({ description: 'Path to the WAV file' })
 	declare filePath: string;
 
+	@flags.string({
+		description: 'Language of the audio (fr or en)',
+		default: DEFAULT_LANGUAGE,
+	})
+	declare language: string;
+
 	async run() {
 		try {
 			await this.#streamFile();
 		} catch (error) {
 			if (
 				!(error instanceof InvalidWavFileError) &&
+				!(error instanceof UnknownDictationLanguageError) &&
 				!(error instanceof TranscriptionProviderError)
 			) {
 				throw error;
@@ -38,6 +49,7 @@ export default class StreamTranscription extends BaseCommand {
 			TranscriptionStreamService
 		);
 		const result = await streamService.stream({
+			language: parseDictationLanguage(this.language),
 			pcm,
 			chunkIntervalMs: PCM_AUDIO_FORMAT.chunkDurationMs,
 			onFinal: (text) => process.stdout.write(text),

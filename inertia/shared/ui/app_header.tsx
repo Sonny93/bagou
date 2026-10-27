@@ -1,4 +1,5 @@
 import { Link } from '@adonisjs/inertia/react';
+import { Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 
 import { cn } from '~/shared/lib/cn';
@@ -35,7 +36,7 @@ export const AppHeader = ({
 					height={BRAND_ICON_SIZE}
 					alt=""
 				/>
-				Dictée
+				<Trans>Dictation</Trans>
 			</Link>
 			<div className="flex items-center gap-2 sm:gap-3">{children}</div>
 		</div>

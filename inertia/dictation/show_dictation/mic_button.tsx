@@ -1,3 +1,6 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Kbd, Tooltip } from '@minimalstuff/ui';
 import { useEffect, useRef } from 'react';
 
@@ -22,9 +25,15 @@ const getIcon = (isRecording: boolean, isBusy: boolean): string => {
 	return isRecording ? 'i-tabler-player-stop-filled' : 'i-tabler-microphone';
 };
 
-const getLabel = (isRecording: boolean, hasDraftText: boolean): string => {
-	if (isRecording) return 'Terminer la dictée';
-	return hasDraftText ? 'Continuer la dictée' : 'Démarrer la dictée';
+const getLabel = (
+	isRecording: boolean,
+	hasDraftText: boolean,
+	i18n: I18n
+): string => {
+	if (isRecording) return i18n._(msg`Finish the dictation`);
+	return hasDraftText
+		? i18n._(msg`Continue the dictation`)
+		: i18n._(msg`Start the dictation`);
 };
 
 /** The one dictation toggle: starts a segment, finishes it, or waits while busy. */
@@ -35,13 +44,14 @@ export function MicButton({
 	onStart,
 	onFinish,
 }: Readonly<MicButtonProps>) {
+	const { i18n } = useLingui();
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		buttonRef.current?.focus();
 	}, []);
 
-	const label = getLabel(isRecording, hasDraftText);
+	const label = getLabel(isRecording, hasDraftText, i18n);
 	const handleClick = isRecording ? onFinish : onStart;
 
 	return (
@@ -50,7 +60,10 @@ export function MicButton({
 			disabled={isBusy}
 			content={
 				<>
-					{label} <Kbd>Entrée</Kbd>
+					{label}{' '}
+					<Kbd>
+						<Trans>Enter</Trans>
+					</Kbd>
 				</>
 			}
 		>

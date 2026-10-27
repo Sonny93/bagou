@@ -41,7 +41,7 @@ test.group('PasskeyInvitationService', (group) => {
 
 		await assert.rejects(
 			() => service.assertUsable('unknown-token'),
-			/invalide/
+			/invalid/
 		);
 	});
 
@@ -52,7 +52,7 @@ test.group('PasskeyInvitationService', (group) => {
 			expiresAt: DateTime.now().minus({ seconds: 1 }).toJSDate(),
 		});
 
-		await assert.rejects(() => service.assertUsable(token), /invalide/);
+		await assert.rejects(() => service.assertUsable(token), /invalid/);
 	});
 
 	test('should consume a token only once', async ({ assert }) => {
@@ -63,7 +63,7 @@ test.group('PasskeyInvitationService', (group) => {
 		await service.consume(token, transaction);
 		const secondConsumption = service.consume(token, transaction);
 
-		await assert.rejects(() => secondConsumption, /invalide/);
+		await assert.rejects(() => secondConsumption, /invalid/);
 		await transaction.rollback();
 	});
 });

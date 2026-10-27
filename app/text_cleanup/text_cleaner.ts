@@ -1,3 +1,5 @@
+import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
+
 /**
  * Port to a text cleanup engine. An abstract class so it can serve as the
  * container token (types do not exist at runtime); the single adapter lives
@@ -5,5 +7,8 @@
  */
 export abstract class TextCleaner {
 	/** Resolves to the cleaned text or throws `TextCleanupUnavailableException`. */
-	abstract clean(text: string): Promise<string>;
+	abstract clean(
+		text: string,
+		preferences: Readonly<CleanupPreferences>
+	): Promise<string>;
 }

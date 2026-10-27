@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
 import { describePasskeyError } from '~/passkeys/describe_passkey_error';
@@ -16,6 +17,7 @@ export function usePasskeyRegistration(
 	target: RegistrationTarget,
 	onRegistered: () => void
 ): UsePasskeyRegistrationReturn {
+	const { i18n } = useLingui();
 	const [isRegistering, setIsRegistering] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -26,7 +28,7 @@ export function usePasskeyRegistration(
 			await registerPasskey({ target, label });
 			onRegistered();
 		} catch (error) {
-			setErrorMessage(describePasskeyError(error));
+			setErrorMessage(describePasskeyError(error, i18n));
 		} finally {
 			setIsRegistering(false);
 		}

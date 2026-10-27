@@ -25,8 +25,8 @@ export function createSocketDictationTransport(): DictationTransport {
 				.listen('transcript:partial', ({ text }) => listener.onPartial(text))
 				.listen('transcript:final', ({ text }) => listener.onFinal(text))
 				.listen('transcript:finished', ({ text }) => listener.onFinished(text))
-				.listen('transcript:error', ({ message }) =>
-					listener.onProviderError(message)
+				.listen('transcript:error', ({ code }) =>
+					listener.onProviderError(code)
 				);
 			await channel.subscribe();
 			return {

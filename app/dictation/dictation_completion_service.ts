@@ -5,6 +5,7 @@ import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import type { DictationTranscript } from '#dictation/dictation_transcript';
 import type { DraftContext } from '#dictation/draft_context';
 import { joinDraft } from '#dictation/join_draft';
+import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import type { DraftSegment } from '#transcription_history/draft_segment';
@@ -27,12 +28,16 @@ export class DictationCompletionService {
 	async complete(
 		userId: number,
 		draft: Readonly<DraftContext>,
-		rawSegment: string
+		rawSegment: string,
+		preferences: Readonly<CleanupPreferences>
 	): Promise<DictationTranscript> {
 		if (rawSegment.trim() === '') {
 			return { rawText: rawSegment, cleanedDraft: null };
 		}
-		const cleanedDraft = await this.#cleanOrNull(joinDraft(draft, rawSegment));
+		const cleanedDraft = await this.#cleanOrNull(
+			joinDraft(draft, rawSegment),
+			preferences
+		);
 		await this.#saveOrLog(userId, draft.draftId, { rawSegment, cleanedDraft });
 		return { rawText: rawSegment, cleanedDraft };
 	}
@@ -61,9 +66,12 @@ export class DictationCompletionService {
 		}
 	}
 
-	async #cleanOrNull(draftText: string): Promise<string | null> {
+	async #cleanOrNull(
+		draftText: string,
+		preferences: Readonly<CleanupPreferences>
+	): Promise<string | null> {
 		try {
-			return await this.textCleanupService.clean(draftText);
+			return await this.textCleanupService.clean(draftText, preferences);
 		} catch (error) {
 			if (error instanceof TextCleanupUnavailableException) return null;
 			throw error;

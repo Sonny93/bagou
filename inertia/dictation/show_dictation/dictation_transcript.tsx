@@ -1,7 +1,7 @@
+import { Trans } from '@lingui/react/macro';
+
 import { LiveCaret } from './live_caret';
 import { cn } from '~/shared/lib/cn';
-
-const PLACEHOLDER = "Parle, le texte s'écrit ici.";
 
 type DictationTranscriptProps = {
 	textBefore: string;
@@ -36,7 +36,9 @@ export function DictationTranscript({
 		visiblePartialText === '';
 	const placeholder =
 		isEmpty && hasPlaceholder ? (
-			<span className="text-muted">{PLACEHOLDER}</span>
+			<span className="text-muted">
+				<Trans>Speak, the text is written here.</Trans>
+			</span>
 		) : null;
 
 	return (

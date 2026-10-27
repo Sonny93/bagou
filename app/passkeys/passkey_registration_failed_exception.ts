@@ -8,6 +8,6 @@ export default class PasskeyRegistrationFailedException extends Exception {
 	static code = 'E_PASSKEY_REGISTRATION_FAILED';
 
 	constructor(options?: ErrorOptions) {
-		super("La passkey n'a pas pu être enregistrée", options);
+		super('The passkey could not be registered', options);
 	}
 }

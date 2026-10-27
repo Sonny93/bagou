@@ -1,4 +1,5 @@
 import type { Data } from '@generated/data';
+import { useLingui } from '@lingui/react/macro';
 import { Badge, IconButton } from '@minimalstuff/ui';
 
 import { formatTranscriptDate } from './format_transcript_date';
@@ -18,6 +19,7 @@ export function TranscriptRow({
 	transcript,
 	onDelete,
 }: Readonly<TranscriptRowProps>) {
+	const { t, i18n } = useLingui();
 	const { cleanedText, rawText } = transcript;
 	const displayedText = cleanedText ?? rawText;
 	const { clean, isCleaning, errorMessage } = useCleanTranscript(transcript.id);
@@ -29,17 +31,17 @@ export function TranscriptRow({
 		<li className="flex flex-col gap-2 px-4 py-3">
 			<div className="flex items-center gap-2">
 				<span className="flex-1 text-sm text-muted">
-					{formatTranscriptDate(transcript.createdAt)}
+					{formatTranscriptDate(transcript.createdAt, i18n.locale)}
 				</span>
 				{cleanedText === null && (
 					<Badge color="warning" variant="subtle">
-						non nettoyé
+						{t`not cleaned`}
 					</Badge>
 				)}
 				{cleanedText === null && (
 					<IconButton
 						icon={isCleaning ? CLEANING_ICON : CLEAN_ICON}
-						aria-label="Nettoyer le texte"
+						aria-label={t`Clean the text`}
 						aria-busy={isCleaning}
 						variant="ghost"
 						size="sm"
@@ -50,7 +52,7 @@ export function TranscriptRow({
 				)}
 				<IconButton
 					icon="i-tabler-copy"
-					aria-label="Copier le texte"
+					aria-label={t`Copy the text`}
 					variant="ghost"
 					size="sm"
 					tooltip
@@ -58,7 +60,7 @@ export function TranscriptRow({
 				/>
 				<IconButton
 					icon="i-tabler-trash"
-					aria-label="Supprimer la dictée"
+					aria-label={t`Delete the dictation`}
 					variant="ghost"
 					color="danger"
 					size="sm"

@@ -5,6 +5,6 @@ export default class TranscriptNotFoundException extends Exception {
 	static code = 'E_TRANSCRIPT_NOT_FOUND';
 
 	constructor() {
-		super('Dictée introuvable');
+		super('Transcript not found');
 	}
 }

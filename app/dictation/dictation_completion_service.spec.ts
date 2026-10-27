@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 
 import { UserFactory } from '#database/factories/user_factory';
 import { DictationCompletionService } from '#dictation/dictation_completion_service';
+import { FRENCH_CLEANUP_PREFERENCES } from '#tests/helpers/cleanup_preferences_fixture';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
@@ -12,6 +13,7 @@ import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavaila
 import type { DraftSegment } from '#transcription_history/draft_segment';
 import Transcript from '#transcription_history/transcript';
 import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
+import { UserSettingsService } from '#user_settings/user_settings_service';
 
 class FailingTranscriptHistoryService extends TranscriptHistoryService {
 	override appendSegment(
@@ -38,7 +40,8 @@ function createServiceFor(
 	textCleaner: FakeTextCleaner,
 	historyService: TranscriptHistoryService = new TranscriptHistoryService(
 		new FixedClock(DateTime.now()),
-		new TextCleanupService(textCleaner)
+		new TextCleanupService(textCleaner),
+		new UserSettingsService()
 	)
 ) {
 	const { logger, lines } = createRecordingLogger();
@@ -66,12 +69,31 @@ test.group('DictationCompletionService', (group) => {
 	}) => {
 		const { service, user } = await createService(new FakeTextCleaner());
 
-		const transcript = await service.complete(user.id, DRAFT, 'euh bonjour');
+		const transcript = await service.complete(
+			user.id,
+			DRAFT,
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		assert.deepEqual(transcript, {
 			rawText: 'euh bonjour',
 			cleanedDraft: 'AVANT. EUH BONJOUR APRÈS.',
 		});
+	});
+
+	test('should clean with the given preferences', async ({ assert }) => {
+		const textCleaner = new FakeTextCleaner();
+		const { service, user } = await createService(textCleaner);
+		const preferences = {
+			language: 'en',
+			vocabulary: ['Adonis'],
+			instructions: 'Use bullet points',
+		} as const;
+
+		await service.complete(user.id, DRAFT, 'um hello', preferences);
+
+		assert.deepEqual(textCleaner.receivedPreferences, [preferences]);
 	});
 
 	test('should clean the whole draft with the segment between the text before and after', async ({
@@ -80,7 +102,12 @@ test.group('DictationCompletionService', (group) => {
 		const textCleaner = new FakeTextCleaner();
 		const { service, user } = await createService(textCleaner);
 
-		await service.complete(user.id, DRAFT, ' euh bonjour ');
+		await service.complete(
+			user.id,
+			DRAFT,
+			' euh bonjour ',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		assert.deepEqual(textCleaner.cleaned, ['Avant. euh bonjour Après.']);
 	});
@@ -90,7 +117,12 @@ test.group('DictationCompletionService', (group) => {
 	}) => {
 		const { service, user } = await createService(new FakeTextCleaner());
 
-		await service.complete(user.id, DRAFT, 'euh bonjour');
+		await service.complete(
+			user.id,
+			DRAFT,
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		const [saved] = await Transcript.query().where('userId', user.id);
 		assert.equal(saved?.draftId, DRAFT.draftId);
@@ -104,7 +136,12 @@ test.group('DictationCompletionService', (group) => {
 		const textCleaner = new FakeTextCleaner();
 		const { service, user } = await createService(textCleaner);
 
-		const transcript = await service.complete(user.id, DRAFT, '  ');
+		const transcript = await service.complete(
+			user.id,
+			DRAFT,
+			'  ',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		assert.deepEqual(transcript, { rawText: '  ', cleanedDraft: null });
 		assert.lengthOf(textCleaner.cleaned, 0);
@@ -118,7 +155,12 @@ test.group('DictationCompletionService', (group) => {
 			new FakeTextCleaner(new TextCleanupUnavailableException())
 		);
 
-		const transcript = await service.complete(user.id, DRAFT, 'euh bonjour');
+		const transcript = await service.complete(
+			user.id,
+			DRAFT,
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		assert.deepEqual(transcript, {
 			rawText: 'euh bonjour',
@@ -133,12 +175,17 @@ test.group('DictationCompletionService', (group) => {
 		assert,
 	}) => {
 		const { service, user } = await createService(new FakeTextCleaner());
-		await service.complete(user.id, DRAFT, 'un');
+		await service.complete(user.id, DRAFT, 'un', FRENCH_CLEANUP_PREFERENCES);
 		const failing = createServiceFor(
 			new FakeTextCleaner(new TextCleanupUnavailableException())
 		);
 
-		await failing.service.complete(user.id, DRAFT, 'deux');
+		await failing.service.complete(
+			user.id,
+			DRAFT,
+			'deux',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		const [saved] = await Transcript.query().where('userId', user.id);
 		assert.equal(saved?.rawText, 'un deux');
@@ -151,7 +198,13 @@ test.group('DictationCompletionService', (group) => {
 		);
 
 		await assert.rejects(
-			() => service.complete(user.id, DRAFT, 'euh bonjour'),
+			() =>
+				service.complete(
+					user.id,
+					DRAFT,
+					'euh bonjour',
+					FRENCH_CLEANUP_PREFERENCES
+				),
 			/boom/
 		);
 	});
@@ -163,11 +216,17 @@ test.group('DictationCompletionService', (group) => {
 			new FakeTextCleaner(),
 			new FailingTranscriptHistoryService(
 				new FixedClock(DateTime.now()),
-				new TextCleanupService(new FakeTextCleaner())
+				new TextCleanupService(new FakeTextCleaner()),
+				new UserSettingsService()
 			)
 		);
 
-		const transcript = await service.complete(user.id, DRAFT, 'texte secret');
+		const transcript = await service.complete(
+			user.id,
+			DRAFT,
+			'texte secret',
+			FRENCH_CLEANUP_PREFERENCES
+		);
 
 		assert.equal(transcript.cleanedDraft, 'AVANT. TEXTE SECRET APRÈS.');
 		const logs = lines.map((line) => JSON.parse(line));
@@ -198,7 +257,7 @@ test.group('DictationCompletionService', (group) => {
 		assert,
 	}) => {
 		const { service, user } = await createService(new FakeTextCleaner());
-		await service.complete(user.id, DRAFT, 'un');
+		await service.complete(user.id, DRAFT, 'un', FRENCH_CLEANUP_PREFERENCES);
 
 		await service.keepRaw(user.id, DRAFT.draftId, 'deux');
 
@@ -224,7 +283,8 @@ test.group('DictationCompletionService', (group) => {
 			new FakeTextCleaner(),
 			new FailingTranscriptHistoryService(
 				new FixedClock(DateTime.now()),
-				new TextCleanupService(new FakeTextCleaner())
+				new TextCleanupService(new FakeTextCleaner()),
+				new UserSettingsService()
 			)
 		);
 

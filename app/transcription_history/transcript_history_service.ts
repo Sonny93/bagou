@@ -8,6 +8,8 @@ import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import type { DraftSegment } from '#transcription_history/draft_segment';
 import Transcript from '#transcription_history/transcript';
 import TranscriptNotFoundException from '#transcription_history/transcript_not_found_exception';
+import { toCleanupPreferences } from '#user_settings/to_cleanup_preferences';
+import { UserSettingsService } from '#user_settings/user_settings_service';
 
 export const TRANSCRIPTS_PER_PAGE = 20;
 
@@ -22,7 +24,8 @@ type TranscriptListing = {
 export class TranscriptHistoryService {
 	constructor(
 		private readonly clock: Clock,
-		private readonly textCleanupService: TextCleanupService
+		private readonly textCleanupService: TextCleanupService,
+		private readonly userSettingsService: UserSettingsService
 	) {}
 
 	/**
@@ -91,7 +94,8 @@ export class TranscriptHistoryService {
 
 	/**
 	 * Cleans the stored raw text of an entry that has no cleaned text yet; an
-	 * already cleaned one is left alone so no credits are spent twice.
+	 * already cleaned one is left alone so no credits are spent twice. Uses the
+	 * user's current language, vocabulary and instructions.
 	 */
 	async clean(userId: number, id: number): Promise<void> {
 		const transcript = await Transcript.findOwned(
@@ -101,8 +105,10 @@ export class TranscriptHistoryService {
 		);
 		if (!transcript) throw new TranscriptNotFoundException();
 		if (transcript.cleanedText !== null) return;
+		const settings = await this.userSettingsService.get(userId);
 		transcript.cleanedText = await this.textCleanupService.clean(
-			transcript.rawText
+			transcript.rawText,
+			toCleanupPreferences(settings)
 		);
 		await transcript.save();
 	}

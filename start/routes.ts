@@ -5,6 +5,10 @@ import { middleware } from '#start/kernel';
 import { cleanupThrottle } from '#start/limiter';
 
 router
+	.get('/manifest.webmanifest', [controllers.pwa.ShowManifest, 'render'])
+	.as('pwa.show_manifest');
+
+router
 	.group(() => {
 		router
 			.get('/', [controllers.dictation.ShowDictation, 'render'])
@@ -46,6 +50,12 @@ router
 					.as('transcription_history.delete_transcripts');
 			})
 			.prefix('/history');
+		router
+			.get('/settings', [controllers.userSettings.ShowSettings, 'render'])
+			.as('user_settings.show_settings');
+		router
+			.put('/settings', [controllers.userSettings.UpdateSettings, 'execute'])
+			.as('user_settings.update_settings');
 		router
 			.post('/logout', [controllers.auth.Logout, 'execute'])
 			.as('auth.logout');

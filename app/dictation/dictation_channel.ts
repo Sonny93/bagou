@@ -6,7 +6,6 @@ import type { AuthenticatedSocket } from '@rlanz/socket/types';
 import { decodeAudioChunk } from '#dictation/decode_audio_chunk';
 import type { Dictation } from '#dictation/dictation';
 import DictationAlreadyActiveException from '#dictation/dictation_already_active_exception';
-import { DICTATION_ERROR_MESSAGES } from '#dictation/dictation_error_messages';
 import DictationNotActiveException from '#dictation/dictation_not_active_exception';
 import type { DictationServerEvents } from '#dictation/dictation_server_events';
 import { DictationService } from '#dictation/dictation_service';
@@ -100,9 +99,7 @@ export default class DictationChannel extends BaseChannel<
 		} catch (error) {
 			if (error instanceof SocketResponseError) throw error;
 			if (error instanceof TranscriptionProviderError) {
-				throw new DictationUnavailableException(
-					DICTATION_ERROR_MESSAGES[error.code]
-				);
+				throw new DictationUnavailableException(error.code);
 			}
 			throw new DictationUnavailableException();
 		}

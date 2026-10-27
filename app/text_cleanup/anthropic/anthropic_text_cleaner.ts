@@ -7,6 +7,7 @@ import type {
 
 import { buildCleanupRequest } from '#text_cleanup/anthropic/build_cleanup_request';
 import { readCleanedText } from '#text_cleanup/anthropic/read_cleaned_text';
+import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
 import { TextCleaner } from '#text_cleanup/text_cleaner';
 import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
@@ -37,9 +38,12 @@ export class AnthropicTextCleaner extends TextCleaner {
 		super();
 	}
 
-	async clean(text: string): Promise<string> {
+	async clean(
+		text: string,
+		preferences: Readonly<CleanupPreferences>
+	): Promise<string> {
 		const startedAt = Date.now();
-		const message = await this.#send(text, startedAt);
+		const message = await this.#send(text, preferences, startedAt);
 		const cleanedText = this.#extractCleanedText(message, startedAt);
 		this.logger.info(
 			{
@@ -54,9 +58,15 @@ export class AnthropicTextCleaner extends TextCleaner {
 		return cleanedText;
 	}
 
-	async #send(text: string, startedAt: number): Promise<Message> {
+	async #send(
+		text: string,
+		preferences: Readonly<CleanupPreferences>,
+		startedAt: number
+	): Promise<Message> {
 		try {
-			return await this.client.messages.create(buildCleanupRequest(text));
+			return await this.client.messages.create(
+				buildCleanupRequest(text, preferences)
+			);
 		} catch (error) {
 			if (error instanceof Anthropic.APIConnectionError) {
 				return this.#fail('connection_error', startedAt);

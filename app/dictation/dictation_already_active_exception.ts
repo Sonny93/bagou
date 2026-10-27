@@ -1,9 +1,11 @@
 import { SocketResponseError } from '@rlanz/socket';
 
+const CODE = 'E_DICTATION_ALREADY_ACTIVE';
+
 export default class DictationAlreadyActiveException extends SocketResponseError {
-	readonly code = 'E_DICTATION_ALREADY_ACTIVE';
+	readonly code = CODE;
 
 	constructor() {
-		super('Une dictée est déjà en cours');
+		super(CODE);
 	}
 }

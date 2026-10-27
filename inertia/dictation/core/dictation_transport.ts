@@ -5,7 +5,7 @@ export type TranscriptListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
-	onProviderError(message: string): void;
+	onProviderError(code: string): void;
 };
 
 /** One dictation channel, already subscribed. */

@@ -5,16 +5,17 @@ export type DictationClientErrorCode =
 	| 'provider_error';
 
 /**
- * `message` is only meaningful for `rejected` and `provider_error`, where it
- * is the server's safe French wording; the other codes are worded by the UI.
+ * `serverCode` is the stable error code sent by the server, set for
+ * `rejected` and `provider_error` when the server gave one; the UI words every
+ * code itself.
  */
 export class DictationClientError extends Error {
 	override readonly name = 'DictationClientError';
 
 	constructor(
 		readonly code: DictationClientErrorCode,
-		message: string = code
+		readonly serverCode: string | null = null
 	) {
-		super(message);
+		super(serverCode ?? code);
 	}
 }

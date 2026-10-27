@@ -3,6 +3,8 @@ import type { CommandOptions } from '@adonisjs/core/types/ace';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { parseDictationLanguage } from '#shared/parse_dictation_language';
+import { UnknownDictationLanguageError } from '#shared/unknown_dictation_language_error';
 import { aggregateResults } from '#stt_bench/aggregate_results';
 import { BENCH_PROVIDER_REGISTRY } from '#stt_bench/bench_provider_registry';
 import { BenchRunner } from '#stt_bench/bench_runner';
@@ -24,6 +26,7 @@ import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 
+const DEFAULT_LANGUAGE: string = 'fr';
 const DEFAULT_SAMPLES_DIRECTORY = 'bench/samples';
 const RESULTS_DIRECTORY = 'bench/results';
 
@@ -47,11 +50,22 @@ export default class BenchTranscription extends BaseCommand {
 	@flags.number({ description: 'Run only the first n samples' })
 	declare limit: number | undefined;
 
+	@flags.string({
+		description: 'Language of the samples (fr or en)',
+		default: DEFAULT_LANGUAGE,
+	})
+	declare language: string;
+
 	async run() {
 		try {
 			await this.#benchSelectedProviders();
 		} catch (error) {
-			if (!(error instanceof UnknownBenchProviderError)) throw error;
+			if (
+				!(error instanceof UnknownBenchProviderError) &&
+				!(error instanceof UnknownDictationLanguageError)
+			) {
+				throw error;
+			}
 			this.logger.error(`${error.code}: ${error.message}`);
 			this.exitCode = 1;
 		}
@@ -92,6 +106,7 @@ export default class BenchTranscription extends BaseCommand {
 		const entry = BENCH_PROVIDER_REGISTRY[providerName];
 		this.logger.info(`Provider ${providerName}: ${samples.length} sample(s)`);
 		const results = await runner.run({
+			language: parseDictationLanguage(this.language),
 			provider: entry.createProvider(),
 			samples,
 			chunkIntervalMs: PCM_AUDIO_FORMAT.chunkDurationMs,

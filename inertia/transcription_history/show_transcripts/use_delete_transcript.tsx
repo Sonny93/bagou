@@ -1,17 +1,20 @@
 import type { Data } from '@generated/data';
 import { router } from '@inertiajs/react';
+import { useLingui } from '@lingui/react/macro';
 import { ConfirmModal } from '@minimalstuff/ui';
 
 import { TranscriptQuote } from './transcript_quote';
 import { urlFor } from '~/shared/lib/url_for';
 
 export function useDeleteTranscript(): (transcript: Data.Transcript) => void {
+	const { t } = useLingui();
+
 	const confirmAndDelete = async (
 		transcript: Data.Transcript
 	): Promise<void> => {
 		const isConfirmed = await ConfirmModal.call({
-			title: 'Supprimer cette dictée ?',
-			confirmLabel: 'Supprimer',
+			title: t`Delete this dictation?`,
+			confirmLabel: t`Delete`,
 			confirmColor: 'danger',
 			children: (
 				<TranscriptQuote

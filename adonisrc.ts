@@ -13,6 +13,7 @@ const DOMAINS = [
 	'stt_bench',
 	'text_cleanup',
 	'transcription',
+	'user_settings',
 	'users',
 ];
 
@@ -67,6 +68,7 @@ export default defineConfig({
 					'app/**/*_cleaner.spec.ts',
 					'app/**/*_provider.spec.ts',
 					'app/**/parse_*.spec.ts',
+					'app/**/build_*.spec.ts',
 					'app/**/join_*.spec.ts',
 					'app/**/decode_*.spec.ts',
 					'app/**/describe_*.spec.ts',

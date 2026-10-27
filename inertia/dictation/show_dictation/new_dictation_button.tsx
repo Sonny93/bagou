@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro';
 import { Button, Kbd } from '@minimalstuff/ui';
 
 type NewDictationButtonProps = {
@@ -8,7 +9,9 @@ export const NewDictationButton = ({
 	onStart,
 }: Readonly<NewDictationButtonProps>) => (
 	<Button variant="ghost" onClick={onStart}>
-		Nouvelle<span className="hidden sm:inline"> dictée</span>{' '}
+		<Trans>
+			New<span className="hidden sm:inline"> dictation</span>
+		</Trans>{' '}
 		<Kbd className="hidden sm:inline-flex">N</Kbd>
 	</Button>
 );

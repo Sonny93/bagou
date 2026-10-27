@@ -10,6 +10,6 @@ export default class InvalidPasskeyInvitationException extends Exception {
 	static code = 'E_INVALID_PASSKEY_INVITATION';
 
 	constructor() {
-		super("Ce lien d'invitation est invalide ou a expiré");
+		super('The invitation link is invalid or has expired');
 	}
 }

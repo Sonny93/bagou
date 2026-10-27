@@ -99,7 +99,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => runMiddlewares(user, 'not-a-uuid'),
-			/identifiant de dictée est invalide/
+			/E_INVALID_DICTATION_ID/
 		);
 	});
 
@@ -118,7 +118,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', { draftId: 'nope' }),
-			/brouillon est invalide/
+			/E_INVALID_DRAFT_CONTEXT/
 		);
 		assert.lengthOf(provider.openedWith, 0);
 	});
@@ -171,7 +171,7 @@ test.group('DictationChannel', (group) => {
 		restoreTextCleaner();
 	});
 
-	test('should broadcast a safe French error when the provider fails', async ({
+	test('should broadcast only the error code when the provider fails', async ({
 		assert,
 	}) => {
 		const fake = socketService.fake();
@@ -188,7 +188,6 @@ test.group('DictationChannel', (group) => {
 		fake.assertEmittedTo(CHANNEL_NAME, 'transcript:error', {
 			data: {
 				code: TranscriptionErrorCode.providerRejected,
-				message: 'Le service de transcription a refusé la dictée.',
 			},
 		});
 		assert.notInclude(JSON.stringify(fake.emissions), 'internal detail');
@@ -202,7 +201,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:audio', { chunk: 'not base64 !' }),
-			/segment audio est invalide/
+			/E_INVALID_AUDIO_CHUNK/
 		);
 		assert.lengthOf(session.sentAudio, 0);
 	});
@@ -215,7 +214,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			/dictée est déjà en cours/
+			/E_DICTATION_ALREADY_ACTIVE/
 		);
 		assert.lengthOf(provider.openedWith, 1);
 	});
@@ -227,12 +226,15 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:audio', { chunk: VALID_CHUNK }),
-			/Aucune dictée/
+			/E_DICTATION_NOT_ACTIVE/
 		);
-		await assert.rejects(() => send('dictation:stop'), /Aucune dictée/);
+		await assert.rejects(
+			() => send('dictation:stop'),
+			/E_DICTATION_NOT_ACTIVE/
+		);
 	});
 
-	test('should acknowledge a provider start failure with the safe message of its code', async ({
+	test('should acknowledge a provider start failure with the provider error code', async ({
 		assert,
 	}) => {
 		const failingProvider = new FakeTranscriptionProvider(
@@ -247,7 +249,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			'Impossible de joindre le service de transcription.'
+			TranscriptionErrorCode.connectionFailed
 		);
 		restoreProvider();
 	});
@@ -264,7 +266,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			'La dictée est momentanément indisponible'
+			'E_DICTATION_UNAVAILABLE'
 		);
 		restoreProvider();
 	});
@@ -325,7 +327,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			'Quota quotidien de dictée atteint, réessaie demain'
+			'E_DICTATION_QUOTA_EXCEEDED'
 		);
 		assert.lengthOf(provider.openedWith, 0);
 	});
@@ -341,7 +343,7 @@ test.group('DictationChannel', (group) => {
 
 		await assert.rejects(
 			() => send('dictation:start', DRAFT_CONTEXT),
-			'Trop de dictées lancées, patiente une minute'
+			'E_DICTATION_RATE_LIMITED'
 		);
 		assert.lengthOf(provider.openedWith, START_REQUESTS_PER_MINUTE);
 	});
@@ -376,7 +378,7 @@ test.group('DictationChannel', (group) => {
 		const [, secondOutcome] = outcomes;
 		assert.equal(secondOutcome?.status, 'rejected');
 		if (secondOutcome?.status === 'rejected') {
-			assert.match(String(secondOutcome.reason), /dictée est déjà en cours/);
+			assert.match(String(secondOutcome.reason), /E_DICTATION_ALREADY_ACTIVE/);
 		}
 		assert.lengthOf(provider.openedWith, 1);
 	});

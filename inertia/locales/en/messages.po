@@ -1,0 +1,564 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-27 01:48+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+
+#: inertia/transcription_history/show_transcripts/describe_deletion_count.ts:6
+msgid "{count, plural, one {# dictation will be permanently deleted.} other {# dictations will be permanently deleted.}}"
+msgstr "{count, plural, one {# dictation will be permanently deleted.} other {# dictations will be permanently deleted.}}"
+
+#: inertia/layouts/app_ui_provider.tsx:31
+msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
+msgstr "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
+
+#: inertia/dictation/show_dictation/format_remaining_quota.ts:10
+msgid "{remainingMinutes} min left today"
+msgstr "{remainingMinutes} min left today"
+
+#: inertia/layouts/app_ui_provider.tsx:27
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# selected} other {# selected}}"
+
+#: inertia/user_settings/show_settings/vocabulary_field.tsx:39
+msgid "{termCount} of {maxTermCount} terms"
+msgstr "{termCount} of {maxTermCount} terms"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:8
+msgid "A dictation is already in progress"
+msgstr "A dictation is already in progress"
+
+#: inertia/dictation/show_dictation/account_menu.tsx:22
+msgid "Account"
+msgstr "Account"
+
+#: inertia/pages/passkeys/show_passkeys.tsx:44
+#: inertia/passkeys/show_passkeys/add_passkey_form.tsx:17
+msgid "Add a passkey"
+msgstr "Add a passkey"
+
+#: inertia/user_settings/show_settings/vocabulary_field.tsx:32
+msgid "Adonis\n"
+"Inertia\n"
+"Voxtral"
+msgstr "Adonis\n"
+"Inertia\n"
+"Voxtral"
+
+#: inertia/dictation/show_dictation/dictation_header.tsx:24
+msgid "Auto-start"
+msgstr "Auto-start"
+
+#: inertia/dictation/show_dictation/recording_actions.tsx:12
+#: inertia/layouts/app_ui_provider.tsx:17
+msgid "Cancel"
+msgstr "Cancel"
+
+#: inertia/passkeys/describe_passkey_error.ts:14
+msgid "Cannot delete the last passkey"
+msgstr "Cannot delete the last passkey"
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
+msgid "Clean the text"
+msgstr "Clean the text"
+
+#: inertia/dictation/show_dictation/dictation_dock.tsx:31
+msgid "Cleaning the text…"
+msgstr "Cleaning the text…"
+
+#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:4
+msgid "Cleanup failed, try again"
+msgstr "Cleanup failed, try again"
+
+#: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:27
+msgid "Cleanup instructions"
+msgstr "Cleanup instructions"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:88
+msgid "Cleanup unavailable, raw text"
+msgstr "Cleanup unavailable, raw text"
+
+#: inertia/layouts/app_ui_provider.tsx:21
+msgid "Clear"
+msgstr "Clear"
+
+#: inertia/pages/transcription_history/show_transcripts.tsx:54
+#: inertia/transcription_history/show_transcripts/use_delete_all_transcripts.tsx:14
+msgid "Clear all"
+msgstr "Clear all"
+
+#: inertia/transcription_history/show_transcripts/use_delete_all_transcripts.tsx:13
+msgid "Clear all?"
+msgstr "Clear all?"
+
+#: inertia/layouts/app_ui_provider.tsx:19
+msgid "Clear selection"
+msgstr "Clear selection"
+
+#: inertia/layouts/app_ui_provider.tsx:15
+msgid "Close"
+msgstr "Close"
+
+#: inertia/layouts/app_ui_provider.tsx:16
+msgid "Confirm"
+msgstr "Confirm"
+
+#: inertia/dictation/show_dictation/dictation_dock.tsx:29
+msgid "Connecting…"
+msgstr "Connecting…"
+
+#: inertia/dictation/show_dictation/mic_button.tsx:35
+msgid "Continue the dictation"
+msgstr "Continue the dictation"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:20
+msgid "Copied"
+msgstr "Copied"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:58
+#: inertia/dictation/show_dictation/copy_controls.tsx:68
+msgid "Copy"
+msgstr "Copy"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:32
+msgid "Copy failed"
+msgstr "Copy failed"
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:55
+msgid "Copy the text"
+msgstr "Copy the text"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
+msgid "Could not reach the transcription service"
+msgstr "Could not reach the transcription service"
+
+#: inertia/pages/passkeys/show_passkey_invitation.tsx:29
+msgid "Create the passkey"
+msgstr "Create the passkey"
+
+#: inertia/passkeys/show_passkeys/passkey_row.tsx:21
+msgid "Created on {createdDate}, never used"
+msgstr "Created on {createdDate}, never used"
+
+#: inertia/passkeys/show_passkeys/passkey_row.tsx:22
+msgid "Created on {createdDate}, used on {lastUsedDate}"
+msgstr "Created on {createdDate}, used on {lastUsedDate}"
+
+#: inertia/dictation/show_dictation/format_remaining_quota.ts:9
+msgid "Daily quota reached"
+msgstr "Daily quota reached"
+
+#: inertia/layouts/app_ui_provider.tsx:9
+msgid "Dark theme"
+msgstr "Dark theme"
+
+#: inertia/passkeys/show_passkeys/use_delete_passkey.ts:15
+#: inertia/transcription_history/show_transcripts/use_delete_transcript.tsx:17
+msgid "Delete"
+msgstr "Delete"
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:63
+msgid "Delete the dictation"
+msgstr "Delete the dictation"
+
+#: inertia/passkeys/show_passkeys/passkey_row.tsx:37
+msgid "Delete the passkey {label}"
+msgstr "Delete the passkey {label}"
+
+#: inertia/passkeys/show_passkeys/use_delete_passkey.ts:14
+msgid "Delete the passkey {label}?"
+msgstr "Delete the passkey {label}?"
+
+#: inertia/transcription_history/show_transcripts/use_delete_transcript.tsx:16
+msgid "Delete this dictation?"
+msgstr "Delete this dictation?"
+
+#: inertia/dictation/show_dictation/dictation_result.tsx:52
+msgid "Dictated text"
+msgstr "Dictated text"
+
+#: inertia/shared/ui/app_header.tsx:39
+#: inertia/shared/ui/back_to_dictation_link.tsx:16
+msgid "Dictation"
+msgstr "Dictation"
+
+#: inertia/dictation/show_dictation/cancelled_notice.tsx:14
+msgid "Dictation cancelled."
+msgstr "Dictation cancelled."
+
+#: inertia/dictation/show_dictation/cancelled_notice.tsx:21
+msgid "Dictation cancelled. The raw text is kept in the history, you can clean it there."
+msgstr "Dictation cancelled. The raw text is kept in the history, you can clean it there."
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:13
+msgid "Dictation is temporarily unavailable"
+msgstr "Dictation is temporarily unavailable"
+
+#: inertia/user_settings/show_settings/dictation_language_select.tsx:34
+msgid "Dictation language"
+msgstr "Dictation language"
+
+#: inertia/passkeys/shared/passkey_label_form.tsx:37
+msgid "E.g. MacBook, phone"
+msgstr "E.g. MacBook, phone"
+
+#: inertia/user_settings/show_settings/describe_vocabulary_problem.ts:15
+msgid "Each term is limited to {maxTermLength} characters"
+msgstr "Each term is limited to {maxTermLength} characters"
+
+#: inertia/user_settings/show_settings/dictation_language_options.ts:11
+msgid "English"
+msgstr "English"
+
+#: inertia/dictation/show_dictation/mic_button.tsx:65
+msgid "Enter"
+msgstr "Enter"
+
+#: inertia/dictation/show_dictation/recording_actions.tsx:14
+msgid "Esc"
+msgstr "Esc"
+
+#: inertia/dictation/show_dictation/mic_button.tsx:33
+msgid "Finish the dictation"
+msgstr "Finish the dictation"
+
+#: inertia/dictation/show_dictation/dictation_dock.tsx:30
+msgid "Finishing…"
+msgstr "Finishing…"
+
+#: inertia/user_settings/show_settings/dictation_language_options.ts:10
+msgid "French"
+msgstr "French"
+
+#: inertia/pages/passkeys/show_passkey_invitation.tsx:26
+msgid "Give this passkey a name so you can recognize it later."
+msgstr "Give this passkey a name so you can recognize it later."
+
+#: inertia/dictation/show_dictation/account_menu.tsx:30
+#: inertia/pages/transcription_history/show_transcripts.tsx:41
+msgid "History"
+msgstr "History"
+
+#: inertia/pages/user_settings/show_settings.tsx:36
+msgid "How the dictation and the interface behave for you."
+msgstr "How the dictation and the interface behave for you."
+
+#: inertia/user_settings/show_settings/interface_language_select.tsx:34
+msgid "Interface language"
+msgstr "Interface language"
+
+#: inertia/layouts/app_ui_provider.tsx:8
+msgid "Light theme"
+msgstr "Light theme"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:16
+msgid "Microphone access was denied, allow it in the browser"
+msgstr "Microphone access was denied, allow it in the browser"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:26
+msgid "Modified since the copy"
+msgstr "Modified since the copy"
+
+#: inertia/dictation/show_dictation/new_dictation_button.tsx:12
+msgid "New<0> dictation</0>"
+msgstr "New<0> dictation</0>"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:9
+msgid "No dictation is in progress"
+msgstr "No dictation is in progress"
+
+#: inertia/transcription_history/show_transcripts/transcript_empty_state.tsx:14
+msgid "No dictations yet."
+msgstr "No dictations yet."
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:17
+msgid "No microphone detected"
+msgstr "No microphone detected"
+
+#: inertia/layouts/app_ui_provider.tsx:18
+msgid "No results"
+msgstr "No results"
+
+#: inertia/transcription_history/show_transcripts/transcript_empty_state.tsx:12
+msgid "No results."
+msgstr "No results."
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:38
+msgid "not cleaned"
+msgstr "not cleaned"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:90
+msgid "Not cleaned"
+msgstr "Not cleaned"
+
+#: inertia/user_settings/show_settings/vocabulary_field.tsx:31
+msgid "One term per line. It helps the speech engine and the cleanup spell names, products and jargon correctly."
+msgstr "One term per line. It helps the speech engine and the cleanup spell names, products and jargon correctly."
+
+#: inertia/dictation/show_dictation/cancelled_notice.tsx:29
+msgid "Open the history"
+msgstr "Open the history"
+
+#: inertia/passkeys/describe_passkey_error.ts:8
+msgid "Operation cancelled"
+msgstr "Operation cancelled"
+
+#: inertia/passkeys/shared/passkey_label_form.tsx:36
+msgid "Passkey name"
+msgstr "Passkey name"
+
+#: inertia/passkeys/describe_passkey_error.ts:17
+msgid "Passkey not found"
+msgstr "Passkey not found"
+
+#: inertia/dictation/show_dictation/account_menu.tsx:33
+msgid "Passkeys"
+msgstr "Passkeys"
+
+#: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:28
+msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
+msgstr "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
+
+#: inertia/dictation/show_dictation/dictation_result.tsx:53
+msgid "Press Enter or the mic to dictate."
+msgstr "Press Enter or the mic to dictate."
+
+#: inertia/transcription_history/show_transcripts/transcript_raw_text.tsx:12
+msgid "Raw text"
+msgstr "Raw text"
+
+#: inertia/pages/passkeys/show_passkey_invitation.tsx:25
+msgid "Register a passkey"
+msgstr "Register a passkey"
+
+#: inertia/layouts/app_ui_provider.tsx:22
+msgid "required"
+msgstr "required"
+
+#: inertia/user_settings/show_settings/settings_form.tsx:67
+msgid "Save"
+msgstr "Save"
+
+#: inertia/layouts/app_ui_provider.tsx:20
+msgid "Search"
+msgstr "Search"
+
+#: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:25
+msgid "Search a dictation"
+msgstr "Search a dictation"
+
+#: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:24
+msgid "Search the history"
+msgstr "Search the history"
+
+#: inertia/dictation/show_dictation/account_menu.tsx:36
+#: inertia/pages/user_settings/show_settings.tsx:33
+msgid "Settings"
+msgstr "Settings"
+
+#: inertia/user_settings/show_settings/saved_status.tsx:6
+msgid "Settings saved"
+msgstr "Settings saved"
+
+#: inertia/pages/passkeys/show_login.tsx:14
+msgid "Sign in"
+msgstr "Sign in"
+
+#: inertia/pages/passkeys/show_login.tsx:24
+msgid "Sign in with a passkey"
+msgstr "Sign in with a passkey"
+
+#: inertia/dictation/show_dictation/account_menu.tsx:39
+msgid "Sign out"
+msgstr "Sign out"
+
+#: inertia/passkeys/describe_passkey_error.ts:16
+msgid "Sign-in refused"
+msgstr "Sign-in refused"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:11
+msgid "Something went wrong during the dictation"
+msgstr "Something went wrong during the dictation"
+
+#: inertia/passkeys/describe_passkey_error.ts:7
+msgid "Something went wrong, try again"
+msgstr "Something went wrong, try again"
+
+#: inertia/dictation/show_dictation/dictation_transcript.tsx:40
+msgid "Speak, the text is written here."
+msgstr "Speak, the text is written here."
+
+#: inertia/dictation/show_dictation/mic_button.tsx:36
+msgid "Start the dictation"
+msgstr "Start the dictation"
+
+#: inertia/dictation/show_dictation/dictation_header.tsx:25
+msgid "Starts the dictation on opening, on this device"
+msgstr "Starts the dictation on opening, on this device"
+
+#: inertia/user_settings/show_settings/interface_language_options.ts:26
+msgid "System language"
+msgstr "System language"
+
+#: inertia/layouts/app_ui_provider.tsx:10
+msgid "System theme"
+msgstr "System theme"
+
+#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:7
+msgid "Text cleanup is unavailable"
+msgstr "Text cleanup is unavailable"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:14
+msgid "The audio segment is invalid or too large"
+msgstr "The audio segment is invalid or too large"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:19
+msgid "The browser blocks audio, click in the page then start the dictation again"
+msgstr "The browser blocks audio, click in the page then start the dictation again"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
+msgid "The connection to the transcription service was interrupted"
+msgstr "The connection to the transcription service was interrupted"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:13
+msgid "The connection was interrupted, the dictation is lost"
+msgstr "The connection was interrupted, the dictation is lost"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:10
+msgid "The daily dictation quota is reached, try again tomorrow"
+msgstr "The daily dictation quota is reached, try again tomorrow"
+
+#: inertia/pages/passkeys/show_passkeys.tsx:30
+msgid "The devices that can open your session."
+msgstr "The devices that can open your session."
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:15
+msgid "The dictation identifier is invalid"
+msgstr "The dictation identifier is invalid"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
+msgid "The dictation reached the maximum duration"
+msgstr "The dictation reached the maximum duration"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
+msgid "The draft is invalid or too large"
+msgstr "The draft is invalid or too large"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:7
+msgid "The field value must be a list"
+msgstr "The field value must be a list"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:6
+msgid "The field value must be a string"
+msgstr "The field value must be a string"
+
+#: inertia/user_settings/show_settings/dictation_language_select.tsx:35
+msgid "The language you speak. It guides the speech engine and the cleanup."
+msgstr "The language you speak. It guides the speech engine and the cleanup."
+
+#: inertia/passkeys/describe_passkey_error.ts:18
+msgid "The passkey could not be registered"
+msgstr "The passkey could not be registered"
+
+#: inertia/passkeys/describe_passkey_error.ts:15
+msgid "The request has expired, start again"
+msgstr "The request has expired, start again"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:8
+msgid "The selected value is not available"
+msgstr "The selected value is not available"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:12
+#: inertia/passkeys/describe_passkey_error.ts:10
+msgid "The server is unreachable"
+msgstr "The server is unreachable"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
+msgid "The transcription service did not answer in time"
+msgstr "The transcription service did not answer in time"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
+msgid "The transcription service refused the dictation"
+msgstr "The transcription service refused the dictation"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
+msgid "The transcription session is no longer active"
+msgstr "The transcription session is no longer active"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
+msgid "The transcription session was interrupted"
+msgstr "The transcription session was interrupted"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:9
+#: inertia/user_settings/show_settings/describe_field_error.ts:9
+msgid "The value is not valid"
+msgstr "The value is not valid"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:11
+msgid "The value is too long"
+msgstr "The value is too long"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:10
+msgid "The value is too short"
+msgstr "The value is too short"
+
+#: inertia/user_settings/show_settings/describe_vocabulary_problem.ts:12
+msgid "The vocabulary is limited to {maxTermCount} terms"
+msgstr "The vocabulary is limited to {maxTermCount} terms"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:12
+msgid "There are too many items"
+msgstr "There are too many items"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:18
+msgid "This browser cannot record the microphone"
+msgstr "This browser cannot record the microphone"
+
+#: inertia/shared/i18n/describe_validation_rule.ts:5
+msgid "This field is required"
+msgstr "This field is required"
+
+#: inertia/passkeys/describe_passkey_error.ts:13
+msgid "This invitation link is invalid or has expired"
+msgstr "This invitation link is invalid or has expired"
+
+#: inertia/passkeys/describe_passkey_error.ts:9
+msgid "This passkey is already registered"
+msgstr "This passkey is already registered"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:11
+msgid "Too many dictations started, wait a minute"
+msgstr "Too many dictations started, wait a minute"
+
+#: inertia/passkeys/describe_passkey_error.ts:19
+msgid "Too many requests, wait a minute"
+msgstr "Too many requests, wait a minute"
+
+#: inertia/dictation/show_dictation/describe_dictation_error.ts:20
+msgid "Unable to use the microphone"
+msgstr "Unable to use the microphone"
+
+#: inertia/pages/passkeys/show_login.tsx:15
+msgid "Use a passkey registered on this device."
+msgstr "Use a passkey registered on this device."
+
+#: inertia/user_settings/show_settings/vocabulary_field.tsx:30
+msgid "Vocabulary"
+msgstr "Vocabulary"
+
+#: inertia/i18n/project_name.ts:3
+msgid "Voice dictation"
+msgstr "Voice dictation"
+
+#: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:29
+msgid "Write numbers as digits.\n"
+"Use French quotation marks."
+msgstr "Write numbers as digits.\n"
+"Use French quotation marks."
+
+#: inertia/pages/transcription_history/show_transcripts.tsx:44
+msgid "Your dictations from the last 60 days."
+msgstr "Your dictations from the last 60 days."

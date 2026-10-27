@@ -10,3 +10,4 @@
 /// <reference path="../../config/logger.ts" />
 /// <reference path="../../config/socket.ts" />
 /// <reference path="../../config/transcription_history.ts" />
+/// <reference path="../../config/user_settings.ts" />

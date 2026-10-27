@@ -6,6 +6,7 @@ import {
 	buildCleanedTextMessage,
 	buildTextBlock,
 } from '#tests/helpers/build_anthropic_message';
+import { FRENCH_CLEANUP_PREFERENCES } from '#tests/helpers/cleanup_preferences_fixture';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeMessagesApi } from '#tests/helpers/fake_messages_api';
 import { AnthropicTextCleaner } from '#text_cleanup/anthropic/anthropic_text_cleaner';
@@ -37,7 +38,7 @@ test.group('AnthropicTextCleaner', () => {
 	}) => {
 		const { cleaner, api } = createCleaner(buildCleanedTextMessage('ok'));
 
-		await cleaner.clean(RAW_TEXT);
+		await cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES);
 
 		const [request] = api.requests;
 		assert.equal(request?.model, TEXT_CLEANUP_MODEL);
@@ -58,7 +59,7 @@ test.group('AnthropicTextCleaner', () => {
 			buildCleanedTextMessage('Bonjour.')
 		);
 
-		const text = await cleaner.clean(RAW_TEXT);
+		const text = await cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES);
 
 		assert.equal(text, 'Bonjour.');
 		assert.include(readLogs(lines).at(-1), {
@@ -82,7 +83,10 @@ test.group('AnthropicTextCleaner', () => {
 			})
 		);
 
-		assert.equal(await cleaner.clean(RAW_TEXT), 'Salut.');
+		assert.equal(
+			await cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES),
+			'Salut.'
+		);
 	});
 
 	test('should return an empty string when the model keeps nothing', async ({
@@ -90,7 +94,7 @@ test.group('AnthropicTextCleaner', () => {
 	}) => {
 		const { cleaner } = createCleaner(buildCleanedTextMessage(''));
 
-		assert.equal(await cleaner.clean(RAW_TEXT), '');
+		assert.equal(await cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES), '');
 	});
 
 	test(
@@ -144,7 +148,7 @@ test.group('AnthropicTextCleaner', () => {
 			const { cleaner, lines } = createCleaner(outcome);
 
 			await assert.rejects(
-				() => cleaner.clean(RAW_TEXT),
+				() => cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES),
 				new TextCleanupUnavailableException().message
 			);
 

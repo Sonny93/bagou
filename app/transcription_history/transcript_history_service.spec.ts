@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
+import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
@@ -13,6 +14,7 @@ import {
 	TRANSCRIPTS_PER_PAGE,
 	TranscriptHistoryService,
 } from '#transcription_history/transcript_history_service';
+import { UserSettingsService } from '#user_settings/user_settings_service';
 
 const NOW = DateTime.fromISO('2026-06-01T10:00:00Z', { zone: 'utc' });
 const RETENTION_DAYS = 60;
@@ -23,7 +25,8 @@ async function createService(textCleaner = new FakeTextCleaner()) {
 	const user = await UserFactory.create();
 	const service = new TranscriptHistoryService(
 		new FixedClock(NOW),
-		new TextCleanupService(textCleaner)
+		new TextCleanupService(textCleaner),
+		new UserSettingsService()
 	);
 	return { user, service, textCleaner };
 }
@@ -416,7 +419,7 @@ test.group('TranscriptHistoryService', (group) => {
 
 		await assert.rejects(
 			() => service.delete(user.id, foreign.id),
-			'Dictée introuvable'
+			'Transcript not found'
 		);
 		assert.isNotNull(await Transcript.find(foreign.id));
 	});
@@ -428,7 +431,7 @@ test.group('TranscriptHistoryService', (group) => {
 
 		await assert.rejects(
 			() => service.delete(user.id, 0),
-			'Dictée introuvable'
+			'Transcript not found'
 		);
 	});
 
@@ -459,6 +462,32 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.equal(transcript.cleanedText, 'EUH BONJOUR');
 	});
 
+	test('should clean with the current settings of the user', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			vocabulary: ['Adonis'],
+			cleanupInstructions: 'Use bullet points',
+		}).create();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			rawText: 'um hello',
+			cleanedText: null,
+		}).create();
+
+		await service.clean(user.id, transcript.id);
+
+		assert.deepEqual(textCleaner.receivedPreferences, [
+			{
+				language: 'en',
+				vocabulary: ['Adonis'],
+				instructions: 'Use bullet points',
+			},
+		]);
+	});
+
 	test('should not call the cleaner when the row is already cleaned', async ({
 		assert,
 	}) => {
@@ -485,7 +514,7 @@ test.group('TranscriptHistoryService', (group) => {
 
 		await assert.rejects(
 			() => service.clean(user.id, foreign.id),
-			'Dictée introuvable'
+			'Transcript not found'
 		);
 		assert.lengthOf(textCleaner.cleaned, 0);
 	});
@@ -502,7 +531,7 @@ test.group('TranscriptHistoryService', (group) => {
 
 		await assert.rejects(
 			() => service.clean(user.id, transcript.id),
-			'Dictée introuvable'
+			'Transcript not found'
 		);
 	});
 
@@ -519,7 +548,7 @@ test.group('TranscriptHistoryService', (group) => {
 
 		await assert.rejects(
 			() => service.clean(user.id, transcript.id),
-			'Le nettoyage du texte est indisponible'
+			'Text cleanup is unavailable'
 		);
 		await transcript.refresh();
 		assert.isNull(transcript.cleanedText);

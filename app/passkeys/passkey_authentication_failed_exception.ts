@@ -9,6 +9,6 @@ export default class PasskeyAuthenticationFailedException extends Exception {
 	static code = 'E_PASSKEY_AUTHENTICATION_FAILED';
 
 	constructor(options?: ErrorOptions) {
-		super('Connexion refusée', options);
+		super('Passkey authentication failed', options);
 	}
 }

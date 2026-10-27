@@ -29,6 +29,7 @@ test.group('BenchRunner', () => {
 		const completed: BenchSampleResult[] = [];
 
 		const results = await runner.run({
+			language: 'fr',
 			provider: new FakeTranscriptionProvider(
 				new FakeTranscriptionSession('bonjour monde')
 			),
@@ -65,6 +66,7 @@ test.group('BenchRunner', () => {
 		}, new FakeTextCleaner());
 
 		const results = await runner.run({
+			language: 'fr',
 			provider: new FakeTranscriptionProvider(),
 			samples: [buildSample('broken'), buildSample('fine')],
 			chunkIntervalMs: 0,
@@ -89,6 +91,7 @@ test.group('BenchRunner', () => {
 		);
 
 		const [result] = await runner.run({
+			language: 'fr',
 			provider: new FakeTranscriptionProvider(),
 			samples: [buildSample('memo')],
 			chunkIntervalMs: 0,

@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro';
 import { Button, Kbd } from '@minimalstuff/ui';
 
 type RecordingActionsProps = {
@@ -8,6 +9,9 @@ export const RecordingActions = ({
 	onCancel,
 }: Readonly<RecordingActionsProps>) => (
 	<Button variant="ghost" onClick={onCancel}>
-		Annuler <Kbd className="hidden sm:inline-flex">Échap</Kbd>
+		<Trans>Cancel</Trans>{' '}
+		<Kbd className="hidden sm:inline-flex">
+			<Trans>Esc</Trans>
+		</Kbd>
 	</Button>
 );

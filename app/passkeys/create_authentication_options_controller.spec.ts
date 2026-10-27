@@ -70,9 +70,6 @@ test.group('CreateAuthenticationOptionsController', (group) => {
 			.header('Accept', 'application/json');
 
 		response.assertStatus(429);
-		assert.equal(
-			response.body().errors[0].message,
-			'Trop de requêtes, patiente une minute'
-		);
+		assert.equal(response.body().errors[0].message, 'E_TOO_MANY_REQUESTS');
 	});
 });

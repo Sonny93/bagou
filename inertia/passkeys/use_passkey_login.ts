@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react';
+import { useLingui } from '@lingui/react/macro';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useState } from 'react';
 
@@ -13,6 +14,7 @@ type UsePasskeyLoginReturn = {
 };
 
 export function usePasskeyLogin(): UsePasskeyLoginReturn {
+	const { i18n } = useLingui();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -30,7 +32,7 @@ export function usePasskeyLogin(): UsePasskeyLoginReturn {
 			});
 			router.visit(urlFor('dictation.show_dictation'));
 		} catch (error) {
-			setErrorMessage(describePasskeyError(error));
+			setErrorMessage(describePasskeyError(error, i18n));
 			setIsLoggingIn(false);
 		}
 	};

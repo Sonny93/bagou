@@ -47,6 +47,7 @@ test.group('TranscriptionStreamService', () => {
 		const finals: string[] = [];
 
 		const result = await service.stream({
+			language: 'fr',
 			pcm: buildPcm(),
 			chunkIntervalMs: 0,
 			onFinal: (text) => finals.push(text),
@@ -76,6 +77,7 @@ test.group('TranscriptionStreamService', () => {
 		);
 
 		const result = await service.stream({
+			language: 'fr',
 			pcm: buildPcm(),
 			chunkIntervalMs: 0,
 			onFinal: () => undefined,
@@ -95,6 +97,7 @@ test.group('TranscriptionStreamService', () => {
 		await assert.rejects(
 			() =>
 				service.stream({
+					language: 'fr',
 					pcm: buildPcm(),
 					chunkIntervalMs: 0,
 					onFinal: () => undefined,

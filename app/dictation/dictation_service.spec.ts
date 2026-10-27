@@ -3,6 +3,7 @@ import { test } from '@japa/runner';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import { UserFactory } from '#database/factories/user_factory';
+import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { Dictation } from '#dictation/dictation';
 import { DictationCompletionService } from '#dictation/dictation_completion_service';
 import { DictationErrorCode } from '#dictation/dictation_error_code';
@@ -24,6 +25,7 @@ import { TranscriptionProvider } from '#transcription/transcription_provider';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type { TranscriptionSession } from '#transcription/transcription_session';
 import { TranscriptHistoryService } from '#transcription_history/transcript_history_service';
+import { UserSettingsService } from '#user_settings/user_settings_service';
 
 const DRAFT_CONTEXT = {
 	draftId: '3f0a1c7e-9d54-4b6a-8e21-5c7d9a0b4f12',
@@ -78,6 +80,8 @@ function createDictation(
 			onError: (event) => errors.push(event),
 		},
 		{
+			language: 'fr',
+			vocabulary: ['Adonis'],
 			maxDurationMs,
 			remainingBytes,
 			complete,
@@ -125,13 +129,17 @@ class DeferredProvider extends TranscriptionProvider {
 }
 
 test.group('Dictation', () => {
-	test('should open a French session when started', async ({ assert }) => {
+	test('should open the provider session with the language and vocabulary of its options', async ({
+		assert,
+	}) => {
 		const provider = new FakeTranscriptionProvider();
 		const { dictation } = createDictation(provider);
 
 		await dictation.start();
 
-		assert.deepEqual(provider.openedWith, [{ language: 'fr' }]);
+		assert.deepEqual(provider.openedWith, [
+			{ language: 'fr', vocabulary: ['Adonis'] },
+		]);
 		assert.isTrue(dictation.isActive);
 	});
 
@@ -306,11 +314,11 @@ test.group('Dictation', () => {
 
 		assert.throws(
 			() => dictation.appendAudio(new Uint8Array(2)),
-			/Aucune dictée/
+			/E_DICTATION_NOT_ACTIVE/
 		);
 	});
 
-	test('should tell the listener a safe French message when the provider fails', async ({
+	test('should tell the listener only the error code when the provider fails', async ({
 		assert,
 	}) => {
 		const provider = new FakeTranscriptionProvider();
@@ -327,7 +335,6 @@ test.group('Dictation', () => {
 		assert.deepEqual(errors, [
 			{
 				code: TranscriptionErrorCode.connectionClosed,
-				message: 'La connexion au service de transcription a été interrompue.',
 			},
 		]);
 		assert.equal(provider.session.abortCount, 1);
@@ -397,7 +404,7 @@ test.group('Dictation', () => {
 		dictation.cancel();
 		provider.openingResolver(provider.session);
 
-		await assert.rejects(() => starting, /Aucune dictée/);
+		await assert.rejects(() => starting, /E_DICTATION_NOT_ACTIVE/);
 		assert.equal(provider.session.abortCount, 1);
 	});
 
@@ -443,7 +450,6 @@ test.group('Dictation usage', () => {
 		assert.deepEqual(errors, [
 			{
 				code: DictationErrorCode.quotaExceeded,
-				message: 'Le quota quotidien de dictée est atteint, réessaie demain.',
 			},
 		]);
 		assert.equal((await dictation.stop()).rawText, 'texte gardé');
@@ -453,7 +459,7 @@ test.group('Dictation usage', () => {
 		assert.include(logs.at(-2), { msg: 'Daily dictation quota reached' });
 		assert.throws(
 			() => dictation.appendAudio(new Uint8Array(2)),
-			/Aucune dictée/
+			/E_DICTATION_NOT_ACTIVE/
 		);
 	});
 
@@ -700,10 +706,12 @@ test.group('DictationService', (group) => {
 				new TextCleanupService(textCleaner),
 				new TranscriptHistoryService(
 					new Clock(),
-					new TextCleanupService(textCleaner)
+					new TextCleanupService(textCleaner),
+					new UserSettingsService()
 				),
 				logger
-			)
+			),
+			new UserSettingsService()
 		);
 		const user = await UserFactory.create();
 		return { service, quotaService, user, provider, lines, textCleaner };
@@ -754,6 +762,61 @@ test.group('DictationService', (group) => {
 		assert.deepEqual(textCleaner.cleaned, ['Avant. euh bonjour']);
 	});
 
+	test('should open the provider session with the language and vocabulary of the user settings', async ({
+		assert,
+	}) => {
+		const { service, user, provider } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			dictationLanguage: 'fr',
+			vocabulary: ['Adonis', 'Voxtral'],
+		}).create();
+
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
+		await dictation.start();
+
+		assert.deepEqual(provider.openedWith, [
+			{ language: 'fr', vocabulary: ['Adonis', 'Voxtral'] },
+		]);
+	});
+
+	test('should open the provider session in English with no vocabulary when the user never saved settings', async ({
+		assert,
+	}) => {
+		const { service, user, provider } = await createService();
+
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
+		await dictation.start();
+
+		assert.deepEqual(provider.openedWith, [{ language: 'en', vocabulary: [] }]);
+	});
+
+	test('should clean with the preferences of the user settings', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('um hello')
+		);
+		const { service, user, textCleaner } = await createService(provider);
+		await UserSettingFactory.merge({
+			userId: user.id,
+			vocabulary: ['Adonis'],
+			cleanupInstructions: 'Use bullet points',
+		}).create();
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
+		await dictation.start();
+
+		await dictation.stop();
+
+		assert.deepEqual(textCleaner.receivedPreferences, [
+			{
+				language: 'en',
+				vocabulary: ['Adonis'],
+				instructions: 'Use bullet points',
+			},
+		]);
+	});
+
 	test('should refuse to create a dictation once the daily quota is spent, logging the user', async ({
 		assert,
 	}) => {
@@ -763,7 +826,7 @@ test.group('DictationService', (group) => {
 
 		await assert.rejects(
 			() => service.create(user.id, DRAFT_CONTEXT, listener),
-			/Quota quotidien de dictée atteint/
+			/E_DICTATION_QUOTA_EXCEEDED/
 		);
 
 		assert.lengthOf(provider.openedWith, 0);

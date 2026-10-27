@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { Button, Input } from '@minimalstuff/ui';
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 
@@ -18,6 +19,7 @@ export function PasskeyLabelForm({
 	errorMessage,
 	onSubmit,
 }: Readonly<PasskeyLabelFormProps>) {
+	const { t } = useLingui();
 	const [label, setLabel] = useState('');
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
@@ -31,8 +33,8 @@ export function PasskeyLabelForm({
 	return (
 		<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 			<Input
-				label="Nom de la passkey"
-				placeholder="Ex. : MacBook, téléphone"
+				label={t`Passkey name`}
+				placeholder={t`E.g. MacBook, phone`}
 				value={label}
 				maxLength={MAX_LABEL_LENGTH}
 				required

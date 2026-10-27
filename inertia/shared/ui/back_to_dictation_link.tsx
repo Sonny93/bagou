@@ -1,4 +1,5 @@
 import { Link } from '@adonisjs/inertia/react';
+import { Trans } from '@lingui/react/macro';
 
 import { cn } from '~/shared/lib/cn';
 import { FOCUS_RING_CLASSES } from '~/shared/ui/focus_ring_classes';
@@ -12,6 +13,6 @@ export const BackToDictationLink = () => (
 		)}
 	>
 		<span className="i-tabler-arrow-left size-4" aria-hidden />
-		Dictée
+		<Trans>Dictation</Trans>
 	</Link>
 );

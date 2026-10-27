@@ -1,3 +1,6 @@
+import type { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Badge, Button, Kbd, Tooltip } from '@minimalstuff/ui';
 
 import type { CopyStatus } from './copy_status';
@@ -5,7 +8,7 @@ import { cn } from '~/shared/lib/cn';
 
 type CopyStatusDisplay = {
 	icon: string;
-	message: string;
+	message: MessageDescriptor;
 	className: string;
 	isEmphasised: boolean;
 };
@@ -14,19 +17,19 @@ const COPY_STATUS_DISPLAYS = {
 	none: null,
 	copied: {
 		icon: 'i-tabler-check',
-		message: 'Copié',
+		message: msg`Copied`,
 		className: 'text-muted',
 		isEmphasised: false,
 	},
 	stale: {
 		icon: 'i-tabler-clipboard-x',
-		message: 'Modifié depuis la copie',
+		message: msg`Modified since the copy`,
 		className: 'text-muted',
 		isEmphasised: true,
 	},
 	failed: {
 		icon: 'i-tabler-alert-circle',
-		message: 'Copie impossible',
+		message: msg`Copy failed`,
 		className: 'text-signal',
 		isEmphasised: true,
 	},
@@ -43,6 +46,7 @@ export function CopyControls({
 	isCleaned,
 	onCopy,
 }: Readonly<CopyControlsProps>) {
+	const { t, i18n } = useLingui();
 	const display = COPY_STATUS_DISPLAYS[copyStatus];
 
 	return (
@@ -51,7 +55,7 @@ export function CopyControls({
 				position="top"
 				content={
 					<>
-						Copier <Kbd>C</Kbd>
+						<Trans>Copy</Trans> <Kbd>C</Kbd>
 					</>
 				}
 			>
@@ -61,19 +65,19 @@ export function CopyControls({
 					className="shrink-0"
 					onClick={onCopy}
 				>
-					Copier
+					<Trans>Copy</Trans>
 				</Button>
 			</Tooltip>
 			{display && (
 				<output
-					title={display.message}
+					title={i18n._(display.message)}
 					className={cn(
 						'flex min-w-0 items-center gap-1.5 text-sm',
 						display.className
 					)}
 				>
 					<span className={cn(display.icon, 'size-4 shrink-0')} aria-hidden />
-					<span className="truncate">{display.message}</span>
+					<span className="truncate">{i18n._(display.message)}</span>
 				</output>
 			)}
 			{!isCleaned && (
@@ -81,9 +85,9 @@ export function CopyControls({
 					color="warning"
 					variant="subtle"
 					className="shrink-0"
-					title="Nettoyage indisponible, texte brut"
+					title={t`Cleanup unavailable, raw text`}
 				>
-					Non nettoyé
+					<Trans>Not cleaned</Trans>
 				</Badge>
 			)}
 		</div>

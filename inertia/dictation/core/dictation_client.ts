@@ -18,7 +18,7 @@ export type DictationClientListener = {
 
 type ClientPhase = 'idle' | 'starting' | 'started' | 'ended';
 
-const readMessage = (error: unknown): string =>
+const readServerCode = (error: unknown): string =>
 	error instanceof Error ? error.message : String(error);
 
 /**
@@ -70,7 +70,7 @@ export class DictationClient {
 		} catch (error) {
 			throw this.#isConnectionLost
 				? new DictationClientError('connection_lost')
-				: new DictationClientError('rejected', readMessage(error));
+				: new DictationClientError('rejected', readServerCode(error));
 		} finally {
 			this.#close();
 		}
@@ -95,12 +95,12 @@ export class DictationClient {
 				onFinal: (text) => this.#whileOpen(() => this.listener.onFinal(text)),
 				onFinished: (text) =>
 					this.#whileOpen(() => this.listener.onFinished(text)),
-				onProviderError: (message) =>
-					this.#failWith(new DictationClientError('provider_error', message)),
+				onProviderError: (code) =>
+					this.#failWith(new DictationClientError('provider_error', code)),
 			});
 			await this.#joined.start(context);
 		} catch (error) {
-			throw new DictationClientError('rejected', readMessage(error));
+			throw new DictationClientError('rejected', readServerCode(error));
 		}
 	}
 

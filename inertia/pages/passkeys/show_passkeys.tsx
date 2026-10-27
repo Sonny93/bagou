@@ -1,4 +1,5 @@
 import type { Data } from '@generated/data';
+import { Trans } from '@lingui/react/macro';
 
 import { AddPasskeyForm } from '~/passkeys/show_passkeys/add_passkey_form';
 import { PasskeyRow } from '~/passkeys/show_passkeys/passkey_row';
@@ -26,7 +27,7 @@ export default function ShowPasskeys({
 				<div className="flex flex-col gap-1">
 					<h1 className="text-2xl font-semibold">Passkeys</h1>
 					<p className="text-muted">
-						Les appareils qui peuvent ouvrir ta session.
+						<Trans>The devices that can open your session.</Trans>
 					</p>
 				</div>
 				<ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
@@ -39,7 +40,9 @@ export default function ShowPasskeys({
 					))}
 				</ul>
 				<section className="flex flex-col gap-4">
-					<h2 className="text-base font-semibold">Ajouter une passkey</h2>
+					<h2 className="text-base font-semibold">
+						<Trans>Add a passkey</Trans>
+					</h2>
 					<AddPasskeyForm />
 				</section>
 			</main>

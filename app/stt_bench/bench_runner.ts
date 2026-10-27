@@ -1,3 +1,4 @@
+import type { DictationLanguage } from '#shared/dictation_language';
 import type { AudioConverter } from '#stt_bench/audio_converter';
 import type { BenchSample } from '#stt_bench/bench_sample';
 import type {
@@ -12,6 +13,7 @@ import type { TranscriptionProvider } from '#transcription/transcription_provide
 import { TranscriptionStreamService } from '#transcription/transcription_stream_service';
 
 export type RunBenchOptions = {
+	language: DictationLanguage;
 	provider: TranscriptionProvider;
 	samples: readonly BenchSample[];
 	chunkIntervalMs: number;
@@ -41,10 +43,15 @@ export class BenchRunner {
 
 	async #runSample(
 		sample: BenchSample,
-		{ provider, chunkIntervalMs }: Readonly<RunBenchOptions>
+		{ provider, chunkIntervalMs, language }: Readonly<RunBenchOptions>
 	): Promise<BenchSampleResult> {
 		try {
-			return await this.#measureSample(sample, provider, chunkIntervalMs);
+			return await this.#measureSample(
+				sample,
+				provider,
+				chunkIntervalMs,
+				language
+			);
 		} catch (error) {
 			return {
 				status: 'failed',
@@ -57,16 +64,22 @@ export class BenchRunner {
 	async #measureSample(
 		sample: BenchSample,
 		provider: TranscriptionProvider,
-		chunkIntervalMs: number
+		chunkIntervalMs: number,
+		language: DictationLanguage
 	): Promise<SucceededSampleResult> {
 		const pcm = await this.convertAudio(sample.audioPath);
 		const streamed = await new TranscriptionStreamService(provider).stream({
+			language,
 			pcm,
 			chunkIntervalMs,
 			onFinal: () => undefined,
 		});
 		const cleanupStartedAt = performance.now();
-		const cleanedText = await this.textCleaner.clean(streamed.text);
+		const cleanedText = await this.textCleaner.clean(streamed.text, {
+			language,
+			vocabulary: [],
+			instructions: '',
+		});
 		return {
 			status: 'succeeded',
 			sampleName: sample.name,

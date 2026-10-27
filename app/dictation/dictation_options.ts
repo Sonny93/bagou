@@ -1,8 +1,11 @@
 import type { DictationCompleter } from '#dictation/dictation_completer';
 import type { DictationRawKeeper } from '#dictation/dictation_raw_keeper';
 import type { DictationUsageRecorder } from '#dictation/dictation_usage_recorder';
+import type { DictationLanguage } from '#shared/dictation_language';
 
 export type DictationOptions = {
+	language: DictationLanguage;
+	vocabulary: readonly string[];
 	/** Audio bytes the user may still dictate today; reaching it ends the dictation. */
 	remainingBytes: number;
 	recordUsage: DictationUsageRecorder;

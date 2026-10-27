@@ -1,7 +1,5 @@
-const DATE_FORMATTER = new Intl.DateTimeFormat('fr-FR', {
-	dateStyle: 'medium',
-});
-
-export function formatPasskeyDate(isoDate: string): string {
-	return DATE_FORMATTER.format(new Date(isoDate));
+export function formatPasskeyDate(isoDate: string, locale: string): string {
+	return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
+		new Date(isoDate)
+	);
 }

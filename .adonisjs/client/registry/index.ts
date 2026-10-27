@@ -6,6 +6,12 @@ import type { ApiDefinition } from './tree.d.ts'
 const placeholder: any = {}
 
 const routes = {
+  'pwa.show_manifest': {
+    methods: ["GET","HEAD"],
+    pattern: '/manifest.webmanifest',
+    tokens: [[0,"manifest.webmanifest"]],
+    types: placeholder as Registry['pwa.show_manifest']['types'],
+  },
   'dictation.show_dictation': {
     methods: ["GET","HEAD"],
     pattern: '/',
@@ -41,6 +47,18 @@ const routes = {
     pattern: '/history',
     tokens: [[0,"history"]],
     types: placeholder as Registry['transcription_history.delete_transcripts']['types'],
+  },
+  'user_settings.show_settings': {
+    methods: ["GET","HEAD"],
+    pattern: '/settings',
+    tokens: [[0,"settings"]],
+    types: placeholder as Registry['user_settings.show_settings']['types'],
+  },
+  'user_settings.update_settings': {
+    methods: ["PUT"],
+    pattern: '/settings',
+    tokens: [[0,"settings"]],
+    types: placeholder as Registry['user_settings.update_settings']['types'],
   },
   'auth.logout': {
     methods: ["POST"],
