@@ -191,7 +191,6 @@ msgstr "Delete this dictation?"
 msgid "Dictated text"
 msgstr "Dictated text"
 
-#: inertia/shared/ui/app_header.tsx:39
 #: inertia/shared/ui/back_to_dictation_link.tsx:16
 #: inertia/user_settings/show_settings/settings_preview.tsx:36
 msgid "Dictation"

@@ -5,7 +5,11 @@ import react from '@vitejs/plugin-react-swc';
 import UnoCSS from 'unocss/vite';
 import { defineConfig } from 'vite';
 
+import { APP_VERSION_DEFINE } from './vite_app_version_define.ts';
+
 export default defineConfig({
+	define: APP_VERSION_DEFINE,
+
 	plugins: [
 		react({ plugins: [linguiMacroSwcPlugin()] }),
 		lingui(),

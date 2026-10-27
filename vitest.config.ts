@@ -3,7 +3,10 @@ import { lingui } from '@lingui/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vitest/config';
 
+import { APP_VERSION_DEFINE } from './vite_app_version_define.ts';
+
 export default defineConfig({
+	define: APP_VERSION_DEFINE,
 	plugins: [react({ plugins: [linguiMacroSwcPlugin()] }), lingui()],
 	resolve: {
 		alias: {

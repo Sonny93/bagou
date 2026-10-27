@@ -1,7 +1,7 @@
 import { Link } from '@adonisjs/inertia/react';
-import { Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 
+import { APP_VERSION } from '~/shared/lib/app_version';
 import { cn } from '~/shared/lib/cn';
 import { FOCUS_RING_CLASSES } from '~/shared/ui/focus_ring_classes';
 
@@ -36,7 +36,12 @@ export const AppHeader = ({
 					height={BRAND_ICON_SIZE}
 					alt=""
 				/>
-				<Trans>Dictation</Trans>
+				<span className="flex flex-col">
+					Bagou
+					<span className="text-[0.625rem] leading-none font-normal text-muted">
+						v{APP_VERSION}
+					</span>
+				</span>
 			</Link>
 			<div className="flex items-center gap-2 sm:gap-3">{children}</div>
 		</div>
