@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-27
+
 First public release.
 
 ### Added
@@ -23,3 +25,6 @@ First public release.
 - See which version you're running under the app name, at the top of every page.
 - Install it as an app and open it with a global keyboard shortcut.
 - Run your own copy with the ready-made Docker image.
+
+[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Sonny93/bagou/releases/tag/v1.0.0
