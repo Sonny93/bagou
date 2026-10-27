@@ -4,6 +4,7 @@ import { startAuthentication } from '@simplewebauthn/browser';
 import { useState } from 'react';
 
 import { describePasskeyError } from '~/passkeys/describe_passkey_error';
+import { logError } from '~/shared/errors/log_error';
 import { tuyauClient } from '~/shared/lib/tuyau_client';
 import { urlFor } from '~/shared/lib/url_for';
 
@@ -32,6 +33,7 @@ export function usePasskeyLogin(): UsePasskeyLoginReturn {
 			});
 			router.visit(urlFor('dictation.show_dictation'));
 		} catch (error) {
+			logError('Passkey login failed', error);
 			setErrorMessage(describePasskeyError(error, i18n));
 			setIsLoggingIn(false);
 		}

@@ -1,9 +1,12 @@
+import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { putDraftText, type DraftText } from './put_draft_text';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { reportError } from '~/shared/errors/report_error';
 
 const SAVE_DEBOUNCE_MS = 1500;
+const SAVE_FAILURE_TOAST_ID = 'save-draft-failure';
 
 const EDITABLE_STATUSES: ReadonlySet<DictationState['status']> = new Set([
 	'idle',
@@ -27,8 +30,9 @@ type UseSaveDraftTextOptions = {
  * its end; `cleanedText`, the draft as the server cleaned it, is the text the
  * history then holds.
  * Starting a new draft, or leaving the page, saves the pending text at once. A
- * failed save is not shown, the history being a safety net, but the text stays
- * unsaved: the next change, new draft or page exit retries it.
+ * failed save is reported by one toast (not repeated while it keeps failing)
+ * and the text stays unsaved: the next change, new draft or page exit retries
+ * it.
  */
 export function useSaveDraftText({
 	draftId,
@@ -36,21 +40,30 @@ export function useSaveDraftText({
 	cleanedText,
 	status,
 }: Readonly<UseSaveDraftTextOptions>): void {
+	const { t } = useLingui();
 	const isEditable = EDITABLE_STATUSES.has(status);
 	const knownRef = useRef<DraftText>({ draftId, text: cleanedText });
 	const pendingRef = useRef<DraftText | null>(null);
 
-	const flush = useCallback(async (isKeptAliveOnPageExit: boolean) => {
-		const pending = pendingRef.current;
-		if (!pending) return;
-		try {
-			await putDraftText(pending, { isKeptAliveOnPageExit });
-		} catch {
-			return;
-		}
-		knownRef.current = pending;
-		if (pendingRef.current === pending) pendingRef.current = null;
-	}, []);
+	const flush = useCallback(
+		async (isKeptAliveOnPageExit: boolean) => {
+			const pending = pendingRef.current;
+			if (!pending) return;
+			try {
+				await putDraftText(pending, { isKeptAliveOnPageExit });
+			} catch (error) {
+				reportError(
+					t`Your edits could not be saved to the history, retrying on the next change`,
+					error,
+					{ toastId: SAVE_FAILURE_TOAST_ID }
+				);
+				return;
+			}
+			knownRef.current = pending;
+			if (pendingRef.current === pending) pendingRef.current = null;
+		},
+		[t]
+	);
 
 	useEffect(() => {
 		knownRef.current = { draftId, text: cleanedText };

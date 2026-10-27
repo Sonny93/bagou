@@ -2,6 +2,7 @@ import { router } from '@inertiajs/react';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { logError } from '~/shared/errors/log_error';
 import { urlFor } from '~/shared/lib/url_for';
 import { describeCleanupError } from '~/transcription_history/show_transcripts/describe_cleanup_error';
 
@@ -26,6 +27,7 @@ export function useCleanTranscript(
 	};
 	const handleFinish = () => setIsCleaning(false);
 	const handleError = (errors: Record<string, string>) => {
+		logError('Transcript cleanup failed', errors);
 		const code = errors[CLEAN_ERROR_FIELD];
 		setErrorMessage(
 			code === undefined ? null : describeCleanupError(code, i18n)

@@ -6,6 +6,7 @@ import {
 	registerPasskey,
 	type RegistrationTarget,
 } from '~/passkeys/register_passkey';
+import { logError } from '~/shared/errors/log_error';
 
 type UsePasskeyRegistrationReturn = {
 	isRegistering: boolean;
@@ -28,6 +29,7 @@ export function usePasskeyRegistration(
 			await registerPasskey({ target, label });
 			onRegistered();
 		} catch (error) {
+			logError('Passkey registration failed', error);
 			setErrorMessage(describePasskeyError(error, i18n));
 		} finally {
 			setIsRegistering(false);

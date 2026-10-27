@@ -14,6 +14,7 @@ import { appendLevel } from '~/dictation/show_dictation/append_level';
 import { describeDictationError } from '~/dictation/show_dictation/describe_dictation_error';
 import { DICTATION_WORKLET_URL } from '~/dictation/show_dictation/dictation_worklet_url';
 import { LEVEL_HISTORY_CAPACITY } from '~/dictation/show_dictation/level_history_capacity';
+import { logError } from '~/shared/errors/log_error';
 
 export type DictationPreviewResult = {
 	rawText: string;
@@ -51,11 +52,13 @@ export function useDictationPreview(
 	}, [state.status]);
 
 	const fail = useCallback(
-		(error: unknown) =>
+		(error: unknown) => {
+			logError('Dictation preview failed', error);
 			dispatch({
 				type: 'failed',
 				message: describeDictationError(error, i18n),
-			}),
+			});
+		},
 		[i18n]
 	);
 

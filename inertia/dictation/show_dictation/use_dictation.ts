@@ -16,6 +16,7 @@ import {
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 import type { DraftContext } from '~/dictation/core/draft_context';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
+import { logError } from '~/shared/errors/log_error';
 
 const EMPTY_TRANSCRIPT: DictationTranscript = {
 	rawText: '',
@@ -67,6 +68,7 @@ export function useDictation({
 
 	const fail = useCallback(
 		(error: unknown) => {
+			logError('Dictation failed', error);
 			dispatch({
 				type: 'failed',
 				message: describeDictationError(error, i18n),

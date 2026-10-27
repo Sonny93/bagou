@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { describePreviewCleanupError } from './describe_preview_cleanup_error';
 import { requestPreviewCleanup } from './request_preview_cleanup';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
+import { logError } from '~/shared/errors/log_error';
 
 type UsePreviewCleanupReturn = {
 	cleanedText: string | null;
@@ -32,6 +33,7 @@ export function usePreviewCleanup(): UsePreviewCleanupReturn {
 		try {
 			setCleanedText(await requestPreviewCleanup({ text, settings }));
 		} catch (error) {
+			logError('Preview cleanup failed', error);
 			setErrorMessage(describePreviewCleanupError(error, i18n));
 		} finally {
 			setIsCleaning(false);

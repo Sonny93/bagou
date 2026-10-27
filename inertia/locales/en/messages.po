@@ -354,6 +354,10 @@ msgstr "Raw text"
 msgid "Register a passkey"
 msgstr "Register a passkey"
 
+#: inertia/shared/errors/error_fallback.tsx:21
+msgid "Reload"
+msgstr "Reload"
+
 #: inertia/layouts/app_ui_provider.tsx:22
 msgid "required"
 msgstr "required"
@@ -377,6 +381,10 @@ msgstr "Search a dictation"
 #: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:24
 msgid "Search the history"
 msgstr "Search the history"
+
+#: inertia/shared/errors/use_request_failure_toasts.ts:31
+msgid "Server error (HTTP {status}), try again"
+msgstr "Server error (HTTP {status}), try again"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:36
 #: inertia/pages/user_settings/show_settings.tsx:33
@@ -403,9 +411,17 @@ msgstr "Sign out"
 msgid "Sign-in refused"
 msgstr "Sign-in refused"
 
+#: inertia/shared/errors/use_unhandled_error_toasts.ts:16
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:11
 msgid "Something went wrong during the dictation"
 msgstr "Something went wrong during the dictation"
+
+#: inertia/shared/errors/error_fallback.tsx:18
+msgid "Something went wrong while displaying this page"
+msgstr "Something went wrong while displaying this page"
 
 #: inertia/passkeys/describe_passkey_error.ts:7
 msgid "Something went wrong, try again"
@@ -522,6 +538,10 @@ msgstr "The selected value is not available"
 msgid "The server is unreachable"
 msgstr "The server is unreachable"
 
+#: inertia/shared/errors/use_request_failure_toasts.ts:20
+msgid "The server is unreachable, the action was not saved"
+msgstr "The server is unreachable, the action was not saved"
+
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
 msgid "The settings to test are invalid"
 msgstr "The settings to test are invalid"
@@ -613,3 +633,7 @@ msgstr "Write numbers as digits.\n"
 #: inertia/pages/transcription_history/show_transcripts.tsx:44
 msgid "Your dictations from the last 60 days."
 msgstr "Your dictations from the last 60 days."
+
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:55
+msgid "Your edits could not be saved to the history, retrying on the next change"
+msgstr "Your edits could not be saved to the history, retrying on the next change"
