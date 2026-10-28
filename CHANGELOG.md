@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-28
+
 ### Fixed
 
 - The cleaned text no longer gets stuck behind an endless loader after a long or slow dictation.
@@ -41,6 +43,7 @@ First public release.
 - Install it as an app and open it with a global keyboard shortcut.
 - Run your own copy with the ready-made Docker image.
 
-[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Sonny93/bagou/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/Sonny93/bagou/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Sonny93/bagou/releases/tag/v1.0.0
