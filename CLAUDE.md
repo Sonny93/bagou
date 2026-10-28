@@ -21,7 +21,7 @@ PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relay
 - Front sans SSR : appli authentifiée, APIs navigateur uniquement.
 - Erreurs du front jamais silencieuses : une erreur affichée à l'écran passe par `logError`, une erreur sans message à l'écran par `reportError` (`toastId` pour un échec qui se répète).
 - Le serveur n'envoie que des codes stables, jamais de texte traduit ; le front les traduit avec ses fonctions `describe*`.
-- `inertia/dictation/core/` n'importe rien d'Inertia ni d'Adonis : il sera repris tel quel par une future app Tauri.
+- `inertia/dictation/core/` sera repris tel quel par une future app Tauri : ni Inertia, ni Adonis, ni reste du front, seulement les types de `@generated/*` (règle `no-restricted-imports` de `oxlint.config.ts`).
 - Temps réel : `@rlanz/socket` seul entre navigateur et Adonis, aucune autre lib (Transmit seulement si un besoin SSE apparaît).
 - STT et nettoyage derrière les ports `TranscriptionProvider` et `TextCleaner` : un adaptateur par fournisseur, lié au port dans un provider Adonis, jamais choisi par variable d'env.
 - Fournisseur STT : le free tier passe en premier, sinon le projet perd son intérêt. Repli prévu : Deepgram.
