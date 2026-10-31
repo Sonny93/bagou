@@ -16,6 +16,8 @@ const PETROL_SCALE = {
 	950: 'oklch(22% .04 212)',
 };
 
+const SCANNED_MODULES_PATTERN = /\.(tsx?|html)($|\?)/;
+
 const FONT_ASSETS_DIR = 'public/fonts';
 const FONT_SERVE_BASE_URL = '/fonts';
 
@@ -44,6 +46,11 @@ export default defineConfig({
 			}),
 		}),
 	],
+	/**
+	 * UnoCSS only scans `.tsx` by default, so class strings kept in plain `.ts`
+	 * modules (like the shared focus ring) would never be generated.
+	 */
+	content: { pipeline: { include: [SCANNED_MODULES_PATTERN] } },
 	safelist: [...BLUE_VARIABLE_SAFELIST, 'font:sans', 'font:serif'],
 	theme: {
 		colors: {
