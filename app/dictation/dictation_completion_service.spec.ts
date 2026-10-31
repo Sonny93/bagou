@@ -40,13 +40,13 @@ function createServiceFor(
 	textCleaner: FakeTextCleaner,
 	historyService: TranscriptHistoryService = new TranscriptHistoryService(
 		new FixedClock(DateTime.now()),
-		new TextCleanupService(textCleaner),
+		new TextCleanupService(textCleaner, createRecordingLogger().logger),
 		new UserSettingsService()
 	)
 ) {
 	const { logger, lines } = createRecordingLogger();
 	const service = new DictationCompletionService(
-		new TextCleanupService(textCleaner),
+		new TextCleanupService(textCleaner, createRecordingLogger().logger),
 		historyService,
 		logger
 	);
@@ -80,6 +80,50 @@ test.group('DictationCompletionService', (group) => {
 			rawText: 'euh bonjour',
 			cleanedDraft: 'AVANT. EUH BONJOUR APRÈS.',
 		});
+	});
+
+	test('should pass the cleanup progress to the progress callback', async ({
+		assert,
+	}) => {
+		const percents: number[] = [];
+		const { service, user } = await createService(
+			new FakeTextCleaner(undefined, [12, 24])
+		);
+
+		await service.complete(
+			user.id,
+			DRAFT,
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES,
+			{ onProgress: (percent) => percents.push(percent) }
+		);
+
+		assert.deepEqual(percents, [48, 95]);
+	});
+
+	test('should save the raw segment without cleaned draft when the cleanup fails after some progress', async ({
+		assert,
+	}) => {
+		const percents: number[] = [];
+		const { service, user } = await createService(
+			new FakeTextCleaner(new TextCleanupUnavailableException(), [12])
+		);
+
+		const transcript = await service.complete(
+			user.id,
+			DRAFT,
+			'euh bonjour',
+			FRENCH_CLEANUP_PREFERENCES,
+			{ onProgress: (percent) => percents.push(percent) }
+		);
+
+		assert.deepEqual(transcript, {
+			rawText: 'euh bonjour',
+			cleanedDraft: null,
+		});
+		const [saved] = await Transcript.query().where('userId', user.id);
+		assert.equal(saved?.rawText, 'euh bonjour');
+		assert.isNull(saved?.cleanedText);
 	});
 
 	test('should clean with the given preferences', async ({ assert }) => {
@@ -216,7 +260,10 @@ test.group('DictationCompletionService', (group) => {
 			new FakeTextCleaner(),
 			new FailingTranscriptHistoryService(
 				new FixedClock(DateTime.now()),
-				new TextCleanupService(new FakeTextCleaner()),
+				new TextCleanupService(
+					new FakeTextCleaner(),
+					createRecordingLogger().logger
+				),
 				new UserSettingsService()
 			)
 		);
@@ -283,7 +330,10 @@ test.group('DictationCompletionService', (group) => {
 			new FakeTextCleaner(),
 			new FailingTranscriptHistoryService(
 				new FixedClock(DateTime.now()),
-				new TextCleanupService(new FakeTextCleaner()),
+				new TextCleanupService(
+					new FakeTextCleaner(),
+					createRecordingLogger().logger
+				),
 				new UserSettingsService()
 			)
 		);

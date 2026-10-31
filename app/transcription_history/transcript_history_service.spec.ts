@@ -5,6 +5,7 @@ import { DateTime } from 'luxon';
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
+import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
@@ -25,7 +26,7 @@ async function createService(textCleaner = new FakeTextCleaner()) {
 	const user = await UserFactory.create();
 	const service = new TranscriptHistoryService(
 		new FixedClock(NOW),
-		new TextCleanupService(textCleaner),
+		new TextCleanupService(textCleaner, createRecordingLogger().logger),
 		new UserSettingsService()
 	);
 	return { user, service, textCleaner };

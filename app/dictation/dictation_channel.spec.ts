@@ -173,6 +173,22 @@ test.group('DictationChannel', (group) => {
 		fake.assertCount(5, { target: 'channel', channel: CHANNEL_NAME });
 	});
 
+	test('should broadcast the cleanup progress on the dictation channel', async () => {
+		const fake = socketService.fake();
+		const restoreTextCleaner = swapTextCleaner(
+			new FakeTextCleaner(undefined, [10, 50])
+		);
+		const { send } = await joinChannel();
+		await send('dictation:start', DRAFT_CONTEXT);
+
+		await send('dictation:stop');
+
+		fake.assertEmittedTo(CHANNEL_NAME, 'cleanup:progress', {
+			data: { percent: 43 },
+		});
+		restoreTextCleaner();
+	});
+
 	test('should broadcast a null cleaned text on stop when the cleanup is unavailable', async () => {
 		const fake = socketService.fake();
 		const restoreTextCleaner = swapTextCleaner(

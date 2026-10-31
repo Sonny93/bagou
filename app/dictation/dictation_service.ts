@@ -50,7 +50,9 @@ export class DictationService {
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
 			complete: (rawText) =>
-				this.completionService.complete(userId, draft, rawText, preferences),
+				this.completionService.complete(userId, draft, rawText, preferences, {
+					onProgress: (percent) => listener.onCleanupProgress(percent),
+				}),
 			keepRaw: (rawText) =>
 				this.completionService.keepRaw(userId, draft.draftId, rawText),
 		});

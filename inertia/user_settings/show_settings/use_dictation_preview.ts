@@ -76,6 +76,8 @@ export function useDictationPreview(
 				onPartial: (text) => dispatch({ type: 'partialReceived', text }),
 				onFinal: (text) => dispatch({ type: 'finalReceived', text }),
 				onFinished: (text) => dispatch({ type: 'finished', text }),
+				onCleanupProgress: (percent) =>
+					dispatch({ type: 'cleanupProgressed', percent }),
 				onLevel: (level) =>
 					setLevels((previous) =>
 						appendLevel(previous, level, LEVEL_HISTORY_CAPACITY)

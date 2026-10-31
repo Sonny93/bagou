@@ -1,4 +1,4 @@
-import type { MessageCreateParamsNonStreaming } from '@anthropic-ai/sdk/resources/messages';
+import type { MessageStreamParams } from '@anthropic-ai/sdk/resources/messages/messages';
 
 import { buildSystemPrompt } from '#text_cleanup/anthropic/build_system_prompt';
 import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
@@ -16,7 +16,7 @@ const OUTPUT_SCHEMA = {
 export function buildCleanupRequest(
 	text: string,
 	preferences: Readonly<CleanupPreferences>
-): MessageCreateParamsNonStreaming {
+): MessageStreamParams {
 	return {
 		model: TEXT_CLEANUP_MODEL,
 		max_tokens: MAX_OUTPUT_TOKENS,

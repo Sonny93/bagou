@@ -25,6 +25,9 @@ export function createSocketDictationTransport(): DictationTransport {
 				.listen('transcript:partial', ({ text }) => listener.onPartial(text))
 				.listen('transcript:final', ({ text }) => listener.onFinal(text))
 				.listen('transcript:finished', ({ text }) => listener.onFinished(text))
+				.listen('cleanup:progress', ({ percent }) =>
+					listener.onCleanupProgress(percent)
+				)
 				.listen('dictation:ready', () => listener.onReady())
 				.listen('dictation:completed', (transcript) =>
 					listener.onCompleted(transcript)

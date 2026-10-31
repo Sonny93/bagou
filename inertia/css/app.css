@@ -102,3 +102,16 @@ body {
 	line-height: 1.6;
 	text-align: left;
 }
+
+@media (forced-colors: active) {
+	.cleanup-track.cleanup-track {
+		forced-color-adjust: none;
+		background: Canvas;
+		border: 1px solid CanvasText;
+	}
+
+	.cleanup-fill.cleanup-fill {
+		forced-color-adjust: none;
+		background: Highlight;
+	}
+}

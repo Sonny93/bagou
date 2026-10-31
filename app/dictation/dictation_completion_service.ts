@@ -21,7 +21,8 @@ export class DictationCompletionService {
 
 	/**
 	 * Cleans the whole draft around the new segment, then appends the segment to
-	 * the draft's history entry. A blank segment costs and stores nothing. A
+	 * the draft's history entry, reporting the cleanup progress through
+	 * `options.onProgress`. A blank segment costs and stores nothing. A
 	 * failing cleanup does not lose the dictation: it yields no cleaned draft.
 	 * Neither does a failing save to the history.
 	 */
@@ -29,14 +30,16 @@ export class DictationCompletionService {
 		userId: number,
 		draft: Readonly<DraftContext>,
 		rawSegment: string,
-		preferences: Readonly<CleanupPreferences>
+		preferences: Readonly<CleanupPreferences>,
+		options?: Readonly<{ onProgress?: (percent: number) => void }>
 	): Promise<DictationTranscript> {
 		if (rawSegment.trim() === '') {
 			return { rawText: rawSegment, cleanedDraft: null };
 		}
 		const cleanedDraft = await this.#cleanOrNull(
 			joinDraft(draft, rawSegment),
-			preferences
+			preferences,
+			options
 		);
 		await this.#saveOrLog(userId, draft.draftId, { rawSegment, cleanedDraft });
 		return { rawText: rawSegment, cleanedDraft };
@@ -86,10 +89,15 @@ export class DictationCompletionService {
 
 	async #cleanOrNull(
 		draftText: string,
-		preferences: Readonly<CleanupPreferences>
+		preferences: Readonly<CleanupPreferences>,
+		options?: Readonly<{ onProgress?: (percent: number) => void }>
 	): Promise<string | null> {
 		try {
-			return await this.textCleanupService.clean(draftText, preferences);
+			return await this.textCleanupService.clean(
+				draftText,
+				preferences,
+				options
+			);
 		} catch (error) {
 			if (error instanceof TextCleanupUnavailableException) return null;
 			throw error;

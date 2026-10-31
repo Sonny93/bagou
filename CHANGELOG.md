@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Loading indicators keep spinning when the system asks to reduce animations.
 
+### Added
+
+- A progress bar shows how far the text cleanup has gone.
+
 ### Changed
 
 - The voice level meter now spans the full width of the dictation bar.

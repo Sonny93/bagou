@@ -75,7 +75,8 @@ msgstr "Nettoyer le texte"
 msgid "Cleaned text"
 msgstr "Texte nettoyé"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:31
+#: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
+#: inertia/dictation/show_dictation/dictation_dock.tsx:32
 msgid "Cleaning the text…"
 msgstr "Nettoyage du texte…"
 
@@ -88,7 +89,7 @@ msgstr "Le nettoyage a échoué, réessaie"
 msgid "Cleanup instructions"
 msgstr "Consignes de nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:88
+#: inertia/dictation/show_dictation/copy_controls.tsx:110
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
@@ -117,7 +118,7 @@ msgstr "Fermer"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:29
+#: inertia/dictation/show_dictation/dictation_dock.tsx:30
 msgid "Connecting…"
 msgstr "Connexion…"
 
@@ -125,16 +126,16 @@ msgstr "Connexion…"
 msgid "Continue the dictation"
 msgstr "Continuer la dictée"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:20
+#: inertia/dictation/show_dictation/copy_controls.tsx:22
 msgid "Copied"
 msgstr "Copié"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:58
-#: inertia/dictation/show_dictation/copy_controls.tsx:68
+#: inertia/dictation/show_dictation/copy_controls.tsx:71
+#: inertia/dictation/show_dictation/copy_controls.tsx:81
 msgid "Copy"
 msgstr "Copier"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:39
 msgid "Copy failed"
 msgstr "Copie impossible"
 
@@ -236,7 +237,7 @@ msgstr "Échap"
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:30
+#: inertia/dictation/show_dictation/dictation_dock.tsx:31
 msgid "Finishing…"
 msgstr "Finalisation…"
 
@@ -269,7 +270,7 @@ msgstr "Thème clair"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:26
+#: inertia/dictation/show_dictation/copy_controls.tsx:31
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
 
@@ -301,7 +302,7 @@ msgstr "Aucun résultat."
 msgid "not cleaned"
 msgstr "non nettoyé"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:90
+#: inertia/dictation/show_dictation/copy_controls.tsx:112
 msgid "Not cleaned"
 msgstr "Non nettoyé"
 
@@ -354,7 +355,7 @@ msgstr "Texte brut"
 msgid "Register a passkey"
 msgstr "Enregistrer une passkey"
 
-#: inertia/shared/errors/error_fallback.tsx:21
+#: inertia/shared/errors/error_fallback.tsx:18
 msgid "Reload"
 msgstr "Recharger"
 
@@ -419,7 +420,7 @@ msgstr "Une erreur est survenue"
 msgid "Something went wrong during the dictation"
 msgstr "Une erreur s'est produite pendant la dictée"
 
-#: inertia/shared/errors/error_fallback.tsx:18
+#: inertia/shared/errors/error_fallback.tsx:15
 msgid "Something went wrong while displaying this page"
 msgstr "Une erreur est survenue à l'affichage de cette page"
 
@@ -634,6 +635,6 @@ msgstr "Écris les nombres en chiffres.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:55
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:56
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel essai à la prochaine modification"

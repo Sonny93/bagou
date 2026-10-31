@@ -8,4 +8,5 @@ export type DictationServerEvents = {
 	'transcript:error': DictationErrorEvent;
 	'dictation:ready': Record<string, never>;
 	'dictation:completed': DictationTranscript;
+	'cleanup:progress': { percent: number };
 };

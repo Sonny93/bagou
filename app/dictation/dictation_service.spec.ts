@@ -85,6 +85,7 @@ function createDictation(
 			onPartial: (text) => partials.push(text),
 			onFinal: (text) => finals.push(text),
 			onFinished: (text) => finisheds.push(text),
+			onCleanupProgress: () => undefined,
 			onError: (event) => errors.push(event),
 		},
 		{
@@ -696,6 +697,7 @@ test.group('DictationService', (group) => {
 		onPartial: () => undefined,
 		onFinal: () => undefined,
 		onFinished: () => undefined,
+		onCleanupProgress: () => undefined,
 		onError: () => undefined,
 	};
 
@@ -711,10 +713,10 @@ test.group('DictationService', (group) => {
 			quotaService,
 			new DictationStartLimiter(logger),
 			new DictationCompletionService(
-				new TextCleanupService(textCleaner),
+				new TextCleanupService(textCleaner, createRecordingLogger().logger),
 				new TranscriptHistoryService(
 					new Clock(),
-					new TextCleanupService(textCleaner),
+					new TextCleanupService(textCleaner, createRecordingLogger().logger),
 					new UserSettingsService()
 				),
 				logger
@@ -724,6 +726,27 @@ test.group('DictationService', (group) => {
 		const user = await UserFactory.create();
 		return { service, quotaService, user, provider, lines, textCleaner };
 	}
+
+	test('should forward the cleanup progress of the completion to the listener', async ({
+		assert,
+	}) => {
+		const percents: number[] = [];
+		const { service, user } = await createService(
+			new FakeTranscriptionProvider(
+				new FakeTranscriptionSession('euh bonjour')
+			),
+			new FakeTextCleaner(undefined, [9, 18])
+		);
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, {
+			...listener,
+			onCleanupProgress: (percent) => percents.push(percent),
+		});
+		await dictation.start();
+
+		await dictation.stop();
+
+		assert.deepEqual(percents, [50, 95]);
+	});
 
 	test('should create a dictation on the injected provider that is not started yet', async ({
 		assert,

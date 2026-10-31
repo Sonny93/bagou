@@ -8,7 +8,7 @@ export type DictationState =
 			startedAt: number;
 	  }
 	| { status: 'finishing'; committedText: string; partialText: string }
-	| { status: 'cleaning'; rawText: string }
+	| { status: 'cleaning'; rawText: string; progress: number }
 	| { status: 'done'; isCleaned: boolean }
 	| { status: 'cancelled'; hasKeptText: boolean }
 	| { status: 'error'; message: string };
@@ -20,6 +20,7 @@ export type DictationEvent =
 	| { type: 'partialReceived'; text: string }
 	| { type: 'stopRequested' }
 	| { type: 'finished'; text: string }
+	| { type: 'cleanupProgressed'; percent: number }
 	| { type: 'cleaned'; isCleaned: boolean }
 	| { type: 'cancelRequested' }
 	| { type: 'failed'; message: string };
@@ -34,10 +35,11 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
  * `final` text is append-only and `partial` text replaces the previous
  * partial, matching the server's transcript contract. Cleaning always ends
  * in `done`, also from `finishing` when the finished event never arrived:
- * cancel and failure do not apply to it. An event that does not
- * apply to the current state is ignored, so late events never resurrect a
- * dictation that already ended. A cancelled dictation remembers whether it
- * had text, which the server keeps raw in the history.
+ * cancel and failure do not apply to it. An event that does not apply to the
+ * current state is ignored, so late events never resurrect a dictation that
+ * already ended. Cleaning starts at progress 0 and only moves forward: a
+ * lower `cleanupProgressed` percent is ignored. A cancelled dictation
+ * remembers whether it had text, which the server keeps raw in the history.
  */
 export function dictationReducer(
 	state: DictationState,
@@ -73,7 +75,11 @@ export function dictationReducer(
 				: state;
 		case 'finished':
 			return state.status === 'finishing'
-				? { status: 'cleaning', rawText: event.text }
+				? { status: 'cleaning', rawText: event.text, progress: 0 }
+				: state;
+		case 'cleanupProgressed':
+			return state.status === 'cleaning'
+				? { ...state, progress: Math.max(state.progress, event.percent) }
 				: state;
 		case 'cleaned':
 			return state.status === 'cleaning' || state.status === 'finishing'

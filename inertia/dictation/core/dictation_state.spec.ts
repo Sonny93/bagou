@@ -22,7 +22,11 @@ const finishing: DictationState = {
 	partialText: '',
 };
 
-const cleaning: DictationState = { status: 'cleaning', rawText: 'bonjour' };
+const cleaning: DictationState = {
+	status: 'cleaning',
+	rawText: 'bonjour',
+	progress: 0,
+};
 
 const reduce = (
 	state: DictationState,
@@ -47,7 +51,11 @@ describe('dictationReducer', () => {
 	it('should keep the raw text while cleaning after the dictation finished', () => {
 		const state = reduce(finishing, { type: 'finished', text: 'bonjour' });
 
-		expect(state).toEqual({ status: 'cleaning', rawText: 'bonjour' });
+		expect(state).toEqual({
+			status: 'cleaning',
+			rawText: 'bonjour',
+			progress: 0,
+		});
 	});
 
 	it('should end in done from finishing when the finished event never arrived', () => {
@@ -67,6 +75,31 @@ describe('dictationReducer', () => {
 
 		expect(state).toEqual({ status: 'error', message: 'Oups' });
 	});
+
+	it('should record the cleanup progress while cleaning', () => {
+		const state = reduce(cleaning, { type: 'cleanupProgressed', percent: 40 });
+
+		expect(state).toEqual({ ...cleaning, progress: 40 });
+	});
+
+	it('should never move the cleanup progress backwards', () => {
+		const state = reduce(
+			cleaning,
+			{ type: 'cleanupProgressed', percent: 60 },
+			{ type: 'cleanupProgressed', percent: 30 }
+		);
+
+		expect(state).toEqual({ ...cleaning, progress: 60 });
+	});
+
+	it.each<DictationState>([finishing, { status: 'done', isCleaned: true }])(
+		'should ignore the cleanup progress while $status',
+		(state) => {
+			expect(
+				dictationReducer(state, { type: 'cleanupProgressed', percent: 50 })
+			).toBe(state);
+		}
+	);
 
 	it.each<DictationEvent>([
 		{ type: 'cancelRequested' },

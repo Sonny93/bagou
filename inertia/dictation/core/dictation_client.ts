@@ -30,6 +30,7 @@ export type DictationClientListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
+	onCleanupProgress(percent: number): void;
 	onError(error: DictationClientError): void;
 };
 
@@ -155,6 +156,8 @@ export class DictationClient {
 				onFinal: (text) => this.#whileOpen(() => this.listener.onFinal(text)),
 				onFinished: (text) =>
 					this.#whileOpen(() => this.listener.onFinished(text)),
+				onCleanupProgress: (percent) =>
+					this.#whileOpen(() => this.listener.onCleanupProgress(percent)),
 				onReady: () => readiness.resolve(),
 				onCompleted: (transcript) => this.#completion?.resolve(transcript),
 				onProviderError: (code) =>

@@ -1,11 +1,12 @@
 import type { ApplicationService } from '@adonisjs/core/types';
-import Anthropic from '@anthropic-ai/sdk';
 
 import env from '#start/env';
 import { AnthropicTextCleaner } from '#text_cleanup/anthropic/anthropic_text_cleaner';
+import { buildAnthropicClient } from '#text_cleanup/anthropic/build_anthropic_client';
 import { TextCleaner } from '#text_cleanup/text_cleaner';
 
-const REQUEST_TIMEOUT_MS = 15_000;
+/** Bounds the wait for the response headers of each attempt; the streamed answer has its own bound in the adapter. */
+const RESPONSE_HEADERS_TIMEOUT_MS = 15_000;
 const MAX_RETRIES = 1;
 
 /**
@@ -17,12 +18,13 @@ export default class TextCleanupAppProvider {
 
 	register(): void {
 		this.app.container.singleton(TextCleaner, async (resolver) => {
-			const client = new Anthropic({
+			const logger = await resolver.make('logger');
+			const client = buildAnthropicClient(logger, {
 				apiKey: env.get('ANTHROPIC_API_KEY'),
-				timeout: REQUEST_TIMEOUT_MS,
+				timeout: RESPONSE_HEADERS_TIMEOUT_MS,
 				maxRetries: MAX_RETRIES,
 			});
-			return new AnthropicTextCleaner(client, await resolver.make('logger'));
+			return new AnthropicTextCleaner(client, logger);
 		});
 	}
 }

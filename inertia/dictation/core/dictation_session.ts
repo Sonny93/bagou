@@ -9,6 +9,7 @@ export type DictationSessionListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
+	onCleanupProgress(percent: number): void;
 	onLevel(level: number): void;
 	onError(error: DictationClientError): void;
 };

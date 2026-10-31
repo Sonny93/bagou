@@ -4,5 +4,6 @@ export type DictationListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
+	onCleanupProgress(percent: number): void;
 	onError(event: Readonly<DictationErrorEvent>): void;
 };

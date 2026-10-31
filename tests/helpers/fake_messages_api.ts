@@ -1,23 +1,58 @@
 import type {
 	Message,
-	MessageCreateParamsNonStreaming,
-} from '@anthropic-ai/sdk/resources/messages';
+	MessageStreamParams,
+} from '@anthropic-ai/sdk/resources/messages/messages';
 
-import type { MessagesApi } from '#text_cleanup/anthropic/anthropic_text_cleaner';
+import type {
+	CleanupStream,
+	MessagesApi,
+} from '#text_cleanup/anthropic/anthropic_text_cleaner';
 
-/** Records every request and answers with a canned message or error. */
+type FakeStreamOutcome = {
+	snapshots?: readonly string[];
+	result: Message | Error;
+};
+
+/** Records every request and replays canned text snapshots, then a message or error. */
 export class FakeMessagesApi implements MessagesApi {
-	readonly requests: MessageCreateParamsNonStreaming[] = [];
+	readonly requests: MessageStreamParams[] = [];
+	readonly signals: AbortSignal[] = [];
+	private readonly snapshots: readonly string[];
+	private readonly result: Message | Error;
 
-	constructor(private readonly outcome: Message | Error) {}
+	constructor(outcome: Message | Error | FakeStreamOutcome) {
+		const isPlain = outcome instanceof Error || 'id' in outcome;
+		this.snapshots = isPlain ? [] : (outcome.snapshots ?? []);
+		this.result = isPlain ? outcome : outcome.result;
+	}
 
 	readonly messages = {
-		create: async (
-			params: MessageCreateParamsNonStreaming
-		): Promise<Message> => {
+		stream: (
+			params: MessageStreamParams,
+			options: { signal: AbortSignal }
+		): CleanupStream => {
 			this.requests.push(params);
-			if (this.outcome instanceof Error) throw this.outcome;
-			return this.outcome;
+			this.signals.push(options.signal);
+			return this.#createStream();
 		},
 	};
+
+	#createStream(): CleanupStream {
+		const listeners: ((delta: string, snapshot: string) => void)[] = [];
+		const result = this.result;
+		const snapshots = this.snapshots;
+		return {
+			on: (_event, listener) => {
+				listeners.push(listener);
+			},
+			finalMessage: async () => {
+				await Promise.resolve();
+				for (const snapshot of snapshots) {
+					for (const listener of listeners) listener('', snapshot);
+				}
+				if (result instanceof Error) throw result;
+				return result;
+			},
+		};
+	}
 }

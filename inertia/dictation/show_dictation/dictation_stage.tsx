@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import { CleanupProgressOverlay } from './cleanup_progress_overlay';
 import { StageContent, type StageDraft } from './stage_content';
 import { useFollowTranscript } from './use_follow_transcript';
 import type { DictationState } from '~/dictation/core/dictation_state';
@@ -22,11 +23,19 @@ export function DictationStage({
 	const isLive = state.status === 'recording' || state.status === 'finishing';
 	useFollowTranscript(scrollerRef, getLiveTranscriptLength(state), isLive);
 
+	const isCleaning = state.status === 'cleaning';
+
 	return (
-		<main ref={scrollerRef} className="min-h-0 flex-1 overflow-y-auto">
-			<div className="mx-auto flex min-h-full w-full max-w-3xl flex-col px-4 py-6 sm:px-6 sm:py-10">
-				<StageContent state={state} draft={draft} />
-			</div>
-		</main>
+		<div className="relative flex min-h-0 flex-1 flex-col">
+			<main ref={scrollerRef} className="min-h-0 flex-1 overflow-y-auto">
+				<div className="mx-auto flex min-h-full w-full max-w-3xl flex-col px-4 py-6 sm:px-6 sm:py-10">
+					<StageContent state={state} draft={draft} />
+				</div>
+			</main>
+			<CleanupProgressOverlay
+				isActive={isCleaning}
+				percent={isCleaning ? state.progress : 100}
+			/>
+		</div>
 	);
 }

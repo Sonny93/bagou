@@ -48,6 +48,8 @@ export default class DictationChannel extends BaseChannel<
 		onPartial: (text) => this.broadcast('transcript:partial', { text }),
 		onFinal: (text) => this.broadcast('transcript:final', { text }),
 		onFinished: (text) => this.broadcast('transcript:finished', { text }),
+		onCleanupProgress: (percent) =>
+			this.broadcast('cleanup:progress', { percent }),
 		onError: (event) => this.broadcast('transcript:error', event),
 	};
 

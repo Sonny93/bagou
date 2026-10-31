@@ -23,7 +23,9 @@ describe('getLiveSegment', () => {
 	});
 
 	it('should expose the raw text while cleaning', () => {
-		expect(getLiveSegment({ status: 'cleaning', rawText: 'Bonjour' })).toEqual({
+		expect(
+			getLiveSegment({ status: 'cleaning', rawText: 'Bonjour', progress: 0 })
+		).toEqual({
 			committedText: 'Bonjour',
 			partialText: '',
 		});

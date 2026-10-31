@@ -5,6 +5,7 @@ export type TranscriptListener = {
 	onPartial(text: string): void;
 	onFinal(text: string): void;
 	onFinished(text: string): void;
+	onCleanupProgress(percent: number): void;
 	onReady(): void;
 	onCompleted(transcript: DictationTranscript): void;
 	onProviderError(code: string): void;

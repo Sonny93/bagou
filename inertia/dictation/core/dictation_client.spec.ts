@@ -32,15 +32,17 @@ function createClient(transport = new FakeDictationTransport()) {
 	const partials: string[] = [];
 	const finals: string[] = [];
 	const finisheds: string[] = [];
+	const progresses: number[] = [];
 	const errors: DictationClientError[] = [];
 	const listener: DictationClientListener = {
 		onPartial: (text) => partials.push(text),
 		onFinal: (text) => finals.push(text),
 		onFinished: (text) => finisheds.push(text),
+		onCleanupProgress: (percent) => progresses.push(percent),
 		onError: (error) => errors.push(error),
 	};
 	const client = new DictationClient(transport, listener, () => DICTATION_ID);
-	return { client, transport, partials, finals, finisheds, errors };
+	return { client, transport, partials, finals, finisheds, progresses, errors };
 }
 
 describe('DictationClient', () => {
@@ -123,6 +125,25 @@ describe('DictationClient', () => {
 		transport.listener?.onFinished('texte brut');
 
 		expect(finisheds).toEqual([]);
+	});
+
+	it('should relay the cleanup progress to the listener', async () => {
+		const { client, transport, progresses } = createClient();
+		await client.start(DRAFT_REQUEST);
+
+		transport.listener?.onCleanupProgress(35);
+
+		expect(progresses).toEqual([35]);
+	});
+
+	it('should ignore the cleanup progress once the dictation ended', async () => {
+		const { client, transport, progresses } = createClient();
+		await client.start(DRAFT_REQUEST);
+		client.cancel();
+
+		transport.listener?.onCleanupProgress(35);
+
+		expect(progresses).toEqual([]);
 	});
 
 	it('should resolve the acknowledged transcript on stop and disconnect', async () => {
