@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Loading indicators keep spinning when the system asks to reduce animations.
+- Clicking outside the text no longer puts the cursor in it.
 
 ### Added
 

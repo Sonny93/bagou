@@ -55,7 +55,7 @@ export function DictationResult({
 			onChange={handleChange}
 			onSelect={handleSelect}
 			className={cn(
-				'dictation-text min-h-48 w-full flex-1 resize-none rounded-md border-0 bg-transparent p-0 text-ink placeholder:text-muted [field-sizing:content]',
+				'dictation-text min-h-[1.6em] w-full resize-none rounded-md border-0 bg-transparent p-0 text-ink placeholder:text-muted [field-sizing:content]',
 				'focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-accent-600/40 dark:focus-visible:outline-accent-400/40'
 			)}
 		/>
