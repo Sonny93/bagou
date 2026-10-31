@@ -24,7 +24,7 @@ const BUTTON_CLASSES =
 
 const getIcon = (isRecording: boolean, isBusy: boolean): string => {
 	if (isBusy) {
-		return 'i-tabler-loader-2 animate-spin motion-reduce:animate-none';
+		return 'i-tabler-loader-2 animate-spin';
 	}
 	return isRecording ? 'i-tabler-player-stop-filled' : 'i-tabler-microphone';
 };
