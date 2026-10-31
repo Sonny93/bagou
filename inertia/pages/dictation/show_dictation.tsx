@@ -20,7 +20,7 @@ export default function ShowDictation({
 }: Readonly<ShowDictationProps>) {
 	const [isAutoStartEnabled, setAutoStartEnabled] = useAutoStartPreference();
 	const draft = useDictationDraft();
-	const { copyStatus, copyDraft } = useDraftCopy({
+	const { copyStatus, copyCount, copyDraft } = useDraftCopy({
 		draftId: draft.draftId,
 		draftText: draft.text,
 	});
@@ -79,6 +79,7 @@ export default function ShowDictation({
 				remainingMinutes={remainingMinutes}
 				hasDraftText={hasDraftText}
 				copyStatus={copyStatus}
+				copyCount={copyCount}
 				onCopy={handleCopy}
 				onStart={start}
 				onStartNew={startNew}

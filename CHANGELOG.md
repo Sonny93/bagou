@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - The voice level meter now spans the full width of the dictation bar.
+- A short animation now confirms every copy to the clipboard, automatic or manual.
 
 ## [1.1.0] - 2026-10-28
 

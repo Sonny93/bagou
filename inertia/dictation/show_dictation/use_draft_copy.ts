@@ -1,14 +1,10 @@
 import { useCallback, useState } from 'react';
 
+import type { CopyAttempt } from './copy_attempt';
 import type { CopyStatus } from './copy_status';
 import { deriveCopyStatus } from './derive_copy_status';
+import { recordCopyAttempt } from './record_copy_attempt';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
-
-type CopyAttempt = {
-	draftId: string;
-	lastCopiedText: string | null;
-	hasLastCopyFailed: boolean;
-};
 
 type UseDraftCopyOptions = {
 	draftId: string;
@@ -17,6 +13,7 @@ type UseDraftCopyOptions = {
 
 type UseDraftCopyReturn = {
 	copyStatus: CopyStatus;
+	copyCount: number;
 	copyDraft: (text: string) => Promise<boolean>;
 };
 
@@ -34,15 +31,9 @@ export function useDraftCopy({
 	const copyDraft = useCallback(
 		async (text: string) => {
 			const isCopied = await copyToClipboard(text);
-			setAttempt((previous) => ({
-				draftId,
-				lastCopiedText: isCopied
-					? text
-					: previous?.draftId === draftId
-						? previous.lastCopiedText
-						: null,
-				hasLastCopyFailed: !isCopied,
-			}));
+			setAttempt((previous) =>
+				recordCopyAttempt({ previous, draftId, text, isCopied })
+			);
 			return isCopied;
 		},
 		[draftId]
@@ -55,5 +46,9 @@ export function useDraftCopy({
 		hasLastCopyFailed: currentAttempt?.hasLastCopyFailed ?? false,
 	});
 
-	return { copyStatus, copyDraft };
+	return {
+		copyStatus,
+		copyCount: currentAttempt?.copyCount ?? 0,
+		copyDraft,
+	};
 }

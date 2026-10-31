@@ -18,6 +18,7 @@ type DictationDockProps = {
 	remainingMinutes: number;
 	hasDraftText: boolean;
 	copyStatus: CopyStatus;
+	copyCount: number;
 	onCopy: () => void;
 	onStart: () => void;
 	onStartNew: () => void;
@@ -37,6 +38,7 @@ export function DictationDock({
 	remainingMinutes,
 	hasDraftText,
 	copyStatus,
+	copyCount,
 	onCopy,
 	onStart,
 	onStartNew,
@@ -62,6 +64,7 @@ export function DictationDock({
 	const renderCopyControls = (isCleaned: boolean) => (
 		<CopyControls
 			copyStatus={copyStatus}
+			copyCount={copyCount}
 			isCleaned={isCleaned}
 			onCopy={onCopy}
 		/>
