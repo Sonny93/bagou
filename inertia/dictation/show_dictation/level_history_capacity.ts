@@ -1,1 +1,1 @@
-export const LEVEL_HISTORY_CAPACITY = 48;
+export const LEVEL_HISTORY_CAPACITY = 192;

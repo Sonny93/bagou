@@ -14,7 +14,7 @@ export function RecordingStatus({
 	const elapsed = useElapsedTime(startedAt);
 
 	return (
-		<div className="flex min-w-0 items-center gap-3 text-sm">
+		<div className="flex min-w-0 flex-1 items-center gap-3 text-sm">
 			<span
 				className="size-2.5 shrink-0 animate-pulse rounded-full bg-signal motion-reduce:animate-none"
 				aria-hidden
