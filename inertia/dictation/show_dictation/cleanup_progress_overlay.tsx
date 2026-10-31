@@ -39,8 +39,8 @@ function CleanupProgressBar({
 	const fillStyle = { transform: `scaleX(${displayedPercent / FULL_PERCENT})` };
 
 	return (
-		<div className="relative inline-flex items-center gap-3">
-			<p id={labelId} className="sr-only">
+		<div className="relative flex flex-col items-center gap-2">
+			<p id={labelId} className="text-sm text-gray-900 dark:text-gray-100">
 				<Trans>Cleaning the text…</Trans>
 			</p>
 			<progress
@@ -49,21 +49,23 @@ function CleanupProgressBar({
 				value={isActive ? percent : FULL_PERCENT}
 				aria-labelledby={labelId}
 			/>
-			<div
-				className="cleanup-track h-1.5 w-50 shrink-0 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
-				aria-hidden
-			>
+			<div className="flex items-center gap-3">
 				<div
-					className="cleanup-fill h-full origin-left bg-accent-600 dark:bg-accent-400"
-					style={fillStyle}
-				/>
+					className="cleanup-track h-1.5 w-50 shrink-0 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+					aria-hidden
+				>
+					<div
+						className="cleanup-fill h-full origin-left bg-accent-600 dark:bg-accent-400"
+						style={fillStyle}
+					/>
+				</div>
+				<span
+					className="shrink-0 text-sm font-medium tabular-nums text-gray-900 dark:text-gray-100"
+					aria-hidden
+				>
+					{formattedPercent}
+				</span>
 			</div>
-			<span
-				className="shrink-0 text-sm font-medium tabular-nums text-gray-900 dark:text-gray-100"
-				aria-hidden
-			>
-				{formattedPercent}
-			</span>
 		</div>
 	);
 }
