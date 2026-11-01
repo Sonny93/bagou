@@ -59,6 +59,7 @@ export default function ShowTranscripts({
 				{hasTranscripts ? (
 					<TranscriptFeed
 						transcripts={transcripts.data}
+						isSearching={query !== ''}
 						onDelete={deleteTranscript}
 					/>
 				) : (

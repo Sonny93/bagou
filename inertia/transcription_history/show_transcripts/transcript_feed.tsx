@@ -1,30 +1,34 @@
 import type { Data } from '@generated/data';
 import { InfiniteScroll } from '@inertiajs/react';
 
-import { TranscriptRow } from './transcript_row';
+import { TranscriptFlatList } from './transcript_flat_list';
+import { TranscriptGroupedList } from './transcript_grouped_list';
+import { TranscriptLoadingStatus } from './transcript_loading_status';
 
 type TranscriptFeedProps = {
 	transcripts: Data.Transcript[];
+	isSearching: boolean;
 	onDelete: (transcript: Data.Transcript) => void;
 };
 
 export const TranscriptFeed = ({
 	transcripts,
+	isSearching,
 	onDelete,
-}: Readonly<TranscriptFeedProps>) => (
-	<InfiniteScroll
-		data="transcripts"
-		as="ul"
-		onlyNext
-		preserveUrl
-		className="flex flex-col gap-4"
-	>
-		{transcripts.map((transcript) => (
-			<TranscriptRow
-				key={transcript.id}
-				transcript={transcript}
-				onDelete={onDelete}
-			/>
-		))}
-	</InfiniteScroll>
-);
+}: Readonly<TranscriptFeedProps>) => {
+	const TranscriptList = isSearching
+		? TranscriptFlatList
+		: TranscriptGroupedList;
+
+	return (
+		<InfiniteScroll
+			data="transcripts"
+			as="div"
+			onlyNext
+			preserveUrl
+			next={TranscriptLoadingStatus}
+		>
+			<TranscriptList transcripts={transcripts} onDelete={onDelete} />
+		</InfiniteScroll>
+	);
+};

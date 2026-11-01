@@ -11,6 +11,10 @@ msgstr ""
 msgid "{count, plural, one {# dictation will be permanently deleted.} other {# dictations will be permanently deleted.}}"
 msgstr "{count, plural, one {# dictation will be permanently deleted.} other {# dictations will be permanently deleted.}}"
 
+#: inertia/transcription_history/show_transcripts/transcript_day_group.tsx:26
+msgid "{dayLabel} at {time}"
+msgstr "{dayLabel} at {time}"
+
 #: inertia/layouts/app_ui_provider.tsx:31
 msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 msgstr "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
@@ -70,8 +74,11 @@ msgstr "Cannot delete the last passkey"
 msgid "Clean again"
 msgstr "Clean again"
 
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:53
+msgid "Clean the dictation from {accessibleDate}"
+msgstr "Clean the dictation from {accessibleDate}"
+
 #: inertia/dictation/show_dictation/copy_controls.tsx:152
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Clean the text"
 
@@ -154,9 +161,9 @@ msgstr "Copy automatically"
 msgid "Copy failed"
 msgstr "Copy failed"
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:55
-msgid "Copy the text"
-msgstr "Copy the text"
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:64
+msgid "Copy the dictation from {accessibleDate}"
+msgstr "Copy the dictation from {accessibleDate}"
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
 msgid "Could not reach the transcription service"
@@ -187,9 +194,9 @@ msgstr "Dark theme"
 msgid "Delete"
 msgstr "Delete"
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:63
-msgid "Delete the dictation"
-msgstr "Delete the dictation"
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:72
+msgid "Delete the dictation from {accessibleDate}"
+msgstr "Delete the dictation from {accessibleDate}"
 
 #: inertia/passkeys/show_passkeys/passkey_row.tsx:37
 msgid "Delete the passkey {label}"
@@ -297,6 +304,10 @@ msgstr "Leave this page?"
 msgid "Light theme"
 msgstr "Light theme"
 
+#: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:18
+msgid "Loading more dictations…"
+msgstr "Loading more dictations…"
+
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:18
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "Microphone access was denied, allow it in the browser"
@@ -330,7 +341,7 @@ msgstr "No results"
 msgid "No results."
 msgstr "No results."
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:38
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:47
 msgid "not cleaned"
 msgstr "not cleaned"
 

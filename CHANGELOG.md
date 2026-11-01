@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The history groups dictations by day: today, yesterday, then the date.
 - The dictation page shows whether the text is saved in the history.
 - Ctrl+S saves the text right away.
 - Leaving the dictation page asks for confirmation during a dictation or its cleanup, and while the text is not saved yet; so does starting a new dictation over unsaved text.
@@ -23,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The voice level meter now spans the full width of the dictation bar.
 - A short animation now confirms every copy to the clipboard, automatic or manual.
 - Each history entry sits in its own card, so it is clear where one ends and the next begins.
+- In the history, screen readers tell which dictation each button acts on and announce when more dictations load.
 
 ### Fixed
 
