@@ -17,7 +17,7 @@ export const TranscriptFeed = ({
 		as="ul"
 		onlyNext
 		preserveUrl
-		className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface"
+		className="flex flex-col gap-4"
 	>
 		{transcripts.map((transcript) => (
 			<TranscriptRow

@@ -28,7 +28,7 @@ export function TranscriptRow({
 	const handleDelete = () => onDelete(transcript);
 
 	return (
-		<li className="flex flex-col gap-2 px-4 py-3">
+		<li className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
 			<div className="flex items-center gap-2">
 				<span className="flex-1 text-sm text-muted">
 					{formatTranscriptDate(transcript.createdAt, i18n.locale)}

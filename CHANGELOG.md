@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The New dictation button moves to the top bar and Auto-start moves to the settings.
 - The voice level meter now spans the full width of the dictation bar.
 - A short animation now confirms every copy to the clipboard, automatic or manual.
+- Each history entry sits in its own card, so it is clear where one ends and the next begins.
 
 ## [1.1.0] - 2026-10-28
 
