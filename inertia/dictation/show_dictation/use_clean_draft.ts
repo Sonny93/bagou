@@ -9,9 +9,7 @@ import {
 } from '~/dictation/core/dictation_state';
 import { describeCleanupRequestError } from '~/shared/errors/describe_cleanup_request_error';
 import { reportError } from '~/shared/errors/report_error';
-
-/** The server may take up to 30 s to clean; ky would give up after 10 s. */
-const CLEAN_DRAFT_TIMEOUT_MS = 35_000;
+import { CLEANUP_REQUEST_TIMEOUT_MS } from '~/shared/lib/cleanup_request_timeout';
 
 type UseCleanDraftOptions = {
 	status: DictationState['status'];
@@ -61,7 +59,7 @@ export function useCleanDraft({
 				draftId: requestedDraftId,
 				text: draftText,
 				signal: controller.signal,
-				timeoutMs: CLEAN_DRAFT_TIMEOUT_MS,
+				timeoutMs: CLEANUP_REQUEST_TIMEOUT_MS,
 			});
 			if (draftIdRef.current !== requestedDraftId) {
 				dispatch({ type: 'cleaned', isCleaned: false });

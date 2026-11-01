@@ -1,4 +1,5 @@
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
+import { CLEANUP_REQUEST_TIMEOUT_MS } from '~/shared/lib/cleanup_request_timeout';
 import { tuyauClient } from '~/shared/lib/tuyau_client';
 
 type PreviewCleanupRequest = {
@@ -20,6 +21,7 @@ export async function requestPreviewCleanup({
 				vocabulary: [...settings.vocabulary],
 				cleanupInstructions: settings.cleanupInstructions,
 			},
+			timeout: CLEANUP_REQUEST_TIMEOUT_MS,
 		}
 	);
 	return cleanedText;
