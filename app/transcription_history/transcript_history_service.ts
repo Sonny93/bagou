@@ -60,18 +60,20 @@ export class TranscriptHistoryService {
 
 	/**
 	 * Stores the draft text as the user left it, hand edits included, in the
-	 * entry of its draft; a blank text clears it. Does nothing when no segment
-	 * of that draft was dictated yet.
+	 * entry of its draft; a blank text clears it. Resolves to whether an entry
+	 * was updated: false, with nothing stored, when no segment of that draft was
+	 * dictated yet.
 	 */
 	async saveDraftText(
 		userId: number,
 		draftId: string,
 		text: string
-	): Promise<void> {
+	): Promise<boolean> {
 		const transcript = await Transcript.findByDraft(userId, draftId);
-		if (!transcript) return;
+		if (!transcript) return false;
 		transcript.cleanedText = text.trim() === '' ? null : text;
 		await transcript.save();
+		return true;
 	}
 
 	/** Never lists a row past the retention, even when it is not purged yet. */

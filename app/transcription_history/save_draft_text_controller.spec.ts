@@ -28,7 +28,8 @@ test.group('SaveDraftTextController', (group) => {
 			.loginAs(user)
 			.withCsrfToken();
 
-		response.assertStatus(204);
+		response.assertStatus(200);
+		response.assertBodyContains({ isStored: true });
 		assert.equal(
 			(await Transcript.findOrFail(transcript.id)).cleanedText,
 			'Bonjour à tous.'
@@ -51,11 +52,11 @@ test.group('SaveDraftTextController', (group) => {
 			.loginAs(user)
 			.withCsrfToken();
 
-		response.assertStatus(204);
+		response.assertStatus(200);
 		assert.isNull((await Transcript.findOrFail(transcript.id)).cleanedText);
 	});
 
-	test('should do nothing when the draft has no entry', async ({
+	test('should answer that nothing is stored and do nothing when the draft has no entry', async ({
 		client,
 		assert,
 	}) => {
@@ -72,7 +73,8 @@ test.group('SaveDraftTextController', (group) => {
 			.loginAs(user)
 			.withCsrfToken();
 
-		response.assertStatus(204);
+		response.assertStatus(200);
+		response.assertBodyContains({ isStored: false });
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 1);
 		assert.equal(
 			(await Transcript.findOrFail(transcript.id)).cleanedText,
@@ -98,7 +100,7 @@ test.group('SaveDraftTextController', (group) => {
 			.loginAs(user)
 			.withCsrfToken();
 
-		response.assertStatus(204);
+		response.assertStatus(200);
 		assert.equal(
 			(await Transcript.findOrFail(foreign.id)).cleanedText,
 			'Autre.'

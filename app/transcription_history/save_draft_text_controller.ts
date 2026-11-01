@@ -10,15 +10,15 @@ export default class SaveDraftTextController {
 		private readonly transcriptHistoryService: TranscriptHistoryService
 	) {}
 
-	async execute({ auth, request, response }: HttpContext) {
+	async execute({ auth, request }: HttpContext) {
 		const { params, text } = await request.validateUsing(
 			saveDraftTextValidator
 		);
-		await this.transcriptHistoryService.saveDraftText(
+		const isStored = await this.transcriptHistoryService.saveDraftText(
 			auth.getUserOrFail().id,
 			params.draftId,
 			text ?? ''
 		);
-		return response.noContent();
+		return { isStored };
 	}
 }

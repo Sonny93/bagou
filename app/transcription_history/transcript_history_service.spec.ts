@@ -216,8 +216,13 @@ test.group('TranscriptHistoryService', (group) => {
 			cleanedDraft: 'Bonjour.',
 		});
 
-		await service.saveDraftText(user.id, DRAFT_ID, 'Bonjour à tous.');
+		const isStored = await service.saveDraftText(
+			user.id,
+			DRAFT_ID,
+			'Bonjour à tous.'
+		);
 
+		assert.isTrue(isStored);
 		const [row] = await Transcript.query().where('userId', user.id);
 		assert.equal(row?.cleanedText, 'Bonjour à tous.');
 		assert.equal(row?.rawText, 'euh bonjour');
@@ -243,8 +248,13 @@ test.group('TranscriptHistoryService', (group) => {
 	}) => {
 		const { service, user } = await createService();
 
-		await service.saveDraftText(user.id, DRAFT_ID, 'Tapé à la main.');
+		const isStored = await service.saveDraftText(
+			user.id,
+			DRAFT_ID,
+			'Tapé à la main.'
+		);
 
+		assert.isFalse(isStored);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
 	});
 
