@@ -6,6 +6,7 @@ import { describeDictationError } from './describe_dictation_error';
 import { DICTATION_WORKLET_URL } from './dictation_worklet_url';
 import { finalizeDictation } from './finalize_dictation';
 import { LEVEL_HISTORY_CAPACITY } from './level_history_capacity';
+import { useCleanDraft } from './use_clean_draft';
 import { DictationSession } from '~/dictation/core/dictation_session';
 import {
 	dictationReducer,
@@ -29,6 +30,8 @@ type UseDictationOptions = {
 	replaceDraft: (text: string) => string;
 	getDraftContext: () => DraftContext;
 	copyDraft: (text: string) => Promise<boolean>;
+	draftId: string;
+	draftText: string;
 };
 
 type UseDictationReturn = {
@@ -37,6 +40,7 @@ type UseDictationReturn = {
 	finish: () => void;
 	cancel: () => void;
 	start: () => void;
+	cleanDraft: () => void;
 };
 
 /**
@@ -44,7 +48,9 @@ type UseDictationReturn = {
  * `getDraftContext` and brought back into it when it ends, by `insertSegment`
  * or, when the server cleaned the whole draft, by `replaceDraft`, then copied
  * whole with `copyDraft`. Starts recording on mount only when `shouldAutoStart`
- * is true at that moment; later changes are ignored.
+ * is true at that moment; later changes are ignored. `cleanDraft` re-cleans
+ * the current draft (`draftText` of `draftId`) when the dictation ended
+ * uncleaned.
  */
 export function useDictation({
 	shouldAutoStart,
@@ -52,6 +58,8 @@ export function useDictation({
 	replaceDraft,
 	getDraftContext,
 	copyDraft,
+	draftId,
+	draftText,
 }: Readonly<UseDictationOptions>): UseDictationReturn {
 	const { i18n } = useLingui();
 	const [state, dispatch] = useReducer(
@@ -129,6 +137,15 @@ export function useDictation({
 		void sessionRef.current?.cancel();
 	}, []);
 
+	const cleanDraft = useCleanDraft({
+		status: state.status,
+		dispatch,
+		draftId,
+		draftText,
+		replaceDraft,
+		copyDraft,
+	});
+
 	useEffect(() => {
 		if (shouldAutoStartOnMountRef.current) void start();
 		return () => void sessionRef.current?.cancel();
@@ -140,5 +157,6 @@ export function useDictation({
 		finish: () => void finish(),
 		cancel,
 		start: () => void start(),
+		cleanDraft,
 	};
 }

@@ -2,6 +2,7 @@ import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Badge, Button, Kbd, Tooltip } from '@minimalstuff/ui';
+import type { Ref } from 'react';
 
 import type { CopyStatus } from './copy_status';
 import { cn } from '~/shared/lib/cn';
@@ -44,18 +45,26 @@ const COPY_STATUS_DISPLAYS = {
 	},
 } as const satisfies Record<CopyStatus, CopyStatusDisplay | null>;
 
+const CLEANING_MESSAGE = msg`Cleaning the text…`;
+
 type CopyControlsProps = {
 	copyStatus: CopyStatus;
 	copyCount: number;
 	isCleaned: boolean;
+	isCleaningDraft: boolean;
+	copyButtonRef: Ref<HTMLButtonElement>;
 	onCopy: () => void;
+	onCleanDraft: () => void;
 };
 
 export function CopyControls({
 	copyStatus,
 	copyCount,
 	isCleaned,
+	isCleaningDraft,
+	copyButtonRef,
 	onCopy,
+	onCleanDraft,
 }: Readonly<CopyControlsProps>) {
 	const { t, i18n } = useLingui();
 	const display = COPY_STATUS_DISPLAYS[copyStatus];
@@ -73,10 +82,12 @@ export function CopyControls({
 				}
 			>
 				<Button
+					ref={copyButtonRef}
 					variant={display?.isEmphasised ? 'solid' : 'subtle'}
 					startIcon="i-tabler-copy"
-					className="shrink-0"
-					onClick={onCopy}
+					className="shrink-0 aria-disabled:opacity-60"
+					aria-disabled={isCleaningDraft}
+					onClick={isCleaningDraft ? undefined : onCopy}
 				>
 					<Trans>Copy</Trans>
 				</Button>
@@ -112,6 +123,25 @@ export function CopyControls({
 					<Trans>Not cleaned</Trans>
 				</Badge>
 			)}
+			<Button
+				variant="subtle"
+				startIcon={
+					isCleaningDraft
+						? 'i-tabler-loader-2 animate-spin'
+						: 'i-tabler-sparkles'
+				}
+				className="shrink-0 aria-disabled:opacity-60"
+				aria-disabled={isCleaningDraft}
+				onClick={isCleaningDraft ? undefined : onCleanDraft}
+			>
+				<span className="sr-only sm:not-sr-only">
+					{isCleaningDraft ? (
+						i18n._(CLEANING_MESSAGE)
+					) : (
+						<Trans>Clean the text</Trans>
+					)}
+				</span>
+			</Button>
 		</div>
 	);
 }

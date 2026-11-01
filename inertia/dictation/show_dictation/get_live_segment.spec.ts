@@ -11,6 +11,13 @@ describe('getLiveSegment', () => {
 		});
 	});
 
+	it('should be empty while re-cleaning so the draft stays read-only', () => {
+		expect(getLiveSegment({ status: 'recleaning' })).toEqual({
+			committedText: '',
+			partialText: '',
+		});
+	});
+
 	it('should expose the dictated text while recording', () => {
 		const state: DictationState = {
 			status: 'recording',

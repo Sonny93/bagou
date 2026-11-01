@@ -28,6 +28,9 @@ const cleaning: DictationState = {
 	progress: 0,
 };
 
+const doneUncleaned: DictationState = { status: 'done', isCleaned: false };
+const recleaning: DictationState = { status: 'recleaning' };
+
 const reduce = (
 	state: DictationState,
 	...events: DictationEvent[]
@@ -183,6 +186,46 @@ describe('dictationReducer', () => {
 		expect(reduce(state, { type: 'startRequested' })).toEqual({
 			status: 'connecting',
 		});
+	});
+
+	it.each<[string, DictationState]>([
+		['idle', INITIAL_DICTATION_STATE],
+		['done cleaned', { status: 'done', isCleaned: true }],
+		['done uncleaned', doneUncleaned],
+		['cancelled', { status: 'cancelled', hasKeptText: true }],
+		['error', { status: 'error', message: 'm' }],
+	])('should clean the draft on demand from %s', (_name, state) => {
+		expect(reduce(state, { type: 'cleanupRequested' })).toEqual(recleaning);
+	});
+
+	it.each<[string, boolean]>([
+		['cleaned', true],
+		['still raw', false],
+	])('should end re-cleaning in done as %s', (_name, isCleaned) => {
+		expect(reduce(recleaning, { type: 'cleaned', isCleaned })).toEqual({
+			status: 'done',
+			isCleaned,
+		});
+	});
+
+	it.each<DictationState>([
+		{ status: 'connecting' },
+		recording(),
+		finishing,
+		cleaning,
+		recleaning,
+	])('should ignore a cleanup request while $status', (state) => {
+		expect(dictationReducer(state, { type: 'cleanupRequested' })).toBe(state);
+	});
+
+	it.each<DictationEvent>([
+		{ type: 'startRequested' },
+		{ type: 'cancelRequested' },
+		{ type: 'failed', message: 'late' },
+		{ type: 'cleanupProgressed', percent: 50 },
+		{ type: 'finalReceived', text: 'late' },
+	])('should ignore $type while re-cleaning', (event) => {
+		expect(dictationReducer(recleaning, event)).toBe(recleaning);
 	});
 
 	it('should ignore events that do not apply to the current state', () => {

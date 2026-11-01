@@ -66,6 +66,7 @@ msgstr "Impossible de supprimer la dernière passkey"
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
 
+#: inertia/dictation/show_dictation/copy_controls.tsx:141
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
@@ -76,11 +77,13 @@ msgid "Cleaned text"
 msgstr "Texte nettoyé"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/dictation_dock.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:48
+#: inertia/dictation/show_dictation/dictation_dock.tsx:35
+#: inertia/dictation/show_dictation/dictation_dock.tsx:36
 msgid "Cleaning the text…"
 msgstr "Nettoyage du texte…"
 
-#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:4
+#: inertia/shared/errors/describe_cleanup_error.ts:4
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:43
 msgid "Cleanup failed, try again"
 msgstr "Le nettoyage a échoué, réessaie"
@@ -89,7 +92,7 @@ msgstr "Le nettoyage a échoué, réessaie"
 msgid "Cleanup instructions"
 msgstr "Consignes de nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:110
+#: inertia/dictation/show_dictation/copy_controls.tsx:121
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
@@ -118,7 +121,7 @@ msgstr "Fermer"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:30
+#: inertia/dictation/show_dictation/dictation_dock.tsx:33
 msgid "Connecting…"
 msgstr "Connexion…"
 
@@ -126,16 +129,16 @@ msgstr "Connexion…"
 msgid "Continue the dictation"
 msgstr "Continuer la dictée"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:22
+#: inertia/dictation/show_dictation/copy_controls.tsx:23
 msgid "Copied"
 msgstr "Copié"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:71
-#: inertia/dictation/show_dictation/copy_controls.tsx:81
+#: inertia/dictation/show_dictation/copy_controls.tsx:80
+#: inertia/dictation/show_dictation/copy_controls.tsx:92
 msgid "Copy"
 msgstr "Copier"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:39
+#: inertia/dictation/show_dictation/copy_controls.tsx:40
 msgid "Copy failed"
 msgstr "Copie impossible"
 
@@ -237,7 +240,7 @@ msgstr "Échap"
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:31
+#: inertia/dictation/show_dictation/dictation_dock.tsx:34
 msgid "Finishing…"
 msgstr "Finalisation…"
 
@@ -270,7 +273,7 @@ msgstr "Thème clair"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:31
+#: inertia/dictation/show_dictation/copy_controls.tsx:32
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
 
@@ -302,7 +305,7 @@ msgstr "Aucun résultat."
 msgid "not cleaned"
 msgstr "non nettoyé"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:112
+#: inertia/dictation/show_dictation/copy_controls.tsx:123
 msgid "Not cleaned"
 msgstr "Non nettoyé"
 
@@ -428,7 +431,7 @@ msgstr "Une erreur est survenue à l'affichage de cette page"
 msgid "Something went wrong, try again"
 msgstr "Une erreur s'est produite, réessaie"
 
-#: inertia/dictation/show_dictation/dictation_transcript.tsx:40
+#: inertia/dictation/show_dictation/dictation_transcript.tsx:42
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
 
@@ -461,7 +464,7 @@ msgstr "Test annulé, rien n'a été conservé."
 msgid "Text"
 msgstr "Texte"
 
-#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:7
+#: inertia/shared/errors/describe_cleanup_error.ts:7
 msgid "Text cleanup is unavailable"
 msgstr "Le nettoyage du texte est indisponible"
 
@@ -535,7 +538,7 @@ msgstr "La valeur choisie n'est pas disponible"
 
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:12
 #: inertia/passkeys/describe_passkey_error.ts:10
-#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:7
+#: inertia/shared/errors/describe_cleanup_request_error.ts:7
 msgid "The server is unreachable"
 msgstr "Le serveur est injoignable"
 
@@ -605,7 +608,7 @@ msgid "Too many dictations started, wait a minute"
 msgstr "Trop de dictées lancées, patiente une minute"
 
 #: inertia/passkeys/describe_passkey_error.ts:19
-#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:9
+#: inertia/shared/errors/describe_cleanup_request_error.ts:9
 msgid "Too many requests, wait a minute"
 msgstr "Trop de requêtes, patiente une minute"
 

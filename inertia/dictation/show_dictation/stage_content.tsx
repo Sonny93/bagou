@@ -8,6 +8,12 @@ import {
 } from '~/dictation/core/dictation_draft';
 import type { DictationState } from '~/dictation/core/dictation_state';
 
+const ANNOUNCED_STATUSES: ReadonlySet<DictationState['status']> = new Set([
+	'recording',
+	'finishing',
+	'cleaning',
+]);
+
 export type StageDraft = {
 	text: string;
 	selection: DraftSelection;
@@ -51,6 +57,7 @@ export function StageContent({ state, draft }: Readonly<StageContentProps>) {
 			partialText={liveSegment.partialText}
 			hasPlaceholder={state.status !== 'cleaning'}
 			hasCaret={state.status === 'recording'}
+			isAnnounced={ANNOUNCED_STATUSES.has(state.status)}
 			segmentClassName={state.status === 'cleaning' ? 'opacity-60' : undefined}
 		/>
 	);

@@ -5,11 +5,16 @@ export type LiveSegment = {
 	partialText: string;
 };
 
-const CONNECTING_SEGMENT: LiveSegment = { committedText: '', partialText: '' };
+const EMPTY_SEGMENT: LiveSegment = { committedText: '', partialText: '' };
 
-/** The text being dictated, or `null` when no segment is live. */
+/**
+ * The text being dictated, or `null` when no segment is live. A draft being
+ * re-cleaned counts as an empty live segment, which makes it read-only.
+ */
 export const getLiveSegment = (state: DictationState): LiveSegment | null => {
-	if (state.status === 'connecting') return CONNECTING_SEGMENT;
+	if (state.status === 'connecting' || state.status === 'recleaning') {
+		return EMPTY_SEGMENT;
+	}
 	if (state.status === 'recording' || state.status === 'finishing') {
 		return state;
 	}

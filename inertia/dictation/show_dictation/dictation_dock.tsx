@@ -1,5 +1,6 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { useRef } from 'react';
 
 import { BusyStatus } from './busy_status';
 import { CopyControls } from './copy_controls';
@@ -10,6 +11,7 @@ import { MicButton } from './mic_button';
 import { NewDictationButton } from './new_dictation_button';
 import { RecordingActions } from './recording_actions';
 import { RecordingStatus } from './recording_status';
+import { useFocusAfterClean } from './use_focus_after_clean';
 import type { DictationState } from '~/dictation/core/dictation_state';
 
 type DictationDockProps = {
@@ -24,12 +26,14 @@ type DictationDockProps = {
 	onStartNew: () => void;
 	onFinish: () => void;
 	onCancel: () => void;
+	onCleanDraft: () => void;
 };
 
 const BUSY_LABELS = {
 	connecting: msg`Connecting…`,
 	finishing: msg`Finishing…`,
 	cleaning: msg`Cleaning the text…`,
+	recleaning: msg`Cleaning the text…`,
 } as const satisfies Partial<Record<DictationState['status'], unknown>>;
 
 export function DictationDock({
@@ -44,8 +48,11 @@ export function DictationDock({
 	onStartNew,
 	onFinish,
 	onCancel,
+	onCleanDraft,
 }: Readonly<DictationDockProps>) {
 	const { i18n } = useLingui();
+	const copyButtonRef = useRef<HTMLButtonElement>(null);
+	useFocusAfterClean(state.status, copyButtonRef);
 	const mic = (
 		<MicButton
 			isRecording={state.status === 'recording'}
@@ -64,14 +71,19 @@ export function DictationDock({
 	const renderCopyControls = (isCleaned: boolean) => (
 		<CopyControls
 			copyStatus={copyStatus}
+			isCleaningDraft={state.status === 'recleaning'}
 			copyCount={copyCount}
 			isCleaned={isCleaned}
+			copyButtonRef={copyButtonRef}
 			onCopy={onCopy}
+			onCleanDraft={onCleanDraft}
 		/>
 	);
 	const idleStatus = hasDraftText ? renderCopyControls(true) : quota;
 
 	switch (state.status) {
+		case 'recleaning':
+			return <DockLayout mic={mic} status={renderCopyControls(true)} />;
 		case 'connecting':
 		case 'finishing':
 		case 'cleaning':

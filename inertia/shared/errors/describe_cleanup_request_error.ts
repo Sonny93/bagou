@@ -2,7 +2,7 @@ import type { I18n, MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { TuyauHTTPError, TuyauNetworkError } from '@tuyau/core/client';
 
-import { describeCleanupError } from '~/transcription_history/show_transcripts/describe_cleanup_error';
+import { describeCleanupError } from './describe_cleanup_error';
 
 const NETWORK_MESSAGE = msg`The server is unreachable`;
 const RATE_LIMIT_CODE = 'E_TOO_MANY_REQUESTS';
@@ -24,10 +24,10 @@ const readServerCode = (body: unknown): string => {
 };
 
 /**
- * Wording for whatever fails a preview cleanup request: the stable code of
+ * Wording for whatever fails a cleanup request: the stable code of
  * the application error, the throttling message, or the network.
  */
-export function describePreviewCleanupError(
+export function describeCleanupRequestError(
 	error: unknown,
 	i18n: I18n
 ): string {

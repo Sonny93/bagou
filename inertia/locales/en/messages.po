@@ -66,6 +66,7 @@ msgstr "Cannot delete the last passkey"
 msgid "Clean again"
 msgstr "Clean again"
 
+#: inertia/dictation/show_dictation/copy_controls.tsx:141
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Clean the text"
@@ -76,11 +77,13 @@ msgid "Cleaned text"
 msgstr "Cleaned text"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/dictation_dock.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:48
+#: inertia/dictation/show_dictation/dictation_dock.tsx:35
+#: inertia/dictation/show_dictation/dictation_dock.tsx:36
 msgid "Cleaning the text…"
 msgstr "Cleaning the text…"
 
-#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:4
+#: inertia/shared/errors/describe_cleanup_error.ts:4
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:43
 msgid "Cleanup failed, try again"
 msgstr "Cleanup failed, try again"
@@ -89,7 +92,7 @@ msgstr "Cleanup failed, try again"
 msgid "Cleanup instructions"
 msgstr "Cleanup instructions"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:110
+#: inertia/dictation/show_dictation/copy_controls.tsx:121
 msgid "Cleanup unavailable, raw text"
 msgstr "Cleanup unavailable, raw text"
 
@@ -118,7 +121,7 @@ msgstr "Close"
 msgid "Confirm"
 msgstr "Confirm"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:30
+#: inertia/dictation/show_dictation/dictation_dock.tsx:33
 msgid "Connecting…"
 msgstr "Connecting…"
 
@@ -126,16 +129,16 @@ msgstr "Connecting…"
 msgid "Continue the dictation"
 msgstr "Continue the dictation"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:22
+#: inertia/dictation/show_dictation/copy_controls.tsx:23
 msgid "Copied"
 msgstr "Copied"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:71
-#: inertia/dictation/show_dictation/copy_controls.tsx:81
+#: inertia/dictation/show_dictation/copy_controls.tsx:80
+#: inertia/dictation/show_dictation/copy_controls.tsx:92
 msgid "Copy"
 msgstr "Copy"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:39
+#: inertia/dictation/show_dictation/copy_controls.tsx:40
 msgid "Copy failed"
 msgstr "Copy failed"
 
@@ -237,7 +240,7 @@ msgstr "Esc"
 msgid "Finish the dictation"
 msgstr "Finish the dictation"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:31
+#: inertia/dictation/show_dictation/dictation_dock.tsx:34
 msgid "Finishing…"
 msgstr "Finishing…"
 
@@ -270,7 +273,7 @@ msgstr "Light theme"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "Microphone access was denied, allow it in the browser"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:31
+#: inertia/dictation/show_dictation/copy_controls.tsx:32
 msgid "Modified since the copy"
 msgstr "Modified since the copy"
 
@@ -302,7 +305,7 @@ msgstr "No results."
 msgid "not cleaned"
 msgstr "not cleaned"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:112
+#: inertia/dictation/show_dictation/copy_controls.tsx:123
 msgid "Not cleaned"
 msgstr "Not cleaned"
 
@@ -428,7 +431,7 @@ msgstr "Something went wrong while displaying this page"
 msgid "Something went wrong, try again"
 msgstr "Something went wrong, try again"
 
-#: inertia/dictation/show_dictation/dictation_transcript.tsx:40
+#: inertia/dictation/show_dictation/dictation_transcript.tsx:42
 msgid "Speak, the text is written here."
 msgstr "Speak, the text is written here."
 
@@ -461,7 +464,7 @@ msgstr "Test cancelled, nothing was kept."
 msgid "Text"
 msgstr "Text"
 
-#: inertia/transcription_history/show_transcripts/describe_cleanup_error.ts:7
+#: inertia/shared/errors/describe_cleanup_error.ts:7
 msgid "Text cleanup is unavailable"
 msgstr "Text cleanup is unavailable"
 
@@ -535,7 +538,7 @@ msgstr "The selected value is not available"
 
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:12
 #: inertia/passkeys/describe_passkey_error.ts:10
-#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:7
+#: inertia/shared/errors/describe_cleanup_request_error.ts:7
 msgid "The server is unreachable"
 msgstr "The server is unreachable"
 
@@ -605,7 +608,7 @@ msgid "Too many dictations started, wait a minute"
 msgstr "Too many dictations started, wait a minute"
 
 #: inertia/passkeys/describe_passkey_error.ts:19
-#: inertia/user_settings/show_settings/describe_preview_cleanup_error.ts:9
+#: inertia/shared/errors/describe_cleanup_request_error.ts:9
 msgid "Too many requests, wait a minute"
 msgstr "Too many requests, wait a minute"
 

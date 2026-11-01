@@ -10,6 +10,7 @@ export interface ApiDefinition {
     deleteTranscript: typeof routes['transcription_history.delete_transcript']
     cleanTranscript: typeof routes['transcription_history.clean_transcript']
     saveDraftText: typeof routes['transcription_history.save_draft_text']
+    cleanDraft: typeof routes['transcription_history.clean_draft']
     deleteTranscripts: typeof routes['transcription_history.delete_transcripts']
   }
   userSettings: {

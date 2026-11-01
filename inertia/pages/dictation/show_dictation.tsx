@@ -24,12 +24,14 @@ export default function ShowDictation({
 		draftId: draft.draftId,
 		draftText: draft.text,
 	});
-	const { state, levels, finish, cancel, start } = useDictation({
+	const { state, levels, finish, cancel, start, cleanDraft } = useDictation({
 		shouldAutoStart: isAutoStartEnabled,
 		insertSegment: draft.insert,
 		replaceDraft: draft.replace,
 		getDraftContext: draft.getContext,
 		copyDraft,
+		draftId: draft.draftId,
+		draftText: draft.text,
 	});
 	useSaveDraftText({
 		draftId: draft.draftId,
@@ -85,6 +87,7 @@ export default function ShowDictation({
 				onStartNew={startNew}
 				onFinish={finish}
 				onCancel={cancel}
+				onCleanDraft={cleanDraft}
 			/>
 		</div>
 	);

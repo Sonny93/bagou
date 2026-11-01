@@ -9,6 +9,7 @@ export type DictationState =
 	  }
 	| { status: 'finishing'; committedText: string; partialText: string }
 	| { status: 'cleaning'; rawText: string; progress: number }
+	| { status: 'recleaning' }
 	| { status: 'done'; isCleaned: boolean }
 	| { status: 'cancelled'; hasKeptText: boolean }
 	| { status: 'error'; message: string };
@@ -20,6 +21,7 @@ export type DictationEvent =
 	| { type: 'partialReceived'; text: string }
 	| { type: 'stopRequested' }
 	| { type: 'finished'; text: string }
+	| { type: 'cleanupRequested' }
 	| { type: 'cleanupProgressed'; percent: number }
 	| { type: 'cleaned'; isCleaned: boolean }
 	| { type: 'cancelRequested' }
@@ -27,6 +29,10 @@ export type DictationEvent =
 
 /** Statuses a new dictation segment may start from. */
 export const STARTABLE_STATUSES: ReadonlySet<DictationState['status']> =
+	new Set(['idle', 'done', 'cancelled', 'error']);
+
+/** Statuses the draft is editable in, and so may be cleaned on demand. */
+export const CLEANABLE_STATUSES: ReadonlySet<DictationState['status']> =
 	new Set(['idle', 'done', 'cancelled', 'error']);
 
 export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
@@ -38,8 +44,11 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
  * cancel and failure do not apply to it. An event that does not apply to the
  * current state is ignored, so late events never resurrect a dictation that
  * already ended. Cleaning starts at progress 0 and only moves forward: a
- * lower `cleanupProgressed` percent is ignored. A cancelled dictation
- * remembers whether it had text, which the server keeps raw in the history.
+ * lower `cleanupProgressed` percent is ignored. The draft can be cleaned on
+ * demand, hand edits included, from `idle`, `done`, `cancelled` and `error`:
+ * `recleaning` ends in `done` through `cleaned`, and cancel and failure do not
+ * apply to it. A cancelled dictation remembers
+ * whether it had text, which the server keeps raw in the history.
  */
 export function dictationReducer(
 	state: DictationState,
@@ -81,8 +90,14 @@ export function dictationReducer(
 			return state.status === 'cleaning'
 				? { ...state, progress: Math.max(state.progress, event.percent) }
 				: state;
+		case 'cleanupRequested':
+			return CLEANABLE_STATUSES.has(state.status)
+				? { status: 'recleaning' }
+				: state;
 		case 'cleaned':
-			return state.status === 'cleaning' || state.status === 'finishing'
+			return state.status === 'cleaning' ||
+				state.status === 'finishing' ||
+				state.status === 'recleaning'
 				? { status: 'done', isCleaned: event.isCleaned }
 				: state;
 		case 'cancelRequested':

@@ -1,9 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { describePreviewCleanupError } from './describe_preview_cleanup_error';
 import { requestPreviewCleanup } from './request_preview_cleanup';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
+import { describeCleanupRequestError } from '~/shared/errors/describe_cleanup_request_error';
 import { logError } from '~/shared/errors/log_error';
 
 type UsePreviewCleanupReturn = {
@@ -34,7 +34,7 @@ export function usePreviewCleanup(): UsePreviewCleanupReturn {
 			setCleanedText(await requestPreviewCleanup({ text, settings }));
 		} catch (error) {
 			logError('Preview cleanup failed', error);
-			setErrorMessage(describePreviewCleanupError(error, i18n));
+			setErrorMessage(describeCleanupRequestError(error, i18n));
 		} finally {
 			setIsCleaning(false);
 		}

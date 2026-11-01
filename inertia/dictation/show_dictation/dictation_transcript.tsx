@@ -10,6 +10,7 @@ type DictationTranscriptProps = {
 	partialText: string;
 	hasPlaceholder?: boolean;
 	hasCaret?: boolean;
+	isAnnounced?: boolean;
 	segmentClassName?: string;
 };
 
@@ -24,6 +25,7 @@ export function DictationTranscript({
 	partialText,
 	hasPlaceholder = false,
 	hasCaret = false,
+	isAnnounced = true,
 	segmentClassName,
 }: Readonly<DictationTranscriptProps>) {
 	const visibleCommittedText = committedText.trimStart();
@@ -42,7 +44,10 @@ export function DictationTranscript({
 		) : null;
 
 	return (
-		<p aria-live="polite" className="dictation-text whitespace-pre-wrap">
+		<p
+			aria-live={isAnnounced ? 'polite' : 'off'}
+			className="dictation-text whitespace-pre-wrap"
+		>
 			{isEmpty && hasCaret && <LiveCaret />}
 			{placeholder}
 			<span>{textBefore}</span>

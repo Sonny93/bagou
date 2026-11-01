@@ -39,6 +39,13 @@ router
 					])
 					.as('transcription_history.save_draft_text');
 				router
+					.post('/drafts/:draftId/clean', [
+						controllers.transcriptionHistory.CleanDraft,
+						'execute',
+					])
+					.use(cleanupThrottle)
+					.as('transcription_history.clean_draft');
+				router
 					.delete('/', [
 						controllers.transcriptionHistory.DeleteTranscripts,
 						'execute',

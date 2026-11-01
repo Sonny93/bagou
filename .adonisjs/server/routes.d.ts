@@ -9,6 +9,7 @@ export type ScannedRoutes = {
     'transcription_history.delete_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transcription_history.save_draft_text': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
+    'transcription_history.clean_draft': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
     'transcription_history.delete_transcripts': { paramsTuple?: []; params?: {} }
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }
     'user_settings.update_settings': { paramsTuple?: []; params?: {} }
@@ -48,6 +49,7 @@ export type ScannedRoutes = {
   }
   POST: {
     'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'transcription_history.clean_draft': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
     'user_settings.preview_cleanup': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }

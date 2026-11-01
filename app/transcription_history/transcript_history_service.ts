@@ -113,6 +113,27 @@ export class TranscriptHistoryService {
 		await transcript.save();
 	}
 
+	/**
+	 * Cleans the current text of a draft with the user's saved settings, stores
+	 * the result in the entry of that draft and returns it. When no entry exists
+	 * for the draft (only if the original append failed) nothing is saved, by
+	 * design: a row is never created here. A failing cleanup or save propagates,
+	 * so the caller knows the history was not updated.
+	 */
+	async cleanDraft(
+		userId: number,
+		draftId: string,
+		text: string
+	): Promise<string> {
+		const settings = await this.userSettingsService.get(userId);
+		const cleanedText = await this.textCleanupService.clean(
+			text,
+			toCleanupPreferences(settings)
+		);
+		await this.saveDraftText(userId, draftId, cleanedText);
+		return cleanedText;
+	}
+
 	async delete(userId: number, id: number): Promise<void> {
 		const isDeleted = await Transcript.deleteOwned(userId, id);
 		if (!isDeleted) throw new TranscriptNotFoundException();

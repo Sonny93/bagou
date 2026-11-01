@@ -23,6 +23,7 @@ export const controllers = {
     VerifyRegistration: () => import('#app/passkeys/verify_registration_controller'),
   },
   transcriptionHistory: {
+    CleanDraft: () => import('#app/transcription_history/clean_draft_controller'),
     CleanTranscript: () => import('#app/transcription_history/clean_transcript_controller'),
     DeleteTranscript: () => import('#app/transcription_history/delete_transcript_controller'),
     DeleteTranscripts: () => import('#app/transcription_history/delete_transcripts_controller'),

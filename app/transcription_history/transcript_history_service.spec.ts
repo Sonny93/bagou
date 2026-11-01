@@ -264,6 +264,58 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.equal(foreign?.cleanedText, 'Autre.');
 	});
 
+	test('should clean the draft text with the user settings, store it and return it', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: null,
+		});
+
+		const cleanedText = await service.cleanDraft(
+			user.id,
+			DRAFT_ID,
+			'euh bonjour'
+		);
+
+		assert.equal(cleanedText, 'EUH BONJOUR');
+		const [row] = await Transcript.query().where('userId', user.id);
+		assert.equal(row?.cleanedText, 'EUH BONJOUR');
+		assert.lengthOf(textCleaner.receivedPreferences, 1);
+	});
+
+	test('should create no entry when cleaning the text of a draft without entry', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+
+		const cleanedText = await service.cleanDraft(user.id, DRAFT_ID, 'salut');
+
+		assert.equal(cleanedText, 'SALUT');
+		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should propagate the failure and keep the entry when the draft cleanup is unavailable', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService(
+			new FakeTextCleaner(new TextCleanupUnavailableException())
+		);
+		await service.appendSegment(user.id, DRAFT_ID, {
+			rawSegment: 'euh bonjour',
+			cleanedDraft: 'Bonjour.',
+		});
+
+		await assert.rejects(
+			() => service.cleanDraft(user.id, DRAFT_ID, 'euh bonjour'),
+			new TextCleanupUnavailableException().message
+		);
+
+		const [row] = await Transcript.query().where('userId', user.id);
+		assert.equal(row?.cleanedText, 'Bonjour.');
+	});
+
 	test('should not list a row past the retention even when it is not purged', async ({
 		assert,
 	}) => {
