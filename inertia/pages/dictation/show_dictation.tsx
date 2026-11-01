@@ -6,7 +6,7 @@ import { canStartNewDictation } from '~/dictation/show_dictation/can_start_new_d
 import { DictationDock } from '~/dictation/show_dictation/dictation_dock';
 import { DictationHeader } from '~/dictation/show_dictation/dictation_header';
 import { DictationStage } from '~/dictation/show_dictation/dictation_stage';
-import { isUnsavedSaveStatus } from '~/dictation/show_dictation/is_unsaved_save_status';
+import { getLeaveRisk } from '~/dictation/show_dictation/get_leave_risk';
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
 import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
@@ -59,10 +59,14 @@ export default function ShowDictation({
 		cleanedText: draft.cleanedText,
 		status: state.status,
 	});
+	const leaveRisk = getLeaveRisk(state.status, saveStatus);
 	useLeaveConfirmation({
-		isBlocking: isUnsavedSaveStatus(saveStatus),
+		isBlocking: leaveRisk !== null,
 		title: t`Leave this page?`,
-		message: t`Your text is not saved in the history yet. If you leave now, it may be lost.`,
+		message:
+			leaveRisk === 'dictation-in-progress'
+				? t`A dictation is in progress. If you leave now, it will be lost.`
+				: t`Your text is not saved in the history yet. If you leave now, it may be lost.`,
 		confirmLabel: t`Leave`,
 	});
 	const { clear: clearDraft } = draft;

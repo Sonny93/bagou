@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - The dictation page shows whether the text is saved in the history.
 - Ctrl+S saves the text right away.
-- Leaving the dictation page or starting a new dictation asks for confirmation while the text is not saved yet.
+- Leaving the dictation page asks for confirmation during a dictation or its cleanup, and while the text is not saved yet; so does starting a new dictation over unsaved text.
 - A new dictation can be started as soon as there is text, even before dictating.
 
 ### Fixed
