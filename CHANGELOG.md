@@ -12,15 +12,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Ctrl+S saves the text right away.
 - Leaving the dictation page asks for confirmation during a dictation or its cleanup, and while the text is not saved yet; so does starting a new dictation over unsaved text.
 - A new dictation can be started as soon as there is text, even before dictating.
-
-### Fixed
-
-- Loading indicators keep spinning when the system asks to reduce animations.
-- Clicking outside the text no longer puts the cursor in it.
-- The cleanup preview in the settings no longer gives up on long texts.
-
-### Added
-
 - A progress bar shows how far the text cleanup has gone.
 - The text can be cleaned again on demand from the dictation page, hand edits included.
 - Automatic copy to the clipboard can be turned off, per device.
@@ -32,6 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The voice level meter now spans the full width of the dictation bar.
 - A short animation now confirms every copy to the clipboard, automatic or manual.
 - Each history entry sits in its own card, so it is clear where one ends and the next begins.
+
+### Fixed
+
+- Loading indicators keep spinning when the system asks to reduce animations.
+- Clicking outside the text no longer puts the cursor in it.
+- The cleanup preview in the settings no longer gives up on long texts.
 
 ## [1.1.0] - 2026-10-28
 
