@@ -66,7 +66,7 @@ msgstr "Impossible de supprimer la dernière passkey"
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:140
+#: inertia/dictation/show_dictation/copy_controls.tsx:150
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
@@ -77,7 +77,7 @@ msgid "Cleaned text"
 msgstr "Texte nettoyé"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/copy_controls.tsx:48
+#: inertia/dictation/show_dictation/copy_controls.tsx:57
 #: inertia/dictation/show_dictation/dictation_dock.tsx:33
 #: inertia/dictation/show_dictation/dictation_dock.tsx:34
 msgid "Cleaning the text…"
@@ -92,7 +92,7 @@ msgstr "Le nettoyage a échoué, réessaie"
 msgid "Cleanup instructions"
 msgstr "Consignes de nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:121
+#: inertia/dictation/show_dictation/copy_controls.tsx:131
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
@@ -137,8 +137,8 @@ msgstr "Copié"
 msgid "Copies the text to the clipboard after each dictation or cleanup"
 msgstr "Copie le texte dans le presse-papier après chaque dictée ou nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:80
-#: inertia/dictation/show_dictation/copy_controls.tsx:92
+#: inertia/dictation/show_dictation/copy_controls.tsx:90
+#: inertia/dictation/show_dictation/copy_controls.tsx:102
 msgid "Copy"
 msgstr "Copier"
 
@@ -146,7 +146,7 @@ msgstr "Copier"
 msgid "Copy automatically"
 msgstr "Copie automatique"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:40
+#: inertia/dictation/show_dictation/copy_controls.tsx:49
 msgid "Copy failed"
 msgstr "Copie impossible"
 
@@ -199,7 +199,7 @@ msgstr "Supprimer la passkey {label} ?"
 msgid "Delete this dictation?"
 msgstr "Supprimer cette dictée ?"
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:52
+#: inertia/dictation/show_dictation/dictation_result.tsx:59
 msgid "Dictated text"
 msgstr "Texte dicté"
 
@@ -281,7 +281,7 @@ msgstr "Thème clair"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:41
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
 
@@ -314,7 +314,7 @@ msgstr "Aucun résultat."
 msgid "not cleaned"
 msgstr "non nettoyé"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:123
+#: inertia/dictation/show_dictation/copy_controls.tsx:133
 msgid "Not cleaned"
 msgstr "Non nettoyé"
 
@@ -358,7 +358,7 @@ msgstr "Collez un texte brut, comme s'il venait d'être dicté. Ctrl+Entrée lan
 msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 msgstr "Préférences pour le nettoyage, par exemple la façon d'écrire les nombres ou les guillemets. Elles ne lui font jamais reformuler ton texte."
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:53
+#: inertia/dictation/show_dictation/dictation_result.tsx:60
 msgid "Press Enter or the mic to dictate."
 msgstr "Appuie sur Entrée ou sur le micro pour dicter."
 
@@ -398,6 +398,10 @@ msgstr "Rechercher une dictée"
 #: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:24
 msgid "Search the history"
 msgstr "Rechercher dans l'historique"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:32
+msgid "Selection copied"
+msgstr "Sélection copiée"
 
 #: inertia/shared/errors/use_request_failure_toasts.ts:31
 msgid "Server error (HTTP {status}), try again"

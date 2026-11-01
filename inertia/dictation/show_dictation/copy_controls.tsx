@@ -27,6 +27,15 @@ const COPY_STATUS_DISPLAYS = {
 		animationClassName: 'copy-confirmation',
 		isEmphasised: false,
 	},
+	'selection-copied': {
+		icon: 'i-tabler-check',
+		message: msg`Selection copied`,
+		className: 'text-muted',
+		iconClassName:
+			'copy-confirmation-icon text-accent-600 dark:text-accent-400',
+		animationClassName: 'copy-confirmation',
+		isEmphasised: false,
+	},
 	stale: {
 		icon: 'i-tabler-clipboard-x',
 		message: msg`Modified since the copy`,
@@ -68,8 +77,11 @@ export function CopyControls({
 }: Readonly<CopyControlsProps>) {
 	const { t, i18n } = useLingui();
 	const display = COPY_STATUS_DISPLAYS[copyStatus];
-	const outputKey =
-		copyStatus === 'copied' ? `copied-${copyCount}` : copyStatus;
+	const isCopyConfirmation =
+		copyStatus === 'copied' || copyStatus === 'selection-copied';
+	const outputKey = isCopyConfirmation
+		? `${copyStatus}-${copyCount}`
+		: copyStatus;
 
 	return (
 		<div className="flex min-w-0 flex-1 items-center gap-3">

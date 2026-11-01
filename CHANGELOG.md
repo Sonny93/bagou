@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A progress bar shows how far the text cleanup has gone.
 - The text can be cleaned again on demand from the dictation page, hand edits included.
 - Automatic copy to the clipboard can be turned off, per device.
+- Copying the text with Ctrl+C now shows the copy confirmation, and copying only part of it says so.
 
 ### Changed
 

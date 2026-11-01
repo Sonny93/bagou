@@ -19,6 +19,7 @@ export type StageDraft = {
 	selection: DraftSelection;
 	onTextChange: (text: string, selection: DraftSelection) => void;
 	onSelectionChange: (selection: DraftSelection) => void;
+	onCopy: (copiedText: string) => void;
 };
 
 type StageContentProps = {
@@ -38,6 +39,7 @@ export function StageContent({ state, draft }: Readonly<StageContentProps>) {
 					selection={draft.selection}
 					onTextChange={draft.onTextChange}
 					onSelectionChange={draft.onSelectionChange}
+					onCopy={draft.onCopy}
 				/>
 			</>
 		);

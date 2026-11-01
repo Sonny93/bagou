@@ -7,7 +7,8 @@ describe('deriveCopyStatus', () => {
 		expect(
 			deriveCopyStatus({
 				draftText: 'Bonjour',
-				lastCopiedText: null,
+				copiedText: null,
+				draftTextAtCopy: null,
 				hasLastCopyFailed: false,
 			})
 		).toBe('none');
@@ -17,37 +18,63 @@ describe('deriveCopyStatus', () => {
 		expect(
 			deriveCopyStatus({
 				draftText: '  ',
-				lastCopiedText: '  ',
+				copiedText: '  ',
+				draftTextAtCopy: '  ',
 				hasLastCopyFailed: true,
 			})
 		).toBe('none');
 	});
 
-	it('should be copied when the draft equals the last copied text', () => {
+	it('should be copied when the copied text equals the whole draft', () => {
 		expect(
 			deriveCopyStatus({
 				draftText: 'Bonjour',
-				lastCopiedText: 'Bonjour',
+				copiedText: 'Bonjour',
+				draftTextAtCopy: 'Bonjour',
 				hasLastCopyFailed: false,
 			})
 		).toBe('copied');
 	});
 
-	it('should be stale when the draft changed since the last copy', () => {
+	it('should be stale when the whole draft was copied then edited', () => {
 		expect(
 			deriveCopyStatus({
 				draftText: 'Bonjour à tous',
-				lastCopiedText: 'Bonjour',
+				copiedText: 'Bonjour',
+				draftTextAtCopy: 'Bonjour',
 				hasLastCopyFailed: false,
 			})
 		).toBe('stale');
+	});
+
+	it('should be selection-copied when a part was copied and the draft is unchanged', () => {
+		expect(
+			deriveCopyStatus({
+				draftText: 'Bonjour à tous',
+				copiedText: 'Bonjour',
+				draftTextAtCopy: 'Bonjour à tous',
+				hasLastCopyFailed: false,
+			})
+		).toBe('selection-copied');
+	});
+
+	it('should be none when a part was copied and the draft was edited since', () => {
+		expect(
+			deriveCopyStatus({
+				draftText: 'Bonjour à tous les amis',
+				copiedText: 'Bonjour',
+				draftTextAtCopy: 'Bonjour à tous',
+				hasLastCopyFailed: false,
+			})
+		).toBe('none');
 	});
 
 	it('should be failed when the last copy attempt failed', () => {
 		expect(
 			deriveCopyStatus({
 				draftText: 'Bonjour',
-				lastCopiedText: 'Bonjour',
+				copiedText: 'Bonjour',
+				draftTextAtCopy: 'Bonjour',
 				hasLastCopyFailed: true,
 			})
 		).toBe('failed');

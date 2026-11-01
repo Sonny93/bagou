@@ -29,10 +29,11 @@ export default function ShowDictation({
 }: Readonly<ShowDictationProps>) {
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
 	const draft = useDictationDraft();
-	const { copyStatus, copyCount, copyDraft } = useDraftCopy({
-		draftId: draft.draftId,
-		draftText: draft.text,
-	});
+	const { copyStatus, copyCount, copyDraft, recordSelectionCopy } =
+		useDraftCopy({
+			draftId: draft.draftId,
+			draftText: draft.text,
+		});
 	const copyAutomatically = useMemo(
 		() =>
 			createAutoCopy(copyDraft, () =>
@@ -89,6 +90,7 @@ export default function ShowDictation({
 					selection: draft.selection,
 					onTextChange: draft.edit,
 					onSelectionChange: draft.select,
+					onCopy: recordSelectionCopy,
 				}}
 			/>
 			<DictationDock

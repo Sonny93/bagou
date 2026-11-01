@@ -9,6 +9,7 @@ type DictationResultProps = {
 	selection: DraftSelection;
 	onTextChange: (text: string, selection: DraftSelection) => void;
 	onSelectionChange: (selection: DraftSelection) => void;
+	onCopy: (copiedText: string) => void;
 };
 
 const readSelection = (element: HTMLTextAreaElement): DraftSelection => ({
@@ -25,6 +26,7 @@ export function DictationResult({
 	selection,
 	onTextChange,
 	onSelectionChange,
+	onCopy,
 }: Readonly<DictationResultProps>) {
 	const { t } = useLingui();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -46,6 +48,11 @@ export function DictationResult({
 	const handleSelect = (event: React.SyntheticEvent<HTMLTextAreaElement>) =>
 		onSelectionChange(readSelection(event.currentTarget));
 
+	const handleCopy = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+		const { value, selectionStart, selectionEnd } = event.currentTarget;
+		onCopy(value.slice(selectionStart, selectionEnd));
+	};
+
 	return (
 		<textarea
 			ref={textareaRef}
@@ -54,6 +61,7 @@ export function DictationResult({
 			value={text}
 			onChange={handleChange}
 			onSelect={handleSelect}
+			onCopy={handleCopy}
 			className={cn(
 				'dictation-text min-h-[1.6em] w-full resize-none rounded-md border-0 bg-transparent p-0 text-ink placeholder:text-muted [field-sizing:content]',
 				'focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-accent-600/40 dark:focus-visible:outline-accent-400/40'

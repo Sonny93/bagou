@@ -15,12 +15,15 @@ type UseDraftCopyReturn = {
 	copyStatus: CopyStatus;
 	copyCount: number;
 	copyDraft: (text: string) => Promise<boolean>;
+	recordSelectionCopy: (copiedText: string) => void;
 };
 
 /**
  * Copies draft text to the clipboard and tracks what the last copy put there,
- * so the status tells whether the clipboard still matches the draft. The
- * tracking belongs to one draft: a new `draftId` starts over.
+ * so the status tells whether the clipboard still matches the draft.
+ * `copyDraft` always copies the whole draft; `recordSelectionCopy` records a
+ * native copy made from the draft, which cannot fail. The tracking belongs to
+ * one draft: a new `draftId` starts over.
  */
 export function useDraftCopy({
 	draftId,
@@ -32,17 +35,40 @@ export function useDraftCopy({
 		async (text: string) => {
 			const isCopied = await copyToClipboard(text);
 			setAttempt((previous) =>
-				recordCopyAttempt({ previous, draftId, text, isCopied })
+				recordCopyAttempt({
+					previous,
+					draftId,
+					text,
+					draftText: text,
+					isCopied,
+				})
 			);
 			return isCopied;
 		},
 		[draftId]
 	);
 
+	const recordSelectionCopy = useCallback(
+		(copiedText: string) => {
+			if (copiedText === '') return;
+			setAttempt((previous) =>
+				recordCopyAttempt({
+					previous,
+					draftId,
+					text: copiedText,
+					draftText,
+					isCopied: true,
+				})
+			);
+		},
+		[draftId, draftText]
+	);
+
 	const currentAttempt = attempt?.draftId === draftId ? attempt : null;
 	const copyStatus = deriveCopyStatus({
 		draftText,
-		lastCopiedText: currentAttempt?.lastCopiedText ?? null,
+		copiedText: currentAttempt?.copiedText ?? null,
+		draftTextAtCopy: currentAttempt?.draftTextAtCopy ?? null,
 		hasLastCopyFailed: currentAttempt?.hasLastCopyFailed ?? false,
 	});
 
@@ -50,5 +76,6 @@ export function useDraftCopy({
 		copyStatus,
 		copyCount: currentAttempt?.copyCount ?? 0,
 		copyDraft,
+		recordSelectionCopy,
 	};
 }

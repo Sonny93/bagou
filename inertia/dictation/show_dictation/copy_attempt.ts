@@ -1,6 +1,7 @@
 export type CopyAttempt = {
 	draftId: string;
-	lastCopiedText: string | null;
+	copiedText: string | null;
+	draftTextAtCopy: string | null;
 	hasLastCopyFailed: boolean;
 	copyCount: number;
 };

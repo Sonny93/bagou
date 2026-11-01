@@ -66,7 +66,7 @@ msgstr "Cannot delete the last passkey"
 msgid "Clean again"
 msgstr "Clean again"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:140
+#: inertia/dictation/show_dictation/copy_controls.tsx:150
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Clean the text"
@@ -77,7 +77,7 @@ msgid "Cleaned text"
 msgstr "Cleaned text"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/copy_controls.tsx:48
+#: inertia/dictation/show_dictation/copy_controls.tsx:57
 #: inertia/dictation/show_dictation/dictation_dock.tsx:33
 #: inertia/dictation/show_dictation/dictation_dock.tsx:34
 msgid "Cleaning the text…"
@@ -92,7 +92,7 @@ msgstr "Cleanup failed, try again"
 msgid "Cleanup instructions"
 msgstr "Cleanup instructions"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:121
+#: inertia/dictation/show_dictation/copy_controls.tsx:131
 msgid "Cleanup unavailable, raw text"
 msgstr "Cleanup unavailable, raw text"
 
@@ -137,8 +137,8 @@ msgstr "Copied"
 msgid "Copies the text to the clipboard after each dictation or cleanup"
 msgstr "Copies the text to the clipboard after each dictation or cleanup"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:80
-#: inertia/dictation/show_dictation/copy_controls.tsx:92
+#: inertia/dictation/show_dictation/copy_controls.tsx:90
+#: inertia/dictation/show_dictation/copy_controls.tsx:102
 msgid "Copy"
 msgstr "Copy"
 
@@ -146,7 +146,7 @@ msgstr "Copy"
 msgid "Copy automatically"
 msgstr "Copy automatically"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:40
+#: inertia/dictation/show_dictation/copy_controls.tsx:49
 msgid "Copy failed"
 msgstr "Copy failed"
 
@@ -199,7 +199,7 @@ msgstr "Delete the passkey {label}?"
 msgid "Delete this dictation?"
 msgstr "Delete this dictation?"
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:52
+#: inertia/dictation/show_dictation/dictation_result.tsx:59
 msgid "Dictated text"
 msgstr "Dictated text"
 
@@ -281,7 +281,7 @@ msgstr "Light theme"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "Microphone access was denied, allow it in the browser"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:41
 msgid "Modified since the copy"
 msgstr "Modified since the copy"
 
@@ -314,7 +314,7 @@ msgstr "No results."
 msgid "not cleaned"
 msgstr "not cleaned"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:123
+#: inertia/dictation/show_dictation/copy_controls.tsx:133
 msgid "Not cleaned"
 msgstr "Not cleaned"
 
@@ -358,7 +358,7 @@ msgstr "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the t
 msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 msgstr "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:53
+#: inertia/dictation/show_dictation/dictation_result.tsx:60
 msgid "Press Enter or the mic to dictate."
 msgstr "Press Enter or the mic to dictate."
 
@@ -398,6 +398,10 @@ msgstr "Search a dictation"
 #: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:24
 msgid "Search the history"
 msgstr "Search the history"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:32
+msgid "Selection copied"
+msgstr "Selection copied"
 
 #: inertia/shared/errors/use_request_failure_toasts.ts:31
 msgid "Server error (HTTP {status}), try again"
