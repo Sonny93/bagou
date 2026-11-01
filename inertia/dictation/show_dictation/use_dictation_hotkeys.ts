@@ -17,7 +17,7 @@ type DictationHotkeyActions = {
 
 const NEW_DICTATION_KEY = 'n';
 const COPY_KEY = 'c';
-const NEW_DICTATION_STATUSES = new Set<DictationState['status']>([
+export const NEW_DICTATION_STATUSES = new Set<DictationState['status']>([
 	'done',
 	'cancelled',
 	'error',

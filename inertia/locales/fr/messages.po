@@ -48,7 +48,7 @@ msgstr "Adonis\n"
 "Inertia\n"
 "Voxtral"
 
-#: inertia/dictation/show_dictation/dictation_header.tsx:24
+#: inertia/user_settings/show_settings/device_settings.tsx:51
 msgid "Auto-start"
 msgstr "Démarrage auto"
 
@@ -66,7 +66,7 @@ msgstr "Impossible de supprimer la dernière passkey"
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:141
+#: inertia/dictation/show_dictation/copy_controls.tsx:140
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
@@ -78,8 +78,8 @@ msgstr "Texte nettoyé"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
 #: inertia/dictation/show_dictation/copy_controls.tsx:48
-#: inertia/dictation/show_dictation/dictation_dock.tsx:35
-#: inertia/dictation/show_dictation/dictation_dock.tsx:36
+#: inertia/dictation/show_dictation/dictation_dock.tsx:33
+#: inertia/dictation/show_dictation/dictation_dock.tsx:34
 msgid "Cleaning the text…"
 msgstr "Nettoyage du texte…"
 
@@ -121,7 +121,7 @@ msgstr "Fermer"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:33
+#: inertia/dictation/show_dictation/dictation_dock.tsx:31
 msgid "Connecting…"
 msgstr "Connexion…"
 
@@ -133,10 +133,18 @@ msgstr "Continuer la dictée"
 msgid "Copied"
 msgstr "Copié"
 
+#: inertia/user_settings/show_settings/device_settings.tsx:58
+msgid "Copies the text to the clipboard after each dictation or cleanup"
+msgstr "Copie le texte dans le presse-papier après chaque dictée ou nettoyage"
+
 #: inertia/dictation/show_dictation/copy_controls.tsx:80
 #: inertia/dictation/show_dictation/copy_controls.tsx:92
 msgid "Copy"
 msgstr "Copier"
+
+#: inertia/user_settings/show_settings/device_settings.tsx:57
+msgid "Copy automatically"
+msgstr "Copie automatique"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:40
 msgid "Copy failed"
@@ -240,7 +248,7 @@ msgstr "Échap"
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:34
+#: inertia/dictation/show_dictation/dictation_dock.tsx:32
 msgid "Finishing…"
 msgstr "Finalisation…"
 
@@ -257,7 +265,7 @@ msgstr "Donne un nom à cette passkey pour la reconnaître plus tard."
 msgid "History"
 msgstr "Historique"
 
-#: inertia/pages/user_settings/show_settings.tsx:36
+#: inertia/pages/user_settings/show_settings.tsx:37
 msgid "How the dictation and the interface behave for you."
 msgstr "Le comportement de la dictée et de l'interface."
 
@@ -277,9 +285,10 @@ msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
 
-#: inertia/dictation/show_dictation/new_dictation_button.tsx:12
-msgid "New<0> dictation</0>"
-msgstr "Nouvelle<0> dictée</0>"
+#: inertia/dictation/show_dictation/new_dictation_button.tsx:23
+#: inertia/dictation/show_dictation/new_dictation_button.tsx:28
+msgid "New dictation"
+msgstr "Nouvelle dictée"
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:9
 msgid "No dictation is in progress"
@@ -312,6 +321,10 @@ msgstr "Non nettoyé"
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:31
 msgid "Nothing was heard."
 msgstr "Rien n'a été entendu."
+
+#: inertia/user_settings/show_settings/device_settings.tsx:37
+msgid "On this device"
+msgstr "Sur cet appareil"
 
 #: inertia/user_settings/show_settings/vocabulary_field.tsx:31
 msgid "One term per line. It helps the speech engine and the cleanup spell names, products and jargon correctly."
@@ -391,7 +404,7 @@ msgid "Server error (HTTP {status}), try again"
 msgstr "Erreur serveur (HTTP {status}), réessaie"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:36
-#: inertia/pages/user_settings/show_settings.tsx:33
+#: inertia/pages/user_settings/show_settings.tsx:34
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -439,7 +452,7 @@ msgstr "Parle, le texte s'écrit ici."
 msgid "Start the dictation"
 msgstr "Démarrer la dictée"
 
-#: inertia/dictation/show_dictation/dictation_header.tsx:25
+#: inertia/user_settings/show_settings/device_settings.tsx:52
 msgid "Starts the dictation on opening, on this device"
 msgstr "Démarre la dictée à l'ouverture, sur cet appareil"
 
@@ -586,6 +599,10 @@ msgstr "Le vocabulaire est limité à {maxTermCount} termes"
 #: inertia/shared/i18n/describe_validation_rule.ts:12
 msgid "There are too many items"
 msgstr "Il y a trop d'éléments"
+
+#: inertia/user_settings/show_settings/device_settings.tsx:40
+msgid "These settings apply to this browser only and are saved immediately."
+msgstr "Ces réglages s'appliquent uniquement à ce navigateur et sont enregistrés immédiatement."
 
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:20
 msgid "This browser cannot record the microphone"

@@ -8,7 +8,6 @@ import type { CopyStatus } from './copy_status';
 import { DockLayout } from './dock_layout';
 import { formatRemainingQuota } from './format_remaining_quota';
 import { MicButton } from './mic_button';
-import { NewDictationButton } from './new_dictation_button';
 import { RecordingActions } from './recording_actions';
 import { RecordingStatus } from './recording_status';
 import { useFocusAfterClean } from './use_focus_after_clean';
@@ -23,7 +22,6 @@ type DictationDockProps = {
 	copyCount: number;
 	onCopy: () => void;
 	onStart: () => void;
-	onStartNew: () => void;
 	onFinish: () => void;
 	onCancel: () => void;
 	onCleanDraft: () => void;
@@ -45,7 +43,6 @@ export function DictationDock({
 	copyCount,
 	onCopy,
 	onStart,
-	onStartNew,
 	onFinish,
 	onCancel,
 	onCleanDraft,
@@ -97,13 +94,7 @@ export function DictationDock({
 			return <DockLayout mic={mic} status={idleStatus} />;
 		case 'cancelled':
 		case 'error':
-			return (
-				<DockLayout
-					mic={mic}
-					status={idleStatus}
-					end={<NewDictationButton onStart={onStartNew} />}
-				/>
-			);
+			return <DockLayout mic={mic} status={idleStatus} />;
 		case 'recording':
 			return (
 				<DockLayout
@@ -119,7 +110,6 @@ export function DictationDock({
 				<DockLayout
 					mic={mic}
 					status={hasDraftText ? renderCopyControls(state.isCleaned) : quota}
-					end={<NewDictationButton onStart={onStartNew} />}
 				/>
 			);
 	}

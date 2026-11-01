@@ -15,9 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - A progress bar shows how far the text cleanup has gone.
 - The text can be cleaned again on demand from the dictation page, hand edits included.
+- Automatic copy to the clipboard can be turned off, per device.
 
 ### Changed
 
+- The New dictation button moves to the top bar and Auto-start moves to the settings.
 - The voice level meter now spans the full width of the dictation bar.
 - A short animation now confirms every copy to the clipboard, automatic or manual.
 

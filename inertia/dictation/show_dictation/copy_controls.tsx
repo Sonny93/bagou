@@ -72,7 +72,7 @@ export function CopyControls({
 		copyStatus === 'copied' ? `copied-${copyCount}` : copyStatus;
 
 	return (
-		<div className="flex min-w-0 items-center gap-3">
+		<div className="flex min-w-0 flex-1 items-center gap-3">
 			<Tooltip
 				position="top"
 				content={
@@ -85,7 +85,7 @@ export function CopyControls({
 					ref={copyButtonRef}
 					variant={display?.isEmphasised ? 'solid' : 'subtle'}
 					startIcon="i-tabler-copy"
-					className="shrink-0 aria-disabled:opacity-60"
+					className="shrink-0 [&[aria-disabled=true]>*]:opacity-60"
 					aria-disabled={isCleaningDraft}
 					onClick={isCleaningDraft ? undefined : onCopy}
 				>
@@ -130,17 +130,15 @@ export function CopyControls({
 						? 'i-tabler-loader-2 animate-spin'
 						: 'i-tabler-sparkles'
 				}
-				className="shrink-0 aria-disabled:opacity-60"
+				className="ml-auto shrink-0 whitespace-nowrap [&[aria-disabled=true]>*]:opacity-60"
 				aria-disabled={isCleaningDraft}
 				onClick={isCleaningDraft ? undefined : onCleanDraft}
 			>
-				<span className="sr-only sm:not-sr-only">
-					{isCleaningDraft ? (
-						i18n._(CLEANING_MESSAGE)
-					) : (
-						<Trans>Clean the text</Trans>
-					)}
-				</span>
+				{isCleaningDraft ? (
+					i18n._(CLEANING_MESSAGE)
+				) : (
+					<Trans>Clean the text</Trans>
+				)}
 			</Button>
 		</div>
 	);

@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
+import { DeviceSettings } from '~/user_settings/show_settings/device_settings';
 import { SettingsForm } from '~/user_settings/show_settings/settings_form';
 import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 
@@ -42,6 +43,7 @@ export default function ShowSettings({
 					dictationLanguages={options.dictationLanguages}
 					interfaceLanguages={options.interfaceLanguages}
 				/>
+				<DeviceSettings />
 			</main>
 		</div>
 	);
