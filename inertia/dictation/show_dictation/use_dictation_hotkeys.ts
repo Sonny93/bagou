@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { isSaveShortcut } from './is_save_shortcut';
 import {
 	STARTABLE_STATUSES,
 	type DictationState,
@@ -9,19 +10,16 @@ type DictationHotkeyActions = {
 	status: DictationState['status'];
 	start: () => void;
 	startNew: () => void;
+	canStartNew: boolean;
 	finish: () => void;
 	cancel: () => void;
 	copy: () => void;
 	canCopy: boolean;
+	save: () => void;
 };
 
 const NEW_DICTATION_KEY = 'n';
 const COPY_KEY = 'c';
-export const NEW_DICTATION_STATUSES = new Set<DictationState['status']>([
-	'done',
-	'cancelled',
-	'error',
-]);
 const LIVE_STATUSES = new Set<DictationState['status']>([
 	'connecting',
 	'recording',
@@ -52,21 +50,25 @@ const isModifiedEnter = (event: KeyboardEvent): boolean =>
 /**
  * Enter toggles the dictation: it starts a new segment or finishes the running
  * one. Escape cancels a running segment, N clears the draft and starts over
- * once a dictation ended, and C copies the draft when no segment is live and
+ * when `canStartNew`, and C copies the draft when no segment is live and
  * the draft is not blank. C ignores Ctrl/Cmd/Alt, so Ctrl+C keeps copying a
  * selection.
  * Keys typed in a text field keep their normal meaning. A focused button keeps
  * plain Enter, which activates it natively, but not N or C. Escape always cancels a
- * running dictation and Ctrl/Cmd+Enter toggles from anywhere.
+ * running dictation and Ctrl/Cmd+Enter toggles from anywhere. Ctrl/Cmd+S saves
+ * the draft from anywhere and always replaces the browser's Save page dialog;
+ * holding the keys down saves once.
  */
 export function useDictationHotkeys({
 	status,
 	start,
 	startNew,
+	canStartNew,
 	finish,
 	cancel,
 	copy,
 	canCopy,
+	save,
 }: Readonly<DictationHotkeyActions>): void {
 	useEffect(() => {
 		const toggle = () => {
@@ -79,18 +81,32 @@ export function useDictationHotkeys({
 				event.preventDefault();
 				return toggle();
 			}
+			if (isSaveShortcut(event)) {
+				event.preventDefault();
+				return event.repeat ? undefined : save();
+			}
 			if (isTextFieldTarget(event.target)) return;
 			if (event.key === 'Enter') {
 				return isButtonTarget(event.target) ? undefined : toggle();
 			}
 			if (hasCommandModifier(event)) return;
 			const key = event.key.toLowerCase();
-			if (key === NEW_DICTATION_KEY && NEW_DICTATION_STATUSES.has(status)) {
+			if (key === NEW_DICTATION_KEY && canStartNew) {
 				return startNew();
 			}
 			if (key === COPY_KEY && canCopy && COPY_STATUSES.has(status)) copy();
 		};
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
-	}, [status, start, startNew, finish, cancel, copy, canCopy]);
+	}, [
+		status,
+		start,
+		startNew,
+		canStartNew,
+		finish,
+		cancel,
+		copy,
+		canCopy,
+		save,
+	]);
 }

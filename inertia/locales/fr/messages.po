@@ -66,7 +66,7 @@ msgstr "Impossible de supprimer la dernière passkey"
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:150
+#: inertia/dictation/show_dictation/copy_controls.tsx:152
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:44
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
@@ -92,7 +92,7 @@ msgstr "Le nettoyage a échoué, réessaie"
 msgid "Cleanup instructions"
 msgstr "Consignes de nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:131
+#: inertia/dictation/show_dictation/copy_controls.tsx:133
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
@@ -137,8 +137,8 @@ msgstr "Copié"
 msgid "Copies the text to the clipboard after each dictation or cleanup"
 msgstr "Copie le texte dans le presse-papier après chaque dictée ou nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:90
-#: inertia/dictation/show_dictation/copy_controls.tsx:102
+#: inertia/dictation/show_dictation/copy_controls.tsx:92
+#: inertia/dictation/show_dictation/copy_controls.tsx:104
 msgid "Copy"
 msgstr "Copier"
 
@@ -199,6 +199,10 @@ msgstr "Supprimer la passkey {label} ?"
 msgid "Delete this dictation?"
 msgstr "Supprimer cette dictée ?"
 
+#: inertia/dictation/show_dictation/save_indicator.tsx:24
+msgid "Dictate a segment to add this text to the history."
+msgstr "Dictez un segment pour ajouter ce texte à l'historique."
+
 #: inertia/dictation/show_dictation/dictation_result.tsx:59
 msgid "Dictated text"
 msgstr "Texte dicté"
@@ -231,6 +235,10 @@ msgstr "Ex. : MacBook, téléphone"
 #: inertia/user_settings/show_settings/describe_vocabulary_problem.ts:15
 msgid "Each term is limited to {maxTermLength} characters"
 msgstr "Chaque terme est limité à {maxTermLength} caractères"
+
+#: inertia/dictation/show_dictation/save_indicator.tsx:23
+msgid "Edits are saved to the history automatically. Ctrl+S saves now."
+msgstr "Les modifications sont enregistrées automatiquement dans l'historique. Ctrl+S enregistre tout de suite."
 
 #: inertia/user_settings/show_settings/dictation_language_options.ts:11
 msgid "English"
@@ -273,6 +281,14 @@ msgstr "Le comportement de la dictée et de l'interface."
 msgid "Interface language"
 msgstr "Langue de l'interface"
 
+#: inertia/pages/dictation/show_dictation.tsx:66
+msgid "Leave"
+msgstr "Quitter"
+
+#: inertia/pages/dictation/show_dictation.tsx:64
+msgid "Leave this page?"
+msgstr "Quitter cette page ?"
+
 #: inertia/layouts/app_ui_provider.tsx:8
 msgid "Light theme"
 msgstr "Thème clair"
@@ -314,9 +330,18 @@ msgstr "Aucun résultat."
 msgid "not cleaned"
 msgstr "non nettoyé"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:133
+#: inertia/dictation/show_dictation/copy_controls.tsx:135
 msgid "Not cleaned"
 msgstr "Non nettoyé"
+
+#: inertia/dictation/show_dictation/save_indicator.tsx:47
+#: inertia/dictation/show_dictation/save_indicator.tsx:100
+msgid "Not in history yet"
+msgstr "Pas encore dans l'historique"
+
+#: inertia/dictation/show_dictation/save_indicator.tsx:55
+msgid "Not saved"
+msgstr "Non enregistré"
 
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:31
 msgid "Nothing was heard."
@@ -387,6 +412,15 @@ msgstr "Texte d'exemple"
 msgid "Save"
 msgstr "Enregistrer"
 
+#: inertia/dictation/show_dictation/save_indicator.tsx:39
+#: inertia/dictation/show_dictation/save_indicator.tsx:99
+msgid "Saved"
+msgstr "Enregistré"
+
+#: inertia/dictation/show_dictation/save_indicator.tsx:31
+msgid "Saving…"
+msgstr "Enregistrement…"
+
 #: inertia/layouts/app_ui_provider.tsx:20
 msgid "Search"
 msgstr "Rechercher"
@@ -451,6 +485,14 @@ msgstr "Une erreur s'est produite, réessaie"
 #: inertia/dictation/show_dictation/dictation_transcript.tsx:42
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
+
+#: inertia/dictation/show_dictation/use_request_new_dictation.ts:30
+msgid "Start a new dictation?"
+msgstr "Commencer une nouvelle dictée ?"
+
+#: inertia/dictation/show_dictation/use_request_new_dictation.ts:31
+msgid "Start new"
+msgstr "Nouvelle dictée"
 
 #: inertia/dictation/show_dictation/mic_button.tsx:40
 msgid "Start the dictation"
@@ -659,6 +701,14 @@ msgstr "Écris les nombres en chiffres.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:56
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:98
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel essai à la prochaine modification"
+
+#: inertia/dictation/show_dictation/use_request_new_dictation.ts:33
+msgid "Your text is not saved in the history yet. A new dictation clears it."
+msgstr "Votre texte n'est pas encore enregistré dans l'historique. Une nouvelle dictée l'efface."
+
+#: inertia/pages/dictation/show_dictation.tsx:65
+msgid "Your text is not saved in the history yet. If you leave now, it may be lost."
+msgstr "Votre texte n'est pas encore enregistré dans l'historique. Si vous quittez maintenant, il risque d'être perdu."

@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- The dictation page shows whether the text is saved in the history.
+- Ctrl+S saves the text right away.
+- Leaving the dictation page or starting a new dictation asks for confirmation while the text is not saved yet.
+- A new dictation can be started as soon as there is text, even before dictating.
+
 ### Fixed
 
 - Loading indicators keep spinning when the system asks to reduce animations.

@@ -1,18 +1,20 @@
+import { useLingui } from '@lingui/react/macro';
 import { useCallback, useMemo } from 'react';
 
 import { createAutoCopy } from '~/dictation/show_dictation/auto_copy';
+import { canStartNewDictation } from '~/dictation/show_dictation/can_start_new_dictation';
 import { DictationDock } from '~/dictation/show_dictation/dictation_dock';
 import { DictationHeader } from '~/dictation/show_dictation/dictation_header';
 import { DictationStage } from '~/dictation/show_dictation/dictation_stage';
+import { isUnsavedSaveStatus } from '~/dictation/show_dictation/is_unsaved_save_status';
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
-import {
-	NEW_DICTATION_STATUSES,
-	useDictationHotkeys,
-} from '~/dictation/show_dictation/use_dictation_hotkeys';
+import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
 import { useDraftCopy } from '~/dictation/show_dictation/use_draft_copy';
 import { useRefreshRemainingQuota } from '~/dictation/show_dictation/use_refresh_remaining_quota';
+import { useRequestNewDictation } from '~/dictation/show_dictation/use_request_new_dictation';
 import { useSaveDraftText } from '~/dictation/show_dictation/use_save_draft_text';
+import { useLeaveConfirmation } from '~/shared/navigation/use_leave_confirmation';
 import { readBooleanPreference } from '~/shared/preferences/boolean_preference';
 import {
 	AUTO_COPY_PREFERENCE,
@@ -27,6 +29,7 @@ type ShowDictationProps = {
 export default function ShowDictation({
 	remainingMinutes,
 }: Readonly<ShowDictationProps>) {
+	const { t } = useLingui();
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
 	const draft = useDictationDraft();
 	const { copyStatus, copyCount, copyDraft, recordSelectionCopy } =
@@ -50,18 +53,26 @@ export default function ShowDictation({
 		draftId: draft.draftId,
 		draftText: draft.text,
 	});
-	useSaveDraftText({
+	const { saveStatus, explicitSave, saveNow } = useSaveDraftText({
 		draftId: draft.draftId,
 		text: draft.text,
 		cleanedText: draft.cleanedText,
 		status: state.status,
+	});
+	useLeaveConfirmation({
+		isBlocking: isUnsavedSaveStatus(saveStatus),
+		title: t`Leave this page?`,
+		message: t`Your text is not saved in the history yet. If you leave now, it may be lost.`,
+		confirmLabel: t`Leave`,
 	});
 	const { clear: clearDraft } = draft;
 	const startNew = useCallback(() => {
 		clearDraft();
 		start();
 	}, [clearDraft, start]);
+	const requestNewDictation = useRequestNewDictation({ saveStatus, startNew });
 	const hasDraftText = draft.text.trim() !== '';
+	const canStartNew = canStartNewDictation(state.status, draft.text);
 	const handleCopy = useCallback(
 		() => void copyDraft(draft.text),
 		[copyDraft, draft.text]
@@ -69,19 +80,23 @@ export default function ShowDictation({
 	useDictationHotkeys({
 		status: state.status,
 		start,
-		startNew,
+		startNew: requestNewDictation,
+		canStartNew,
 		finish,
 		cancel,
 		copy: handleCopy,
 		canCopy: hasDraftText,
+		save: saveNow,
 	});
 	useRefreshRemainingQuota(state.status);
 
 	return (
 		<div className="flex h-dvh flex-col">
 			<DictationHeader
-				isNewDictationAvailable={NEW_DICTATION_STATUSES.has(state.status)}
-				onStartNew={startNew}
+				isNewDictationAvailable={canStartNew}
+				onStartNew={requestNewDictation}
+				saveStatus={saveStatus}
+				explicitSave={explicitSave}
 			/>
 			<DictationStage
 				state={state}
