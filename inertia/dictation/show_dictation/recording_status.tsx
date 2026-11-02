@@ -1,6 +1,6 @@
-import { formatElapsedTime } from './format_elapsed_time';
-import { LevelWaveform } from './level_waveform';
-import { useElapsedTime } from './use_elapsed_time';
+import { formatElapsedTime } from '~/dictation/show_dictation/format_elapsed_time';
+import { LevelWaveform } from '~/dictation/show_dictation/level_waveform';
+import { useElapsedTime } from '~/dictation/show_dictation/use_elapsed_time';
 
 type RecordingStatusProps = {
 	startedAt: number;

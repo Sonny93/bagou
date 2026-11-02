@@ -3,5 +3,5 @@ allowBuilds:
   esbuild: true
 
 minimumReleaseAgeExclude:
-  - '@minimalstuff/tooling@0.7.0'
-  - '@minimalstuff/ui@4.3.2'
+  - '@minimalstuff/tooling@0.7.0 || 0.8.0'
+  - '@minimalstuff/ui@4.3.2 || 5.0.0'

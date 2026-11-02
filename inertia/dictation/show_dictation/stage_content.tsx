@@ -1,12 +1,12 @@
-import { DictationResult } from './dictation_result';
-import { DictationTranscript } from './dictation_transcript';
-import { getLiveSegment } from './get_live_segment';
-import { StageNotice } from './stage_notice';
 import {
 	splitDraft,
 	type DraftSelection,
 } from '~/dictation/core/dictation_draft';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { DictationResult } from '~/dictation/show_dictation/dictation_result';
+import { DictationTranscript } from '~/dictation/show_dictation/dictation_transcript';
+import { getLiveSegment } from '~/dictation/show_dictation/get_live_segment';
+import { StageNotice } from '~/dictation/show_dictation/stage_notice';
 
 const ANNOUNCED_STATUSES: ReadonlySet<DictationState['status']> = new Set([
 	'recording',

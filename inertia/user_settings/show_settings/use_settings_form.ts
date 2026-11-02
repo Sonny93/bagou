@@ -2,15 +2,15 @@ import type { Data } from '@generated/data';
 import { useForm } from '@inertiajs/react';
 import { useLingui } from '@lingui/react/macro';
 
-import { describeFieldError } from './describe_field_error';
-import { describeVocabularyProblem } from './describe_vocabulary_problem';
-import { findVocabularyProblem } from './find_vocabulary_problem';
-import { formatVocabulary } from './format_vocabulary';
-import { parseVocabulary } from './parse_vocabulary';
-import { pickVocabularyError } from './pick_vocabulary_error';
-import type { SettingsLimits } from './settings_limits';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
 import { urlFor } from '~/shared/lib/url_for';
+import { describeFieldError } from '~/user_settings/show_settings/describe_field_error';
+import { describeVocabularyProblem } from '~/user_settings/show_settings/describe_vocabulary_problem';
+import { findVocabularyProblem } from '~/user_settings/show_settings/find_vocabulary_problem';
+import { formatVocabulary } from '~/user_settings/show_settings/format_vocabulary';
+import { parseVocabulary } from '~/user_settings/show_settings/parse_vocabulary';
+import { pickVocabularyError } from '~/user_settings/show_settings/pick_vocabulary_error';
+import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 
 type SettingsFormData = {
 	dictationLanguage: Data.UserSettings['dictationLanguage'];

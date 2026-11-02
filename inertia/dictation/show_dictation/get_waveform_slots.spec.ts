@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getWaveformSlots } from './get_waveform_slots';
+import { getWaveformSlots } from '~/dictation/show_dictation/get_waveform_slots';
 
 describe('getWaveformSlots', () => {
 	it('should pad on the left with silence when there are fewer levels than slots', () => {

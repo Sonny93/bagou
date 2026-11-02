@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pickVocabularyError } from './pick_vocabulary_error';
+import { pickVocabularyError } from '~/user_settings/show_settings/pick_vocabulary_error';
 
 describe('pickVocabularyError', () => {
 	it('should pick the error of the list itself', () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createLeaveGuard } from './create_leave_guard';
-import type { LeavableVisit } from './does_visit_leave_page';
+import { createLeaveGuard } from '~/shared/navigation/create_leave_guard';
+import type { LeavableVisit } from '~/shared/navigation/does_visit_leave_page';
 
 const CURRENT_PATHNAME = '/';
 

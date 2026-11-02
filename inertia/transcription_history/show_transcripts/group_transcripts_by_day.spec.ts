@@ -1,7 +1,7 @@
 import type { Data } from '@generated/data';
 import { describe, expect, it } from 'vitest';
 
-import { groupTranscriptsByDay } from './group_transcripts_by_day';
+import { groupTranscriptsByDay } from '~/transcription_history/show_transcripts/group_transcripts_by_day';
 
 function buildTranscript(id: number, createdAt: Date): Data.Transcript {
 	return {

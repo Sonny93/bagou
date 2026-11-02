@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createDraftSaveQueue, type SaveSettlement } from './draft_save_queue';
-import type { DraftText } from './put_draft_text';
+import {
+	createDraftSaveQueue,
+	type SaveSettlement,
+} from '~/dictation/show_dictation/draft_save_queue';
+import type { DraftText } from '~/dictation/show_dictation/put_draft_text';
 
 type PendingSend = {
 	draft: DraftText;

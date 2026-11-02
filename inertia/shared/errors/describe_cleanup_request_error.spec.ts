@@ -2,7 +2,7 @@ import { i18n } from '@lingui/core';
 import { TuyauHTTPError, TuyauNetworkError } from '@tuyau/core/client';
 import { describe, expect, it } from 'vitest';
 
-import { describeCleanupRequestError } from './describe_cleanup_request_error';
+import { describeCleanupRequestError } from '~/shared/errors/describe_cleanup_request_error';
 
 const buildHttpError = (body: unknown): TuyauHTTPError =>
 	Object.assign(Object.create(TuyauHTTPError.prototype), { response: body });

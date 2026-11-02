@@ -1,7 +1,7 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { describeValidationRule } from './describe_validation_rule';
+import { describeValidationRule } from '~/shared/i18n/describe_validation_rule';
 
 describe('describeValidationRule', () => {
 	it('should describe a known rule name', () => {

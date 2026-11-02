@@ -2,9 +2,9 @@ import { useLingui } from '@lingui/react/macro';
 import { ConfirmModal } from '@minimalstuff/ui';
 import { useCallback, useState } from 'react';
 
-import { createNewDictationRequester } from './create_new_dictation_request';
-import { isUnsavedSaveStatus } from './is_unsaved_save_status';
-import type { SaveStatus } from './save_status';
+import { createNewDictationRequester } from '~/dictation/show_dictation/create_new_dictation_request';
+import { isUnsavedSaveStatus } from '~/dictation/show_dictation/is_unsaved_save_status';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
 
 type UseRequestNewDictationOptions = {
 	saveStatus: SaveStatus;

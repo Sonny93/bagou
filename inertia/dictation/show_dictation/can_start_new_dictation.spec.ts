@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { canStartNewDictation } from './can_start_new_dictation';
+import { canStartNewDictation } from '~/dictation/show_dictation/can_start_new_dictation';
 
 describe('canStartNewDictation', () => {
 	it.each(['done', 'cancelled', 'error'] as const)(

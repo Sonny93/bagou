@@ -15,15 +15,19 @@ msgstr "{count, plural, one {# dictation will be permanently deleted.} other {# 
 msgid "{dayLabel} at {time}"
 msgstr "{dayLabel} at {time}"
 
-#: inertia/layouts/app_ui_provider.tsx:31
+#: inertia/layouts/app_ui_provider.tsx:40
 msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 msgstr "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
+
+#: inertia/layouts/app_ui_provider.tsx:33
+msgid "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
+msgstr "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
 
 #: inertia/dictation/show_dictation/format_remaining_quota.ts:10
 msgid "{remainingMinutes} min left today"
 msgstr "{remainingMinutes} min left today"
 
-#: inertia/layouts/app_ui_provider.tsx:27
+#: inertia/layouts/app_ui_provider.tsx:29
 msgid "{selectedCount, plural, one {# selected} other {# selected}}"
 msgstr "{selectedCount, plural, one {# selected} other {# selected}}"
 
@@ -141,6 +145,7 @@ msgid "Continue the dictation"
 msgstr "Continue the dictation"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:23
+#: inertia/layouts/app_ui_provider.tsx:23
 msgid "Copied"
 msgstr "Copied"
 
@@ -303,6 +308,10 @@ msgstr "Leave this page?"
 #: inertia/layouts/app_ui_provider.tsx:8
 msgid "Light theme"
 msgstr "Light theme"
+
+#: inertia/layouts/app_ui_provider.tsx:24
+msgid "Loading"
+msgstr "Loading"
 
 #: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:18
 msgid "Loading more dictations…"
@@ -716,7 +725,7 @@ msgstr "Write numbers as digits.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Your dictations from the last 60 days."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:98
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:104
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Your edits could not be saved to the history, retrying on the next change"
 

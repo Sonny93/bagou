@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveLocale } from './resolve_locale';
+import { resolveLocale } from '~/i18n/resolve_locale';
 
 describe('resolveLocale', () => {
 	it.each([

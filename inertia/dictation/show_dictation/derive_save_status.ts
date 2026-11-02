@@ -1,4 +1,4 @@
-import type { SaveStatus } from './save_status';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
 
 export type ConfirmedSave = {
 	draftId: string;

@@ -1,7 +1,7 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { describeCleanupError } from './describe_cleanup_error';
+import { describeCleanupError } from '~/shared/errors/describe_cleanup_error';
 
 describe('describeCleanupError', () => {
 	it('should word the unavailable cleanup', () => {

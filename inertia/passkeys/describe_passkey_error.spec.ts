@@ -2,8 +2,8 @@ import { i18n } from '@lingui/core';
 import { TuyauHTTPError } from '@tuyau/core/client';
 import { describe, expect, it } from 'vitest';
 
-import { describePasskeyError } from './describe_passkey_error';
 import { activateLocale } from '~/i18n/activate_locale';
+import { describePasskeyError } from '~/passkeys/describe_passkey_error';
 
 const buildHttpError = (body: unknown): TuyauHTTPError => {
 	const kyError: ConstructorParameters<typeof TuyauHTTPError>[0] =

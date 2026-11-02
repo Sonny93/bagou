@@ -1,9 +1,9 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { describeDictationError } from './describe_dictation_error';
 import { DictationClientError } from '~/dictation/core/dictation_client_error';
 import { MicrophoneError } from '~/dictation/core/microphone_error';
+import { describeDictationError } from '~/dictation/show_dictation/describe_dictation_error';
 import { activateLocale } from '~/i18n/activate_locale';
 
 describe('describeDictationError', () => {

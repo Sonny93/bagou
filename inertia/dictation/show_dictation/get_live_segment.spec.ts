@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { getLiveSegment } from './get_live_segment';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { getLiveSegment } from '~/dictation/show_dictation/get_live_segment';
 
 describe('getLiveSegment', () => {
 	it('should be empty while connecting', () => {

@@ -1,4 +1,4 @@
-import type { BooleanPreference } from './boolean_preference';
+import type { BooleanPreference } from '~/shared/preferences/boolean_preference';
 
 export const AUTO_START_PREFERENCE: BooleanPreference = {
 	storageKey: 'bagou:dictation:auto-start',

@@ -3,8 +3,8 @@ import { router } from '@inertiajs/react';
 import { useLingui } from '@lingui/react/macro';
 import { ConfirmModal } from '@minimalstuff/ui';
 
-import { TranscriptQuote } from './transcript_quote';
 import { urlFor } from '~/shared/lib/url_for';
+import { TranscriptQuote } from '~/transcription_history/show_transcripts/transcript_quote';
 
 export function useDeleteTranscript(): (transcript: Data.Transcript) => void {
 	const { t } = useLingui();

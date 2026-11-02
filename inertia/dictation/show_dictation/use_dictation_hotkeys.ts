@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-import { isSaveShortcut } from './is_save_shortcut';
 import {
 	STARTABLE_STATUSES,
 	type DictationState,
 } from '~/dictation/core/dictation_state';
+import { isSaveShortcut } from '~/dictation/show_dictation/is_save_shortcut';
 
 type DictationHotkeyActions = {
 	status: DictationState['status'];

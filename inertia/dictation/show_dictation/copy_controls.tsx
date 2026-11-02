@@ -4,7 +4,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Badge, Button, Kbd, Tooltip } from '@minimalstuff/ui';
 import type { Ref } from 'react';
 
-import type { CopyStatus } from './copy_status';
+import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
 import { cn } from '~/shared/lib/cn';
 
 type CopyStatusDisplay = {

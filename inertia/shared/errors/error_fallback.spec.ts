@@ -4,8 +4,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
-import { ErrorFallback } from './error_fallback';
 import { activateLocale } from '~/i18n/activate_locale';
+import { ErrorFallback } from '~/shared/errors/error_fallback';
 
 const renderFallback = (): string =>
 	renderToStaticMarkup(

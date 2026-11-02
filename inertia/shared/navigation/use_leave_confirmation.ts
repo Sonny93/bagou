@@ -2,7 +2,7 @@ import { router } from '@inertiajs/react';
 import { ConfirmModal } from '@minimalstuff/ui';
 import { useEffect } from 'react';
 
-import { createLeaveGuard } from './create_leave_guard';
+import { createLeaveGuard } from '~/shared/navigation/create_leave_guard';
 
 type UseLeaveConfirmationOptions = {
 	isBlocking: boolean;

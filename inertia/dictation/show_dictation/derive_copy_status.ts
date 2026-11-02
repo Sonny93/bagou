@@ -1,4 +1,4 @@
-import type { CopyStatus } from './copy_status';
+import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
 
 type DeriveCopyStatusInput = {
 	draftText: string;

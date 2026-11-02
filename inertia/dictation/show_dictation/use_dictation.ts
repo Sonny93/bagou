@@ -1,12 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
-import { appendLevel } from './append_level';
-import { describeDictationError } from './describe_dictation_error';
-import { DICTATION_WORKLET_URL } from './dictation_worklet_url';
-import { finalizeDictation } from './finalize_dictation';
-import { LEVEL_HISTORY_CAPACITY } from './level_history_capacity';
-import { useCleanDraft } from './use_clean_draft';
 import { DictationSession } from '~/dictation/core/dictation_session';
 import {
 	dictationReducer,
@@ -17,6 +11,12 @@ import {
 import type { DictationTranscript } from '~/dictation/core/dictation_transcript';
 import type { DraftContext } from '~/dictation/core/draft_context';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
+import { appendLevel } from '~/dictation/show_dictation/append_level';
+import { describeDictationError } from '~/dictation/show_dictation/describe_dictation_error';
+import { DICTATION_WORKLET_URL } from '~/dictation/show_dictation/dictation_worklet_url';
+import { finalizeDictation } from '~/dictation/show_dictation/finalize_dictation';
+import { LEVEL_HISTORY_CAPACITY } from '~/dictation/show_dictation/level_history_capacity';
+import { useCleanDraft } from '~/dictation/show_dictation/use_clean_draft';
 import { logError } from '~/shared/errors/log_error';
 
 const EMPTY_TRANSCRIPT: DictationTranscript = {

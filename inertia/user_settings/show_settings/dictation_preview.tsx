@@ -1,16 +1,16 @@
 import { Trans } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 
-import { DictationPreviewResult } from './dictation_preview_result';
-import { useCancelOnEscape } from './use_cancel_on_escape';
-import { useDictationPreview } from './use_dictation_preview';
-import { usePreviewCleanup } from './use_preview_cleanup';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
 import { DictationTranscript } from '~/dictation/show_dictation/dictation_transcript';
 import { ErrorNotice } from '~/dictation/show_dictation/error_notice';
 import { getLiveSegment } from '~/dictation/show_dictation/get_live_segment';
 import { MicButton } from '~/dictation/show_dictation/mic_button';
 import { RecordingStatus } from '~/dictation/show_dictation/recording_status';
+import { DictationPreviewResult } from '~/user_settings/show_settings/dictation_preview_result';
+import { useCancelOnEscape } from '~/user_settings/show_settings/use_cancel_on_escape';
+import { useDictationPreview } from '~/user_settings/show_settings/use_dictation_preview';
+import { usePreviewCleanup } from '~/user_settings/show_settings/use_preview_cleanup';
 
 type DictationPreviewProps = {
 	settings: Readonly<PreviewSettings>;

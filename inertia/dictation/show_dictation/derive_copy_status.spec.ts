@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deriveCopyStatus } from './derive_copy_status';
+import { deriveCopyStatus } from '~/dictation/show_dictation/derive_copy_status';
 
 describe('deriveCopyStatus', () => {
 	it('should be none when nothing was copied for the draft', () => {

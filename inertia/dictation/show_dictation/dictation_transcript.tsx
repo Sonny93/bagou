@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 
-import { LiveCaret } from './live_caret';
+import { LiveCaret } from '~/dictation/show_dictation/live_caret';
 import { cn } from '~/shared/lib/cn';
 
 type DictationTranscriptProps = {

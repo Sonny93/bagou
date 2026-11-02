@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	doesVisitLeavePage,
 	type LeavableVisit,
-} from './does_visit_leave_page';
+} from '~/shared/navigation/does_visit_leave_page';
 
 const buildVisit = (overrides: Partial<LeavableVisit> = {}): LeavableVisit => ({
 	url: { pathname: '/' },

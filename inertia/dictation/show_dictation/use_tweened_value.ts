@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { approachValue } from './approach_value';
-import { prefersReducedMotion } from './prefers_reduced_motion';
+import { approachValue } from '~/dictation/show_dictation/approach_value';
+import { prefersReducedMotion } from '~/dictation/show_dictation/prefers_reduced_motion';
 
 /**
  * Follows `target` smoothly with an animation frame loop that stops once it

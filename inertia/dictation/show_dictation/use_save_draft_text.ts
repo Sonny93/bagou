@@ -1,15 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { deriveSaveStatus, type ConfirmedSave } from './derive_save_status';
+import type { DictationState } from '~/dictation/core/dictation_state';
+import {
+	deriveSaveStatus,
+	type ConfirmedSave,
+} from '~/dictation/show_dictation/derive_save_status';
 import {
 	createDraftSaveQueue,
 	type DraftSaveQueue,
 	type SaveSettlement,
-} from './draft_save_queue';
-import { putDraftText, type DraftText } from './put_draft_text';
-import type { SaveStatus } from './save_status';
-import type { DictationState } from '~/dictation/core/dictation_state';
+} from '~/dictation/show_dictation/draft_save_queue';
+import {
+	putDraftText,
+	type DraftText,
+} from '~/dictation/show_dictation/put_draft_text';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
 import { reportError } from '~/shared/errors/report_error';
 
 const SAVE_DEBOUNCE_MS = 1500;

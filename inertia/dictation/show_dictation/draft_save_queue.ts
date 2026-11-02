@@ -1,4 +1,4 @@
-import type { DraftText } from './put_draft_text';
+import type { DraftText } from '~/dictation/show_dictation/put_draft_text';
 
 export type SaveSettlement =
 	| { draftId: string; text: string; isStored: boolean }

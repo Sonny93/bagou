@@ -2,8 +2,8 @@ import { router } from '@inertiajs/react';
 import { useLingui } from '@lingui/react/macro';
 import { ConfirmModal } from '@minimalstuff/ui';
 
-import { describeDeletionCount } from './describe_deletion_count';
 import { urlFor } from '~/shared/lib/url_for';
+import { describeDeletionCount } from '~/transcription_history/show_transcripts/describe_deletion_count';
 
 export function useDeleteAllTranscripts(transcriptCount: number): () => void {
 	const { t, i18n } = useLingui();

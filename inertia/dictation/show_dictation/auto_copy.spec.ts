@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createAutoCopy } from './auto_copy';
+import { createAutoCopy } from '~/dictation/show_dictation/auto_copy';
 
 describe('createAutoCopy', () => {
 	it('should copy the text while automatic copy is on', async () => {

@@ -5,7 +5,7 @@ import type { ChangeEvent } from 'react';
 import {
 	buildDictationLanguageOptions,
 	type DictationLanguage,
-} from './dictation_language_options';
+} from '~/user_settings/show_settings/dictation_language_options';
 
 type DictationLanguageSelectProps = {
 	value: DictationLanguage;

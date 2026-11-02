@@ -1,7 +1,7 @@
 import {
 	doesVisitLeavePage,
 	type LeavableVisit,
-} from './does_visit_leave_page';
+} from '~/shared/navigation/does_visit_leave_page';
 
 type LeaveGuardOptions<TVisit extends LeavableVisit> = {
 	confirm: () => Promise<boolean>;

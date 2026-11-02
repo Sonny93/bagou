@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { findVocabularyProblem } from './find_vocabulary_problem';
-import type { SettingsLimits } from './settings_limits';
+import { findVocabularyProblem } from '~/user_settings/show_settings/find_vocabulary_problem';
+import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 
 const LIMITS: SettingsLimits = {
 	maxVocabularyTerms: 2,

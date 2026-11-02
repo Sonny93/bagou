@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { finalizeDictation } from './finalize_dictation';
+import { finalizeDictation } from '~/dictation/show_dictation/finalize_dictation';
 
 const RAW_TEXT = 'euh bonjour';
 const CLEANED_DRAFT = 'Avant. Bonjour.';

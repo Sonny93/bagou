@@ -4,8 +4,8 @@ import {
 	getRemainingVisibleMs,
 	LEAVE_MS,
 	MIN_VISIBLE_MS,
-} from './overlay_timing';
-import { prefersReducedMotion } from './prefers_reduced_motion';
+} from '~/dictation/show_dictation/overlay_timing';
+import { prefersReducedMotion } from '~/dictation/show_dictation/prefers_reduced_motion';
 
 export type OverlayPhase = 'hidden' | 'entering' | 'visible' | 'leaving';
 

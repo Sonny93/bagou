@@ -2,10 +2,10 @@ import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 import { Badge, IconButton } from '@minimalstuff/ui';
 
-import { formatTranscriptFullDate } from './format_transcript_full_date';
-import { TranscriptRawText } from './transcript_raw_text';
-import { useCleanTranscript } from './use_clean_transcript';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
+import { formatTranscriptFullDate } from '~/transcription_history/show_transcripts/format_transcript_full_date';
+import { TranscriptRawText } from '~/transcription_history/show_transcripts/transcript_raw_text';
+import { useCleanTranscript } from '~/transcription_history/show_transcripts/use_clean_transcript';
 
 const CLEAN_ICON = 'i-tabler-sparkles';
 const CLEANING_ICON = 'i-tabler-loader-2 animate-spin';

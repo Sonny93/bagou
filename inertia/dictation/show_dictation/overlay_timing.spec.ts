@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { getRemainingVisibleMs, MIN_VISIBLE_MS } from './overlay_timing';
+import {
+	getRemainingVisibleMs,
+	MIN_VISIBLE_MS,
+} from '~/dictation/show_dictation/overlay_timing';
 
 const SHOWN_AT = 10_000;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deriveSaveStatus } from './derive_save_status';
+import { deriveSaveStatus } from '~/dictation/show_dictation/derive_save_status';
 
 const DRAFT_ID = 'draft-1';
 

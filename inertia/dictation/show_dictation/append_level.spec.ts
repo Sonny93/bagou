@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { appendLevel } from './append_level';
+import { appendLevel } from '~/dictation/show_dictation/append_level';
 
 describe('appendLevel', () => {
 	it('should append the level after the existing ones', () => {

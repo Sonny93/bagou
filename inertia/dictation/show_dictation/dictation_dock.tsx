@@ -2,16 +2,16 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 
-import { BusyStatus } from './busy_status';
-import { CopyControls } from './copy_controls';
-import type { CopyStatus } from './copy_status';
-import { DockLayout } from './dock_layout';
-import { formatRemainingQuota } from './format_remaining_quota';
-import { MicButton } from './mic_button';
-import { RecordingActions } from './recording_actions';
-import { RecordingStatus } from './recording_status';
-import { useFocusAfterClean } from './use_focus_after_clean';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { BusyStatus } from '~/dictation/show_dictation/busy_status';
+import { CopyControls } from '~/dictation/show_dictation/copy_controls';
+import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
+import { DockLayout } from '~/dictation/show_dictation/dock_layout';
+import { formatRemainingQuota } from '~/dictation/show_dictation/format_remaining_quota';
+import { MicButton } from '~/dictation/show_dictation/mic_button';
+import { RecordingActions } from '~/dictation/show_dictation/recording_actions';
+import { RecordingStatus } from '~/dictation/show_dictation/recording_status';
+import { useFocusAfterClean } from '~/dictation/show_dictation/use_focus_after_clean';
 
 type DictationDockProps = {
 	state: DictationState;

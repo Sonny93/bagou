@@ -3,14 +3,14 @@ import { Trans } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 import type { SubmitEvent } from 'react';
 
-import { CleanupInstructionsField } from './cleanup_instructions_field';
-import { DictationLanguageSelect } from './dictation_language_select';
-import { InterfaceLanguageSelect } from './interface_language_select';
-import { SavedStatus } from './saved_status';
-import type { SettingsLimits } from './settings_limits';
-import { SettingsPreview } from './settings_preview';
-import { useSettingsForm } from './use_settings_form';
-import { VocabularyField } from './vocabulary_field';
+import { CleanupInstructionsField } from '~/user_settings/show_settings/cleanup_instructions_field';
+import { DictationLanguageSelect } from '~/user_settings/show_settings/dictation_language_select';
+import { InterfaceLanguageSelect } from '~/user_settings/show_settings/interface_language_select';
+import { SavedStatus } from '~/user_settings/show_settings/saved_status';
+import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
+import { SettingsPreview } from '~/user_settings/show_settings/settings_preview';
+import { useSettingsForm } from '~/user_settings/show_settings/use_settings_form';
+import { VocabularyField } from '~/user_settings/show_settings/vocabulary_field';
 
 type SettingsFormProps = {
 	settings: Data.UserSettings;

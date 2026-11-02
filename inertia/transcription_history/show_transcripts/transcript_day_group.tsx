@@ -1,10 +1,10 @@
 import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 
-import { formatDayLabel } from './format_day_label';
-import { formatTranscriptTime } from './format_transcript_time';
-import type { TranscriptDayGroup as TranscriptDayGroupData } from './group_transcripts_by_day';
-import { TranscriptRow } from './transcript_row';
+import { formatDayLabel } from '~/transcription_history/show_transcripts/format_day_label';
+import { formatTranscriptTime } from '~/transcription_history/show_transcripts/format_transcript_time';
+import type { TranscriptDayGroup as TranscriptDayGroupData } from '~/transcription_history/show_transcripts/group_transcripts_by_day';
+import { TranscriptRow } from '~/transcription_history/show_transcripts/transcript_row';
 
 type TranscriptDayGroupProps = {
 	group: TranscriptDayGroupData;

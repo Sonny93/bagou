@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getWaveformSlotCount } from './get_waveform_slot_count';
+import { getWaveformSlotCount } from '~/dictation/show_dictation/get_waveform_slot_count';
 
 describe('getWaveformSlotCount', () => {
 	it('should count the bars that fit with their gaps', () => {

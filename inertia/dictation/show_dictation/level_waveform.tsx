@@ -1,6 +1,6 @@
-import { getWaveformSlotCount } from './get_waveform_slot_count';
-import { getWaveformSlots } from './get_waveform_slots';
-import { useElementWidth } from './use_element_width';
+import { getWaveformSlotCount } from '~/dictation/show_dictation/get_waveform_slot_count';
+import { getWaveformSlots } from '~/dictation/show_dictation/get_waveform_slots';
+import { useElementWidth } from '~/dictation/show_dictation/use_element_width';
 
 const LEVEL_GAIN = 4;
 const MIN_BAR_SCALE = 0.08;

@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import type { CopyAttempt } from './copy_attempt';
-import type { CopyStatus } from './copy_status';
-import { deriveCopyStatus } from './derive_copy_status';
-import { recordCopyAttempt } from './record_copy_attempt';
+import type { CopyAttempt } from '~/dictation/show_dictation/copy_attempt';
+import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
+import { deriveCopyStatus } from '~/dictation/show_dictation/derive_copy_status';
+import { recordCopyAttempt } from '~/dictation/show_dictation/record_copy_attempt';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
 
 type UseDraftCopyOptions = {

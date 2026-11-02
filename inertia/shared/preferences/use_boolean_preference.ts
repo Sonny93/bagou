@@ -4,7 +4,7 @@ import {
 	readBooleanPreference,
 	writeBooleanPreference,
 	type BooleanPreference,
-} from './boolean_preference';
+} from '~/shared/preferences/boolean_preference';
 
 type UseBooleanPreferenceReturn = readonly [
 	isEnabled: boolean,

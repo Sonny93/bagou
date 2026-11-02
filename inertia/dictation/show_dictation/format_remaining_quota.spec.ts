@@ -1,7 +1,7 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { formatRemainingQuota } from './format_remaining_quota';
+import { formatRemainingQuota } from '~/dictation/show_dictation/format_remaining_quota';
 import { activateLocale } from '~/i18n/activate_locale';
 
 describe('formatRemainingQuota', () => {

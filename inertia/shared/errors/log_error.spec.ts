@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { logError } from './log_error';
+import { logError } from '~/shared/errors/log_error';
 
 describe('logError', () => {
 	afterEach(() => {

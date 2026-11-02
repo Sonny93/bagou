@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { CopyAttempt } from './copy_attempt';
-import { recordCopyAttempt } from './record_copy_attempt';
+import type { CopyAttempt } from '~/dictation/show_dictation/copy_attempt';
+import { recordCopyAttempt } from '~/dictation/show_dictation/record_copy_attempt';
 
 const buildAttempt = (overrides: Partial<CopyAttempt> = {}): CopyAttempt => ({
 	draftId: 'draft-1',

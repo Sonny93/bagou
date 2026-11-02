@@ -5,7 +5,7 @@ import type { ChangeEvent } from 'react';
 import {
 	buildInterfaceLanguageOptions,
 	type InterfaceLanguage,
-} from './interface_language_options';
+} from '~/user_settings/show_settings/interface_language_options';
 
 type InterfaceLanguageSelectProps = {
 	value: InterfaceLanguage;

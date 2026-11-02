@@ -2,7 +2,7 @@ import type { I18n, MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { TuyauHTTPError, TuyauNetworkError } from '@tuyau/core/client';
 
-import { describeCleanupError } from './describe_cleanup_error';
+import { describeCleanupError } from '~/shared/errors/describe_cleanup_error';
 
 const NETWORK_MESSAGE = msg`The server is unreachable`;
 const RATE_LIMIT_CODE = 'E_TOO_MANY_REQUESTS';

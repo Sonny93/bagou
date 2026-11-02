@@ -1,9 +1,9 @@
 import type { Data } from '@generated/data';
 import { InfiniteScroll } from '@inertiajs/react';
 
-import { TranscriptFlatList } from './transcript_flat_list';
-import { TranscriptGroupedList } from './transcript_grouped_list';
-import { TranscriptLoadingStatus } from './transcript_loading_status';
+import { TranscriptFlatList } from '~/transcription_history/show_transcripts/transcript_flat_list';
+import { TranscriptGroupedList } from '~/transcription_history/show_transcripts/transcript_grouped_list';
+import { TranscriptLoadingStatus } from '~/transcription_history/show_transcripts/transcript_loading_status';
 
 type TranscriptFeedProps = {
 	transcripts: Data.Transcript[];

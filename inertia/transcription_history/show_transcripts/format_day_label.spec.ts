@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatDayLabel } from './format_day_label';
+import { formatDayLabel } from '~/transcription_history/show_transcripts/format_day_label';
 
 const NOW = new Date(2026, 10, 1, 9, 30);
 

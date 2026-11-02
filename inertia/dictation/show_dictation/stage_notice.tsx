@@ -1,6 +1,6 @@
-import { CancelledNotice } from './cancelled_notice';
-import { ErrorNotice } from './error_notice';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { CancelledNotice } from '~/dictation/show_dictation/cancelled_notice';
+import { ErrorNotice } from '~/dictation/show_dictation/error_notice';
 
 type StageNoticeProps = {
 	state: DictationState;

@@ -1,9 +1,9 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Tabs } from '@minimalstuff/ui';
 
-import { DictationPreview } from './dictation_preview';
-import { TextPreview } from './text_preview';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
+import { DictationPreview } from '~/user_settings/show_settings/dictation_preview';
+import { TextPreview } from '~/user_settings/show_settings/text_preview';
 
 type SettingsPreviewProps = {
 	settings: Readonly<PreviewSettings>;

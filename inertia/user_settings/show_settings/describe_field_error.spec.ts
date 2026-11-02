@@ -1,7 +1,7 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { describeFieldError } from './describe_field_error';
+import { describeFieldError } from '~/user_settings/show_settings/describe_field_error';
 
 describe('describeFieldError', () => {
 	it('should word a known rule', () => {

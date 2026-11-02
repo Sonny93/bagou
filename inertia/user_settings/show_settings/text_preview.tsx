@@ -2,11 +2,11 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Button, Textarea } from '@minimalstuff/ui';
 import { useState, type ChangeEvent, type KeyboardEvent } from 'react';
 
-import { isRunShortcut } from './is_run_shortcut';
-import { PreviewTextBlock } from './preview_text_block';
-import { usePreviewCleanup } from './use_preview_cleanup';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
 import { ErrorNotice } from '~/dictation/show_dictation/error_notice';
+import { isRunShortcut } from '~/user_settings/show_settings/is_run_shortcut';
+import { PreviewTextBlock } from '~/user_settings/show_settings/preview_text_block';
+import { usePreviewCleanup } from '~/user_settings/show_settings/use_preview_cleanup';
 
 const SAMPLE_ROWS = 4;
 

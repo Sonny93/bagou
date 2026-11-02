@@ -1,9 +1,12 @@
 import { useRef } from 'react';
 
-import { CleanupProgressOverlay } from './cleanup_progress_overlay';
-import { StageContent, type StageDraft } from './stage_content';
-import { useFollowTranscript } from './use_follow_transcript';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { CleanupProgressOverlay } from '~/dictation/show_dictation/cleanup_progress_overlay';
+import {
+	StageContent,
+	type StageDraft,
+} from '~/dictation/show_dictation/stage_content';
+import { useFollowTranscript } from '~/dictation/show_dictation/use_follow_transcript';
 
 type DictationStageProps = {
 	state: DictationState;

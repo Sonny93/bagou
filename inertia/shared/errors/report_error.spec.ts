@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { reportError } from './report_error';
+import { reportError } from '~/shared/errors/report_error';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn<() => void>() } }));
 

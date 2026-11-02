@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useId, useMemo } from 'react';
 
-import { useOverlayPhase } from './use_overlay_phase';
-import { useTweenedValue } from './use_tweened_value';
+import { useOverlayPhase } from '~/dictation/show_dictation/use_overlay_phase';
+import { useTweenedValue } from '~/dictation/show_dictation/use_tweened_value';
 import { cn } from '~/shared/lib/cn';
 
 const FULL_PERCENT = 100;

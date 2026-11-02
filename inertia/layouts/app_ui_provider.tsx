@@ -20,11 +20,20 @@ function buildLabels(i18n: I18n): UILabels {
 		search: i18n._(msg`Search`),
 		clear: i18n._(msg`Clear`),
 		required: i18n._(msg`required`),
+		copied: i18n._(msg`Copied`),
+		loading: i18n._(msg`Loading`),
 		currentTheme: (theme) => i18n._(THEME_LABELS[theme]),
 		overflowCount: (hiddenCount) => `+${hiddenCount}`,
 		selectedCount: (selectedCount) =>
 			i18n._(
 				msg`${plural(selectedCount, { one: '# selected', other: '# selected' })}`
+			),
+		charactersRemaining: (remainingCount) =>
+			i18n._(
+				msg`${plural(remainingCount, {
+					one: '# character remaining',
+					other: '# characters remaining',
+				})}`
 			),
 		maxSelectedHint: (maxSelectedValues) =>
 			i18n._(

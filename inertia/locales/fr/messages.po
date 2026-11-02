@@ -15,15 +15,19 @@ msgstr "{count, plural, one {# dictée sera supprimée définitivement.} other {
 msgid "{dayLabel} at {time}"
 msgstr "{dayLabel} à {time}"
 
-#: inertia/layouts/app_ui_provider.tsx:31
+#: inertia/layouts/app_ui_provider.tsx:40
 msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 msgstr "{maxSelectedValues, plural, one {Maximum de # valeur atteint} other {Maximum de # valeurs atteint}}"
+
+#: inertia/layouts/app_ui_provider.tsx:33
+msgid "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
+msgstr "{remainingCount, plural, one {# caractère restant} other {# caractères restants}}"
 
 #: inertia/dictation/show_dictation/format_remaining_quota.ts:10
 msgid "{remainingMinutes} min left today"
 msgstr "Reste {remainingMinutes} min aujourd'hui"
 
-#: inertia/layouts/app_ui_provider.tsx:27
+#: inertia/layouts/app_ui_provider.tsx:29
 msgid "{selectedCount, plural, one {# selected} other {# selected}}"
 msgstr "{selectedCount, plural, one {# sélectionné} other {# sélectionnés}}"
 
@@ -141,6 +145,7 @@ msgid "Continue the dictation"
 msgstr "Continuer la dictée"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:23
+#: inertia/layouts/app_ui_provider.tsx:23
 msgid "Copied"
 msgstr "Copié"
 
@@ -303,6 +308,10 @@ msgstr "Quitter cette page ?"
 #: inertia/layouts/app_ui_provider.tsx:8
 msgid "Light theme"
 msgstr "Thème clair"
+
+#: inertia/layouts/app_ui_provider.tsx:24
+msgid "Loading"
+msgstr "Chargement"
 
 #: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:18
 msgid "Loading more dictations…"
@@ -716,7 +725,7 @@ msgstr "Écris les nombres en chiffres.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:98
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:104
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel essai à la prochaine modification"
 

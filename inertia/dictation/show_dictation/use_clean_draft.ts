@@ -1,12 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useRef } from 'react';
 
-import { requestDraftCleanup } from './request_draft_cleanup';
 import {
 	CLEANABLE_STATUSES,
 	type DictationEvent,
 	type DictationState,
 } from '~/dictation/core/dictation_state';
+import { requestDraftCleanup } from '~/dictation/show_dictation/request_draft_cleanup';
 import { describeCleanupRequestError } from '~/shared/errors/describe_cleanup_request_error';
 import { reportError } from '~/shared/errors/report_error';
 import { CLEANUP_REQUEST_TIMEOUT_MS } from '~/shared/lib/cleanup_request_timeout';

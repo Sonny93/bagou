@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatTranscriptFullDate } from './format_transcript_full_date';
+import { formatTranscriptFullDate } from '~/transcription_history/show_transcripts/format_transcript_full_date';
 
 const ISO_DATE = '2026-03-12T14:32:00.000Z';
 

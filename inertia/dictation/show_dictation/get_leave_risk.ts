@@ -1,6 +1,6 @@
-import { isUnsavedSaveStatus } from './is_unsaved_save_status';
-import type { SaveStatus } from './save_status';
 import type { DictationState } from '~/dictation/core/dictation_state';
+import { isUnsavedSaveStatus } from '~/dictation/show_dictation/is_unsaved_save_status';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
 
 export type LeaveRisk = 'dictation-in-progress' | 'unsaved-text';
 

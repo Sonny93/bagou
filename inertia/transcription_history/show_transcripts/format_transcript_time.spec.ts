@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatTranscriptTime } from './format_transcript_time';
+import { formatTranscriptTime } from '~/transcription_history/show_transcripts/format_transcript_time';
 
 describe('formatTranscriptTime', () => {
 	it('should format an ISO date as a short time without the date', () => {

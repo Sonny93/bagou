@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isRunShortcut } from './is_run_shortcut';
+import { isRunShortcut } from '~/user_settings/show_settings/is_run_shortcut';
 
 describe('isRunShortcut', () => {
 	it('should accept Enter with Ctrl or Cmd', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createNewDictationRequester } from './create_new_dictation_request';
+import { createNewDictationRequester } from '~/dictation/show_dictation/create_new_dictation_request';
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 

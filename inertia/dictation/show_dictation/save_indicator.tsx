@@ -3,8 +3,8 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 
-import type { SaveStatus } from './save_status';
-import type { ExplicitSave } from './use_save_draft_text';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
+import type { ExplicitSave } from '~/dictation/show_dictation/use_save_draft_text';
 import { cn } from '~/shared/lib/cn';
 
 const ANNOUNCEMENT_DURATION_MS = 2000;

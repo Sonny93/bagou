@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatElapsedTime } from './format_elapsed_time';
+import { formatElapsedTime } from '~/dictation/show_dictation/format_elapsed_time';
 
 describe('formatElapsedTime', () => {
 	it.each([

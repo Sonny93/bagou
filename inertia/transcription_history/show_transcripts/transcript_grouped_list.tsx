@@ -2,8 +2,8 @@ import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { groupTranscriptsByDay } from './group_transcripts_by_day';
-import { TranscriptDayGroup } from './transcript_day_group';
+import { groupTranscriptsByDay } from '~/transcription_history/show_transcripts/group_transcripts_by_day';
+import { TranscriptDayGroup } from '~/transcription_history/show_transcripts/transcript_day_group';
 
 type TranscriptGroupedListProps = {
 	transcripts: Data.Transcript[];

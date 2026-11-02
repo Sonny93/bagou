@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 
-import { logError } from './log_error';
+import { logError } from '~/shared/errors/log_error';
 
 type ReportErrorOptions = {
 	toastId?: string;

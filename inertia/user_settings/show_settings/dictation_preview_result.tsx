@@ -1,9 +1,9 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 
-import { PreviewTextBlock } from './preview_text_block';
-import type { DictationPreviewResult as DictationPreviewResultValue } from './use_dictation_preview';
 import { ErrorNotice } from '~/dictation/show_dictation/error_notice';
+import { PreviewTextBlock } from '~/user_settings/show_settings/preview_text_block';
+import type { DictationPreviewResult as DictationPreviewResultValue } from '~/user_settings/show_settings/use_dictation_preview';
 
 type DictationPreviewResultProps = {
 	result: DictationPreviewResultValue;

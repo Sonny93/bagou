@@ -1,10 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { requestPreviewCleanup } from './request_preview_cleanup';
 import type { PreviewSettings } from '~/dictation/core/dictation_start_request';
 import { describeCleanupRequestError } from '~/shared/errors/describe_cleanup_request_error';
 import { logError } from '~/shared/errors/log_error';
+import { requestPreviewCleanup } from '~/user_settings/show_settings/request_preview_cleanup';
 
 type UsePreviewCleanupReturn = {
 	cleanedText: string | null;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseVocabulary } from './parse_vocabulary';
+import { parseVocabulary } from '~/user_settings/show_settings/parse_vocabulary';
 
 describe('parseVocabulary', () => {
 	it('should split the text into one trimmed term per line', () => {

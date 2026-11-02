@@ -1,4 +1,4 @@
-import type { CopyAttempt } from './copy_attempt';
+import type { CopyAttempt } from '~/dictation/show_dictation/copy_attempt';
 
 type RecordCopyAttemptInput = {
 	previous: CopyAttempt | null;

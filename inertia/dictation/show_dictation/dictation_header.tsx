@@ -1,8 +1,8 @@
-import { AccountMenu } from './account_menu';
-import { NewDictationButton } from './new_dictation_button';
-import { SaveIndicator } from './save_indicator';
-import type { SaveStatus } from './save_status';
-import type { ExplicitSave } from './use_save_draft_text';
+import { AccountMenu } from '~/dictation/show_dictation/account_menu';
+import { NewDictationButton } from '~/dictation/show_dictation/new_dictation_button';
+import { SaveIndicator } from '~/dictation/show_dictation/save_indicator';
+import type { SaveStatus } from '~/dictation/show_dictation/save_status';
+import type { ExplicitSave } from '~/dictation/show_dictation/use_save_draft_text';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 

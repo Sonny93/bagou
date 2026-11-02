@@ -1,4 +1,4 @@
-import type { SettingsLimits } from './settings_limits';
+import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 
 export type VocabularyProblem =
 	| { kind: 'too_many_terms'; maxTermCount: number }

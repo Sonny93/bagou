@@ -1,7 +1,7 @@
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 
-import type { VocabularyProblem } from './find_vocabulary_problem';
+import type { VocabularyProblem } from '~/user_settings/show_settings/find_vocabulary_problem';
 
 export function describeVocabularyProblem(
 	problem: Readonly<VocabularyProblem>,

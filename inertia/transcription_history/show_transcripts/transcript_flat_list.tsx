@@ -1,8 +1,8 @@
 import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 
-import { formatTranscriptFullDate } from './format_transcript_full_date';
-import { TranscriptRow } from './transcript_row';
+import { formatTranscriptFullDate } from '~/transcription_history/show_transcripts/format_transcript_full_date';
+import { TranscriptRow } from '~/transcription_history/show_transcripts/transcript_row';
 
 type TranscriptFlatListProps = {
 	transcripts: Data.Transcript[];

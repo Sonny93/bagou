@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getLeaveRisk } from './get_leave_risk';
+import { getLeaveRisk } from '~/dictation/show_dictation/get_leave_risk';
 
 describe('getLeaveRisk', () => {
 	it.each([

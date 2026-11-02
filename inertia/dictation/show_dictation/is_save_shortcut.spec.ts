@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isSaveShortcut } from './is_save_shortcut';
+import { isSaveShortcut } from '~/dictation/show_dictation/is_save_shortcut';
 
 const buildEvent = (
 	overrides: Partial<Parameters<typeof isSaveShortcut>[0]>

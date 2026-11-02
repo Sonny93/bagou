@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { formatTranscriptFullDate } from './format_transcript_full_date';
+import { formatTranscriptFullDate } from '~/transcription_history/show_transcripts/format_transcript_full_date';
 
 type TranscriptQuoteProps = {
 	text: string;

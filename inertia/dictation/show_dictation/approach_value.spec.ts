@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { approachValue } from './approach_value';
+import { approachValue } from '~/dictation/show_dictation/approach_value';
 
 describe('approachValue', () => {
 	it('should move toward the target without reaching it in one short step', () => {

@@ -1,8 +1,8 @@
 import { i18n } from '@lingui/core';
 import { describe, expect, it } from 'vitest';
 
-import { describeDeletionCount } from './describe_deletion_count';
 import { activateLocale } from '~/i18n/activate_locale';
+import { describeDeletionCount } from '~/transcription_history/show_transcripts/describe_deletion_count';
 
 describe('describeDeletionCount', () => {
 	it('should use the singular when one dictation is deleted', () => {
