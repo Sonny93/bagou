@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
+import type { CleanupQualityOption } from '~/user_settings/show_settings/describe_cleanup_quality';
 import { DeviceSettings } from '~/user_settings/show_settings/device_settings';
 import { SettingsForm } from '~/user_settings/show_settings/settings_form';
 import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
@@ -14,6 +15,7 @@ type ShowSettingsProps = {
 	options: {
 		dictationLanguages: Data.UserSettings['dictationLanguage'][];
 		interfaceLanguages: Data.UserSettings['interfaceLanguage'][];
+		cleanupQualities: CleanupQualityOption[];
 	};
 };
 
@@ -42,6 +44,7 @@ export default function ShowSettings({
 					limits={limits}
 					dictationLanguages={options.dictationLanguages}
 					interfaceLanguages={options.interfaceLanguages}
+					cleanupQualities={options.cleanupQualities}
 				/>
 				<DeviceSettings />
 			</main>

@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The settings let you choose between a standard cleanup model and a more precise, more expensive one.
 - The history groups dictations by day: today, yesterday, then the date.
 - The dictation page shows whether the text is saved in the history.
 - Ctrl+S saves the text right away.

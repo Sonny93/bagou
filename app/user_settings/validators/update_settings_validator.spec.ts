@@ -2,11 +2,13 @@ import { test } from '@japa/runner';
 import { errors } from '@vinejs/vine';
 
 import userSettingsConfig from '#config/user_settings';
+import { CLEANUP_QUALITIES } from '#text_cleanup/cleanup_quality';
 import { updateSettingsValidator } from '#user_settings/validators/update_settings_validator';
 
 const VALID_INPUT = {
 	dictationLanguage: 'fr',
 	interfaceLanguage: 'system',
+	cleanupQuality: 'precise',
 	vocabulary: ['Adonis'],
 	cleanupInstructions: 'Use bullet points',
 };
@@ -59,6 +61,28 @@ test.group('updateSettingsValidator', () => {
 			'dictationLanguage',
 			'interfaceLanguage',
 		]);
+	});
+
+	test('should accept each cleanup quality', async ({ assert }) => {
+		for (const cleanupQuality of CLEANUP_QUALITIES) {
+			const settings = await updateSettingsValidator.validate({
+				...VALID_INPUT,
+				cleanupQuality,
+			});
+
+			assert.equal(settings.cleanupQuality, cleanupQuality);
+		}
+	});
+
+	test('should reject a cleanup quality that is not offered', async ({
+		assert,
+	}) => {
+		const failedFields = await readFailedFields({
+			...VALID_INPUT,
+			cleanupQuality: 'ultra',
+		});
+
+		assert.deepEqual(failedFields, ['cleanupQuality']);
 	});
 
 	test('should reject a vocabulary with too many terms', async ({ assert }) => {

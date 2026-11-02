@@ -30,6 +30,7 @@ const DRAFT_CONTEXT = {
 const PREVIEW_SETTINGS = {
 	dictationLanguage: 'fr',
 	vocabulary: ['Adonis'],
+	cleanupQuality: 'precise',
 	cleanupInstructions: '',
 };
 const CHANNEL_NAME = `dictation/${DICTATION_ID}`;
@@ -526,7 +527,12 @@ test.group('DictationChannel', (group) => {
 			data: { rawText: 'Bonjour le monde', cleanedDraft: 'BONJOUR LE MONDE' },
 		});
 		assert.deepEqual(textCleaner.receivedPreferences, [
-			{ language: 'fr', vocabulary: ['Adonis'], instructions: '' },
+			{
+				language: 'fr',
+				vocabulary: ['Adonis'],
+				instructions: '',
+				quality: 'precise',
+			},
 		]);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
 		restoreTextCleaner();

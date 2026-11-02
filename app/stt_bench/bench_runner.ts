@@ -79,6 +79,7 @@ export class BenchRunner {
 			language,
 			vocabulary: [],
 			instructions: '',
+			quality: 'standard',
 		});
 		return {
 			status: 'succeeded',

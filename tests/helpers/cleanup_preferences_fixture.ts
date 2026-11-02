@@ -4,4 +4,5 @@ export const FRENCH_CLEANUP_PREFERENCES: CleanupPreferences = {
 	language: 'fr',
 	vocabulary: [],
 	instructions: '',
+	quality: 'standard',
 };

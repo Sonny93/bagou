@@ -21,8 +21,8 @@ import { renderBenchReport } from '#stt_bench/render_bench_report';
 import { buildReportFileName } from '#stt_bench/report_file_name';
 import { selectProviderNames } from '#stt_bench/select_provider_names';
 import { UnknownBenchProviderError } from '#stt_bench/unknown_bench_provider_error';
+import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
 import { TextCleaner } from '#text_cleanup/text_cleaner';
-import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 
@@ -182,7 +182,7 @@ export default class BenchTranscription extends BaseCommand {
 				generatedAt,
 				providerName,
 				sttModel,
-				cleanupModel: TEXT_CLEANUP_MODEL,
+				cleanupModel: CLEANUP_MODELS.standard.modelId,
 				results,
 			})
 		);

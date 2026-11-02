@@ -1,8 +1,8 @@
 import type { MessageStreamParams } from '@anthropic-ai/sdk/resources/messages/messages';
 
 import { buildSystemPrompt } from '#text_cleanup/anthropic/build_system_prompt';
+import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
 import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
-import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
 
 const MAX_OUTPUT_TOKENS = 16_000;
 
@@ -18,7 +18,7 @@ export function buildCleanupRequest(
 	preferences: Readonly<CleanupPreferences>
 ): MessageStreamParams {
 	return {
-		model: TEXT_CLEANUP_MODEL,
+		model: CLEANUP_MODELS[preferences.quality].modelId,
 		max_tokens: MAX_OUTPUT_TOKENS,
 		system: buildSystemPrompt(preferences),
 		messages: [

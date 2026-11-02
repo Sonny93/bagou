@@ -25,6 +25,7 @@ test.group('ShowSettingsController', (group) => {
 			userId: user.id,
 			dictationLanguage: 'fr',
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		}).create();
 
@@ -36,6 +37,7 @@ test.group('ShowSettingsController', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'system',
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		});
 		assert.deepEqual(response.inertiaProps.limits, {
@@ -47,6 +49,10 @@ test.group('ShowSettingsController', (group) => {
 		assert.deepEqual(response.inertiaProps.options, {
 			dictationLanguages: ['fr', 'en'],
 			interfaceLanguages: ['system', 'en', 'fr'],
+			cleanupQualities: [
+				{ value: 'standard', modelName: 'Claude Haiku 5.5' },
+				{ value: 'precise', modelName: 'Claude Sonnet 5.5' },
+			],
 		});
 	});
 
@@ -60,5 +66,6 @@ test.group('ShowSettingsController', (group) => {
 
 		assert.equal(response.inertiaProps.settings.dictationLanguage, 'en');
 		assert.deepEqual(response.inertiaProps.settings.vocabulary, []);
+		assert.equal(response.inertiaProps.settings.cleanupQuality, 'standard');
 	});
 });

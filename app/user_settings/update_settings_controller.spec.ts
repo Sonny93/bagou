@@ -8,6 +8,7 @@ const VALID_BODY = {
 	dictationLanguage: 'fr',
 	interfaceLanguage: 'en',
 	vocabulary: ['Adonis', 'Adonis', 'Voxtral'],
+	cleanupQuality: 'precise',
 	cleanupInstructions: 'Use bullet points',
 };
 
@@ -47,6 +48,7 @@ test.group('UpdateSettingsController', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'en',
 			vocabulary: ['Adonis', 'Voxtral'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		});
 	});

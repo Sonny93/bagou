@@ -1,6 +1,6 @@
 # Bagou
 
-PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relayé par un seul conteneur Adonis, texte nettoyé par Claude Haiku, résultat dans le presse-papier.
+PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relayé par un seul conteneur Adonis, texte nettoyé par Claude (Haiku, ou Sonnet en mode précis), résultat dans le presse-papier.
 
 ## Vérifier
 
@@ -25,7 +25,8 @@ PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relay
 - Temps réel : `@rlanz/socket` seul entre navigateur et Adonis, aucune autre lib (Transmit seulement si un besoin SSE apparaît).
 - STT et nettoyage derrière les ports `TranscriptionProvider` et `TextCleaner` : un adaptateur par fournisseur, lié au port dans un provider Adonis, jamais choisi par variable d'env.
 - Fournisseur STT : le free tier passe en premier, sinon le projet perd son intérêt. Repli prévu : Deepgram.
-- Nettoyage large (tout le brouillon à chaque segment) plutôt qu'économe : le coût est négligeable en mono-utilisateur.
+- Nettoyage large (tout le brouillon à chaque segment) plutôt qu'économe : le coût est négligeable en mono-utilisateur, et le mode précis (Sonnet, 20× Haiku) reste un choix de l'utilisateur.
+- Modèle de nettoyage : réglage utilisateur stocké en code stable (`standard`/`precise`), jamais l'id du modèle ; Haiku par défaut, ni forcé ni en variable d'env, car chaque auto-hébergeur paie sa propre clé.
 - Auth : le reste de l'appli ne dépend que du guard session Adonis et du modèle `User` ; tout WebAuthn reste dans `app/passkeys/`. Passer à OIDC revient à remplacer ce domaine.
 - Quotas, rétention et limites sont des constantes dans `config/`, pas des variables d'env.
 - `public/sw.js` ne met rien en cache (appli inutile hors ligne) : il sert seulement `offline.html`.

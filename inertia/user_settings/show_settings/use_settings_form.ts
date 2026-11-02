@@ -16,6 +16,7 @@ type SettingsFormData = {
 	dictationLanguage: Data.UserSettings['dictationLanguage'];
 	interfaceLanguage: Data.UserSettings['interfaceLanguage'];
 	vocabularyText: string;
+	cleanupQuality: Data.UserSettings['cleanupQuality'];
 	cleanupInstructions: string;
 };
 
@@ -23,6 +24,7 @@ type FieldErrors = {
 	dictationLanguage: string | undefined;
 	interfaceLanguage: string | undefined;
 	vocabulary: string | undefined;
+	cleanupQuality: string | undefined;
 	cleanupInstructions: string | undefined;
 };
 
@@ -35,6 +37,7 @@ type UseSettingsFormReturn = {
 		language: SettingsFormData['interfaceLanguage']
 	) => void;
 	setVocabularyText: (vocabularyText: string) => void;
+	setCleanupQuality: (quality: SettingsFormData['cleanupQuality']) => void;
 	setCleanupInstructions: (cleanupInstructions: string) => void;
 	termCount: number;
 	fieldErrors: FieldErrors;
@@ -54,6 +57,7 @@ export function useSettingsForm(
 		dictationLanguage: settings.dictationLanguage,
 		interfaceLanguage: settings.interfaceLanguage,
 		vocabularyText: formatVocabulary(settings.vocabulary),
+		cleanupQuality: settings.cleanupQuality,
 		cleanupInstructions: settings.cleanupInstructions,
 	});
 	form.transform(({ vocabularyText, ...rest }) => ({
@@ -74,6 +78,7 @@ export function useSettingsForm(
 			vocabularyProblem === null
 				? describeError(serverVocabularyError)
 				: describeVocabularyProblem(vocabularyProblem, i18n),
+		cleanupQuality: describeError(form.errors.cleanupQuality),
 		cleanupInstructions: describeError(form.errors.cleanupInstructions),
 	};
 
@@ -94,6 +99,7 @@ export function useSettingsForm(
 			form.setData('interfaceLanguage', language),
 		setVocabularyText: (vocabularyText) =>
 			form.setData('vocabularyText', vocabularyText),
+		setCleanupQuality: (quality) => form.setData('cleanupQuality', quality),
 		setCleanupInstructions: (cleanupInstructions) =>
 			form.setData('cleanupInstructions', cleanupInstructions),
 		termCount: terms.length,
@@ -101,6 +107,7 @@ export function useSettingsForm(
 		previewSettings: {
 			dictationLanguage: form.data.dictationLanguage,
 			vocabulary: terms,
+			cleanupQuality: form.data.cleanupQuality,
 			cleanupInstructions: form.data.cleanupInstructions,
 		},
 		isSubmitDisabled: vocabularyProblem !== null,

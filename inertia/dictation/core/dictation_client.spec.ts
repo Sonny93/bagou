@@ -23,6 +23,7 @@ const PREVIEW_REQUEST = {
 	settings: {
 		dictationLanguage: 'fr',
 		vocabulary: ['Adonis'],
+		cleanupQuality: 'precise',
 		cleanupInstructions: 'Use bullet points',
 	},
 } as const;

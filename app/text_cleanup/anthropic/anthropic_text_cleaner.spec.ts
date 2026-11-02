@@ -11,7 +11,7 @@ import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeMessagesApi } from '#tests/helpers/fake_messages_api';
 import { AnthropicTextCleaner } from '#text_cleanup/anthropic/anthropic_text_cleaner';
 import { buildAnthropicClient } from '#text_cleanup/anthropic/build_anthropic_client';
-import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
+import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 
 const RAW_TEXT = 'euh secret transcript text';
@@ -100,7 +100,7 @@ test.group('AnthropicTextCleaner', () => {
 		await cleaner.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES);
 
 		const [request] = api.requests;
-		assert.equal(request?.model, TEXT_CLEANUP_MODEL);
+		assert.equal(request?.model, CLEANUP_MODELS.standard.modelId);
 		assert.equal(request?.output_config?.effort, 'low');
 		assert.equal(request?.output_config?.format?.type, 'json_schema');
 		assert.deepEqual(request?.messages, [
@@ -122,12 +122,56 @@ test.group('AnthropicTextCleaner', () => {
 
 		assert.equal(text, 'Bonjour.');
 		assert.include(readLogs(lines).at(-1), {
-			model: TEXT_CLEANUP_MODEL,
+			model: CLEANUP_MODELS.standard.modelId,
 			outcome: 'completed',
 			inputTokens: 42,
 			outputTokens: 17,
 		});
 		assert.property(readLogs(lines).at(-1), 'durationMs');
+	});
+
+	test('should log the model of the requested quality when the cleanup completes', async ({
+		assert,
+	}) => {
+		const { cleaner, lines } = createCleaner(buildCleanedTextMessage('ok'));
+
+		await cleaner.clean(RAW_TEXT, {
+			...FRENCH_CLEANUP_PREFERENCES,
+			quality: 'precise',
+		});
+
+		assert.equal(readLogs(lines).at(-1)?.model, CLEANUP_MODELS.precise.modelId);
+	});
+
+	test('should log the model of the requested quality when the cleanup fails', async ({
+		assert,
+	}) => {
+		const { cleaner, lines } = createCleaner(
+			buildAnthropicMessage({ stopReason: 'refusal' })
+		);
+
+		await assert.rejects(() =>
+			cleaner.clean(RAW_TEXT, {
+				...FRENCH_CLEANUP_PREFERENCES,
+				quality: 'precise',
+			})
+		);
+
+		assert.include(readLogs(lines).at(-1), {
+			model: CLEANUP_MODELS.precise.modelId,
+			kind: 'refusal',
+		});
+	});
+
+	test('should expose the display name of the model of each quality', ({
+		assert,
+	}) => {
+		const { cleaner } = createCleaner(buildCleanedTextMessage('ok'));
+
+		assert.deepEqual(cleaner.modelNames, {
+			standard: 'Claude Haiku 5.5',
+			precise: 'Claude Sonnet 5.5',
+		});
 	});
 
 	test('should report the output length without the JSON prefix for each text snapshot', async ({

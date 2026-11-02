@@ -4,11 +4,13 @@ import type { PreviewSettings } from '#user_settings/preview_settings';
 export function toCleanupPreferences({
 	dictationLanguage,
 	vocabulary,
+	cleanupQuality,
 	cleanupInstructions,
 }: Readonly<PreviewSettings>): CleanupPreferences {
 	return {
 		language: dictationLanguage,
 		vocabulary,
 		instructions: cleanupInstructions,
+		quality: cleanupQuality,
 	};
 }

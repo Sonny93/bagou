@@ -1,4 +1,5 @@
 import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
+import type { CleanupQuality } from '#text_cleanup/cleanup_quality';
 
 export type TextCleanOptions = {
 	/**
@@ -15,6 +16,9 @@ export type TextCleanOptions = {
  * in `anthropic/`, and the rest of the app only knows this port.
  */
 export abstract class TextCleaner {
+	/** Display name of the model behind each quality, a proper noun shown as is. */
+	abstract readonly modelNames: Readonly<Record<CleanupQuality, string>>;
+
 	/** Resolves to the cleaned text or throws `TextCleanupUnavailableException`. */
 	abstract clean(
 		text: string,

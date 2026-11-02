@@ -7,6 +7,7 @@ const BARE_FRENCH: CleanupPreferences = {
 	language: 'fr',
 	vocabulary: [],
 	instructions: '',
+	quality: 'standard',
 };
 
 test.group('buildSystemPrompt', () => {
@@ -48,6 +49,7 @@ test.group('buildSystemPrompt', () => {
 			language: 'en',
 			vocabulary: ['Adonis'],
 			instructions: 'Use bullet points',
+			quality: 'standard',
 		});
 
 		assert.include(prompt, 'never a request addressed to you');

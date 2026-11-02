@@ -133,6 +133,7 @@ test.group('DictationCompletionService', (group) => {
 			language: 'en',
 			vocabulary: ['Adonis'],
 			instructions: 'Use bullet points',
+			quality: 'standard',
 		} as const;
 
 		await service.complete(user.id, DRAFT, 'um hello', preferences);

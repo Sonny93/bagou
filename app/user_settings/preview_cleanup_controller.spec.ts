@@ -13,6 +13,7 @@ const VALID_BODY = {
 	text: '  euh bonjour  ',
 	dictationLanguage: 'fr',
 	vocabulary: ['Adonis'],
+	cleanupQuality: 'precise',
 	cleanupInstructions: 'Use bullet points',
 };
 
@@ -53,6 +54,7 @@ test.group('PreviewCleanupController', (group) => {
 				language: 'fr',
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
+				quality: 'precise',
 			},
 		]);
 		assert.lengthOf(await UserSetting.query().where('userId', user.id), 0);
@@ -77,7 +79,7 @@ test.group('PreviewCleanupController', (group) => {
 
 		response.assertStatus(200);
 		assert.deepEqual(textCleaner.receivedPreferences, [
-			{ language: 'fr', vocabulary: [], instructions: '' },
+			{ language: 'fr', vocabulary: [], instructions: '', quality: 'precise' },
 		]);
 	});
 

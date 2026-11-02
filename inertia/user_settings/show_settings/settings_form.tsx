@@ -4,6 +4,8 @@ import { Button } from '@minimalstuff/ui';
 import type { SubmitEvent } from 'react';
 
 import { CleanupInstructionsField } from '~/user_settings/show_settings/cleanup_instructions_field';
+import { CleanupQualityField } from '~/user_settings/show_settings/cleanup_quality_field';
+import type { CleanupQualityOption } from '~/user_settings/show_settings/describe_cleanup_quality';
 import { DictationLanguageSelect } from '~/user_settings/show_settings/dictation_language_select';
 import { InterfaceLanguageSelect } from '~/user_settings/show_settings/interface_language_select';
 import { SavedStatus } from '~/user_settings/show_settings/saved_status';
@@ -17,6 +19,7 @@ type SettingsFormProps = {
 	limits: SettingsLimits;
 	dictationLanguages: Data.UserSettings['dictationLanguage'][];
 	interfaceLanguages: Data.UserSettings['interfaceLanguage'][];
+	cleanupQualities: CleanupQualityOption[];
 };
 
 export function SettingsForm({
@@ -24,6 +27,7 @@ export function SettingsForm({
 	limits,
 	dictationLanguages,
 	interfaceLanguages,
+	cleanupQualities,
 }: Readonly<SettingsFormProps>) {
 	const form = useSettingsForm(settings, limits);
 
@@ -53,6 +57,12 @@ export function SettingsForm({
 					maxTermCount={limits.maxVocabularyTerms}
 					error={form.fieldErrors.vocabulary}
 					onChange={form.setVocabularyText}
+				/>
+				<CleanupQualityField
+					value={form.data.cleanupQuality}
+					qualities={cleanupQualities}
+					error={form.fieldErrors.cleanupQuality}
+					onChange={form.setCleanupQuality}
 				/>
 				<CleanupInstructionsField
 					value={form.data.cleanupInstructions}

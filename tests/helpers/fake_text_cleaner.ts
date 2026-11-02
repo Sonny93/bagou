@@ -7,6 +7,7 @@ import type { TextCleanOptions } from '#text_cleanup/text_cleaner';
  * output lengths before answering, as an engine streaming its output would.
  */
 export class FakeTextCleaner extends TextCleaner {
+	readonly modelNames = { standard: 'Fake Standard', precise: 'Fake Precise' };
 	readonly cleaned: string[] = [];
 	readonly receivedPreferences: CleanupPreferences[] = [];
 

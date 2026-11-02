@@ -1,13 +1,13 @@
 # Bagou
 
-Self-hosted, real-time voice dictation as a PWA. A global shortcut opens the window, the text appears live as you speak, Enter ends the dictation, Claude Haiku cleans the text up and the result lands in your clipboard.
+Self-hosted, real-time voice dictation as a PWA. A global shortcut opens the window, the text appears live as you speak, Enter ends the dictation, Claude cleans the text up and the result lands in your clipboard.
 
 > **The name**: _bagou_ (French, informal, pronounced "ba-goo") is the gift of the gab. _Avoir du bagou_ means having a way with words, being a smooth talker. Fitting for a tool that lets you just talk and turns it into clean text.
 
 ## Features
 
 - **Live transcription** through Mistral Voxtral Realtime (free tier), streamed from the browser over a WebSocket.
-- **Cleanup by Claude Haiku**: removes hesitations and repetitions, applies your self-corrections ("no, I mean…"), adds punctuation, without rephrasing your words.
+- **Cleanup by Claude** (Haiku by default, Sonnet in precise mode, chosen in the settings): removes hesitations and repetitions, applies your self-corrections ("no, I mean…"), adds punctuation, without rephrasing your words.
 - **Editable draft**: dictate several segments into one draft, fix it by hand, copy it to the clipboard.
 - **Settings per user**: dictation language (English, French), a vocabulary of names and jargon to spell right, free cleanup instructions, and a test block to try them on a sample text or a live dictation before saving.
 - **History** of your drafts for 60 days, with full-text and typo-tolerant search.

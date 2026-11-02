@@ -3,12 +3,14 @@ import { errors } from '@vinejs/vine';
 
 import userSettingsConfig from '#config/user_settings';
 import { MAX_DRAFT_TEXT_LENGTH } from '#dictation/validators/start_dictation_validator';
+import { CLEANUP_QUALITIES } from '#text_cleanup/cleanup_quality';
 import { previewCleanupValidator } from '#user_settings/validators/preview_cleanup_validator';
 import { previewSettingsValidator } from '#user_settings/validators/preview_settings_validator';
 
 const VALID_SETTINGS = {
 	dictationLanguage: 'fr',
 	vocabulary: ['Adonis'],
+	cleanupQuality: 'precise',
 	cleanupInstructions: 'Use bullet points',
 };
 
@@ -36,10 +38,22 @@ test.group('previewSettingsValidator', () => {
 		assert.deepEqual(settings, VALID_SETTINGS);
 	});
 
+	test('should accept each cleanup quality', async ({ assert }) => {
+		for (const cleanupQuality of CLEANUP_QUALITIES) {
+			const settings = await previewSettingsValidator.validate({
+				...VALID_SETTINGS,
+				cleanupQuality,
+			});
+
+			assert.equal(settings.cleanupQuality, cleanupQuality);
+		}
+	});
+
 	test('should apply the limits of the saved settings', async ({ assert }) => {
 		const failedFields = await readFailedFields(() =>
 			previewSettingsValidator.validate({
 				dictationLanguage: 'de',
+				cleanupQuality: 'ultra',
 				vocabulary: Array.from(
 					{ length: userSettingsConfig.maxVocabularyTerms + 1 },
 					(_, index) => `term ${index}`
@@ -52,6 +66,7 @@ test.group('previewSettingsValidator', () => {
 
 		assert.sameMembers(failedFields, [
 			'dictationLanguage',
+			'cleanupQuality',
 			'vocabulary',
 			'cleanupInstructions',
 		]);
@@ -77,6 +92,28 @@ test.group('previewCleanupValidator', () => {
 		});
 
 		assert.equal(payload.text, 'euh bonjour');
+	});
+
+	test('should accept each cleanup quality and reject an unknown one', async ({
+		assert,
+	}) => {
+		for (const cleanupQuality of CLEANUP_QUALITIES) {
+			const payload = await previewCleanupValidator.validate({
+				...VALID_SETTINGS,
+				text: 'bonjour',
+				cleanupQuality,
+			});
+			assert.equal(payload.cleanupQuality, cleanupQuality);
+		}
+
+		const failedFields = await readFailedFields(() =>
+			previewCleanupValidator.validate({
+				...VALID_SETTINGS,
+				text: 'bonjour',
+				cleanupQuality: 'ultra',
+			})
+		);
+		assert.deepEqual(failedFields, ['cleanupQuality']);
 	});
 
 	test('should reject a blank text', async ({ assert }) => {

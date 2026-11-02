@@ -4,7 +4,7 @@ import type {
 	StopReason,
 } from '@anthropic-ai/sdk/resources/messages';
 
-import { TEXT_CLEANUP_MODEL } from '#text_cleanup/text_cleanup_model';
+import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
 
 type AnthropicMessageOverrides = {
 	content?: ContentBlock[];
@@ -30,7 +30,7 @@ export const buildAnthropicMessage = ({
 	container: null,
 	content,
 	diagnostics: null,
-	model: TEXT_CLEANUP_MODEL,
+	model: CLEANUP_MODELS.standard.modelId,
 	role: 'assistant',
 	stop_details: null,
 	stop_reason: stopReason,

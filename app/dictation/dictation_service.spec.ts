@@ -37,6 +37,7 @@ const DRAFT_CONTEXT = {
 const PREVIEW_SETTINGS = {
 	dictationLanguage: 'fr',
 	vocabulary: ['Adonis', 'Voxtral'],
+	cleanupQuality: 'precise',
 	cleanupInstructions: 'Use bullet points',
 } as const;
 const START_REQUESTS_PER_MINUTE = 20;
@@ -832,6 +833,7 @@ test.group('DictationService', (group) => {
 		await UserSettingFactory.merge({
 			userId: user.id,
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		}).create();
 		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
@@ -844,6 +846,7 @@ test.group('DictationService', (group) => {
 				language: 'en',
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
+				quality: 'precise',
 			},
 		]);
 	});
@@ -935,6 +938,7 @@ test.group('DictationService', (group) => {
 				language: 'fr',
 				vocabulary: ['Adonis', 'Voxtral'],
 				instructions: 'Use bullet points',
+				quality: 'precise',
 			},
 		]);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);

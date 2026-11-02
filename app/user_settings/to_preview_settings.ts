@@ -8,11 +8,13 @@ type ValidatedPreviewSettings = Omit<PreviewSettings, 'cleanupInstructions'> & {
 export function toPreviewSettings({
 	dictationLanguage,
 	vocabulary,
+	cleanupQuality,
 	cleanupInstructions,
 }: Readonly<ValidatedPreviewSettings>): PreviewSettings {
 	return {
 		dictationLanguage,
 		vocabulary,
+		cleanupQuality,
 		cleanupInstructions: cleanupInstructions ?? '',
 	};
 }

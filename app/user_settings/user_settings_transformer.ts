@@ -8,6 +8,7 @@ export default class UserSettingsTransformer extends BaseTransformer<UserSetting
 			dictationLanguage: this.resource.dictationLanguage,
 			interfaceLanguage: this.resource.interfaceLanguage,
 			vocabulary: [...this.resource.vocabulary],
+			cleanupQuality: this.resource.cleanupQuality,
 			cleanupInstructions: this.resource.cleanupInstructions,
 		};
 	}

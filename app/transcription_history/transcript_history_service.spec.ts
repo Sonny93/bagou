@@ -532,6 +532,7 @@ test.group('TranscriptHistoryService', (group) => {
 		await UserSettingFactory.merge({
 			userId: user.id,
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		}).create();
 		const transcript = await TranscriptFactory.merge({
@@ -547,6 +548,7 @@ test.group('TranscriptHistoryService', (group) => {
 				language: 'en',
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
+				quality: 'precise',
 			},
 		]);
 	});

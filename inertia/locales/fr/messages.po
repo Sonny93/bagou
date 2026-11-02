@@ -74,6 +74,10 @@ msgstr "Annuler"
 msgid "Cannot delete the last passkey"
 msgstr "Impossible de supprimer la dernière passkey"
 
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:24
+msgid "Catches more agreement slips and misheard words, but costs much more per dictation."
+msgstr "Corrige mieux les fautes d'accord et les mots mal compris, mais coûte nettement plus cher par dictée."
+
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:57
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
@@ -106,6 +110,10 @@ msgstr "Le nettoyage a échoué, réessaie"
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:27
 msgid "Cleanup instructions"
 msgstr "Consignes de nettoyage"
+
+#: inertia/user_settings/show_settings/cleanup_quality_field.tsx:35
+msgid "Cleanup model"
+msgstr "Modèle de nettoyage"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:133
 msgid "Cleanup unavailable, raw text"
@@ -268,6 +276,10 @@ msgstr "Entrée"
 msgid "Esc"
 msgstr "Échap"
 
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:20
+msgid "Fast and inexpensive. May miss some agreement slips or misheard words."
+msgstr "Rapide et économique. Peut laisser passer quelques fautes d'accord ou mots mal compris."
+
 #: inertia/dictation/show_dictation/mic_button.tsx:37
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
@@ -289,7 +301,7 @@ msgstr "Donne un nom à cette passkey pour la reconnaître plus tard."
 msgid "History"
 msgstr "Historique"
 
-#: inertia/pages/user_settings/show_settings.tsx:37
+#: inertia/pages/user_settings/show_settings.tsx:39
 msgid "How the dictation and the interface behave for you."
 msgstr "Le comportement de la dictée et de l'interface."
 
@@ -403,6 +415,10 @@ msgstr "Passkeys"
 msgid "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
 msgstr "Collez un texte brut, comme s'il venait d'être dicté. Ctrl+Entrée lance le test."
 
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:23
+msgid "Precise ({modelName})"
+msgstr "Précis ({modelName})"
+
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:28
 msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 msgstr "Préférences pour le nettoyage, par exemple la façon d'écrire les nombres ou les guillemets. Elles ne lui font jamais reformuler ton texte."
@@ -432,7 +448,7 @@ msgstr "obligatoire"
 msgid "Sample text"
 msgstr "Texte d'exemple"
 
-#: inertia/user_settings/show_settings/settings_form.tsx:69
+#: inertia/user_settings/show_settings/settings_form.tsx:79
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -466,7 +482,7 @@ msgid "Server error (HTTP {status}), try again"
 msgstr "Erreur serveur (HTTP {status}), réessaie"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:36
-#: inertia/pages/user_settings/show_settings.tsx:34
+#: inertia/pages/user_settings/show_settings.tsx:36
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -509,6 +525,10 @@ msgstr "Une erreur s'est produite, réessaie"
 #: inertia/dictation/show_dictation/dictation_transcript.tsx:42
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
+
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:19
+msgid "Standard ({modelName})"
+msgstr "Standard ({modelName})"
 
 #: inertia/dictation/show_dictation/use_request_new_dictation.ts:30
 msgid "Start a new dictation?"
@@ -725,7 +745,7 @@ msgstr "Écris les nombres en chiffres.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:104
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:98
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel essai à la prochaine modification"
 

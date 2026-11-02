@@ -19,6 +19,7 @@ export async function requestPreviewCleanup({
 				text,
 				dictationLanguage: settings.dictationLanguage,
 				vocabulary: [...settings.vocabulary],
+				cleanupQuality: settings.cleanupQuality,
 				cleanupInstructions: settings.cleanupInstructions,
 			},
 			timeout: CLEANUP_REQUEST_TIMEOUT_MS,

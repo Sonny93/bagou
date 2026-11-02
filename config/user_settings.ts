@@ -7,6 +7,7 @@ const userSettingsConfig = {
 		dictationLanguage: 'en',
 		interfaceLanguage: 'system',
 		vocabulary: [],
+		cleanupQuality: 'standard',
 		cleanupInstructions: '',
 	},
 } as const;

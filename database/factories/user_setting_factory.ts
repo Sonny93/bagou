@@ -7,5 +7,6 @@ export const UserSettingFactory = Factory.define(UserSetting, () => ({
 	dictationLanguage: userSettingsConfig.defaults.dictationLanguage,
 	interfaceLanguage: userSettingsConfig.defaults.interfaceLanguage,
 	vocabulary: [],
+	cleanupQuality: userSettingsConfig.defaults.cleanupQuality,
 	cleanupInstructions: userSettingsConfig.defaults.cleanupInstructions,
 })).build();

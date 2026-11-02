@@ -6,6 +6,7 @@ import type { DraftContext } from './draft_context';
 export type PreviewSettings = {
 	dictationLanguage: Data.UserSettings['dictationLanguage'];
 	vocabulary: readonly string[];
+	cleanupQuality: Data.UserSettings['cleanupQuality'];
 	cleanupInstructions: string;
 };
 

@@ -4,13 +4,18 @@ import type { HttpContext } from '@adonisjs/core/http';
 import userSettingsConfig from '#config/user_settings';
 import { MAX_DRAFT_TEXT_LENGTH } from '#dictation/validators/start_dictation_validator';
 import { DICTATION_LANGUAGES } from '#shared/dictation_language';
+import { CLEANUP_QUALITIES } from '#text_cleanup/cleanup_quality';
+import { TextCleaner } from '#text_cleanup/text_cleaner';
 import { INTERFACE_LANGUAGES } from '#user_settings/interface_language';
 import { UserSettingsService } from '#user_settings/user_settings_service';
 import UserSettingsTransformer from '#user_settings/user_settings_transformer';
 
 @inject()
 export default class ShowSettingsController {
-	constructor(private readonly userSettingsService: UserSettingsService) {}
+	constructor(
+		private readonly userSettingsService: UserSettingsService,
+		private readonly textCleaner: TextCleaner
+	) {}
 
 	async render({ auth, inertia }: HttpContext) {
 		const settings = await this.userSettingsService.get(
@@ -27,6 +32,10 @@ export default class ShowSettingsController {
 			options: {
 				dictationLanguages: [...DICTATION_LANGUAGES],
 				interfaceLanguages: [...INTERFACE_LANGUAGES],
+				cleanupQualities: CLEANUP_QUALITIES.map((value) => ({
+					value,
+					modelName: this.textCleaner.modelNames[value],
+				})),
 			},
 		});
 	}

@@ -9,12 +9,14 @@ test.group('parsePreviewSettings', () => {
 		const settings = await parsePreviewSettings({
 			dictationLanguage: 'fr',
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: null,
 		});
 
 		assert.deepEqual(settings, {
 			dictationLanguage: 'fr',
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: '',
 		});
 	});

@@ -14,6 +14,7 @@ export class UserSettingsService {
 			dictationLanguage: row.dictationLanguage,
 			interfaceLanguage: row.interfaceLanguage,
 			vocabulary: row.vocabulary,
+			cleanupQuality: row.cleanupQuality,
 			cleanupInstructions: row.cleanupInstructions,
 		};
 	}
@@ -26,6 +27,7 @@ export class UserSettingsService {
 				dictationLanguage: input.dictationLanguage,
 				interfaceLanguage: input.interfaceLanguage,
 				vocabulary: [...new Set(input.vocabulary)],
+				cleanupQuality: input.cleanupQuality,
 				cleanupInstructions: input.cleanupInstructions,
 			}
 		);

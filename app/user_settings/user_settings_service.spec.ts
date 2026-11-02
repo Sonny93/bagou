@@ -20,6 +20,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'en',
 			interfaceLanguage: 'system',
 			vocabulary: [],
+			cleanupQuality: 'standard',
 			cleanupInstructions: '',
 		});
 	});
@@ -31,6 +32,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'en',
 			vocabulary: ['Adonis', 'Voxtral'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		}).create();
 
@@ -40,6 +42,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'en',
 			vocabulary: ['Adonis', 'Voxtral'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'Use bullet points',
 		});
 	});
@@ -54,12 +57,14 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'fr',
 			vocabulary: ['Adonis'],
+			cleanupQuality: 'precise',
 			cleanupInstructions: 'First',
 		});
 		await service.update(user.id, {
 			dictationLanguage: 'en',
 			interfaceLanguage: 'system',
 			vocabulary: [],
+			cleanupQuality: 'standard',
 			cleanupInstructions: '',
 		});
 
@@ -68,6 +73,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'en',
 			interfaceLanguage: 'system',
 			vocabulary: [],
+			cleanupQuality: 'standard',
 			cleanupInstructions: '',
 		});
 	});
@@ -82,6 +88,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'en',
 			interfaceLanguage: 'system',
 			vocabulary: ['Adonis', 'Voxtral', 'Adonis'],
+			cleanupQuality: 'standard',
 			cleanupInstructions: '',
 		});
 
@@ -103,6 +110,7 @@ test.group('UserSettingsService', (group) => {
 			dictationLanguage: 'fr',
 			interfaceLanguage: 'system',
 			vocabulary: [],
+			cleanupQuality: 'standard',
 			cleanupInstructions: 'Yours',
 		});
 
