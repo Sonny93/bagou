@@ -6,7 +6,7 @@
 			"pnpm run check",
 			"pnpm run build"
 		],
-		"after:bump": "node scripts/roll_french_changelog.ts ${version}"
+		"before:git:release": "node scripts/roll_french_changelog.ts ${version} && git add CHANGELOG.fr.md"
 	},
 	"git": {
 		"requireCleanWorkingDir": true,
