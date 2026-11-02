@@ -209,8 +209,8 @@ importers:
         specifier: ^6.11.0
         version: 6.11.0(@babel/core@7.29.7(supports-color@10.2.2))(react@19.3.1)
       '@minimalstuff/ui':
-        specifier: ^5.0.0
-        version: 5.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: ^5.0.1
+        version: 5.0.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))
       '@rlanz/socket':
         specifier: ^0.2.4
         version: 0.2.4(@adonisjs/assembler@8.6.0(typescript@6.0.3))(@adonisjs/core@7.6.0(@adonisjs/assembler@8.6.0(typescript@6.0.3))(@vinejs/vine@4.4.0)(edge.js@6.5.1)(pino-pretty@13.2.0)(supports-color@10.2.2)(youch@4.1.1))(@opentelemetry/api@1.10.0)(react@19.3.1)(typescript@6.0.3)
@@ -1408,8 +1408,8 @@ packages:
       oxlint-tsgolint:
         optional: true
 
-  '@minimalstuff/ui@5.0.0':
-    resolution: {integrity: sha512-l61useglUNUdL6KHxt62UyrQX28JVum0Hnvfw8us8+kuxz7M95mKLqjgK/1mqFRC797bk4g3ChF722zPX/YNcw==}
+  '@minimalstuff/ui@5.0.1':
+    resolution: {integrity: sha512-GaZDsINTjc9sFFj09R1EC0pkW7BJl5XqnB3ewgGVWAab904XiSpJTVnI3TCwfuwV1WZZIMVRfzqBvcrqw10Ilg==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -6229,7 +6229,7 @@ snapshots:
       oxlint: 1.90.0(oxlint-tsgolint@7.0.2005)
       oxlint-tsgolint: 7.0.2005
 
-  '@minimalstuff/ui@5.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))':
+  '@minimalstuff/ui@5.0.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       clsx: 2.1.1
