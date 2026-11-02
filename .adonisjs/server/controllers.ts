@@ -7,6 +7,10 @@ export const controllers = {
   auth: {
     Logout: () => import('#app/auth/logout_controller'),
   },
+  changelog: {
+    MarkChangelogSeen: () => import('#app/changelog/mark_changelog_seen_controller'),
+    ShowChangelog: () => import('#app/changelog/show_changelog_controller'),
+  },
   dictation: {
     ShowDictation: () => import('#app/dictation/show_dictation_controller'),
   },

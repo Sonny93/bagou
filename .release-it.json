@@ -1,7 +1,12 @@
 {
 	"$schema": "https://unpkg.com/release-it@21/schema/release-it.json",
 	"hooks": {
-		"before:init": ["pnpm run check", "pnpm run build"]
+		"before:init": [
+			"node scripts/check_changelog_twin.ts",
+			"pnpm run check",
+			"pnpm run build"
+		],
+		"after:bump": "node scripts/roll_french_changelog.ts ${version}"
 	},
 	"git": {
 		"requireCleanWorkingDir": true,

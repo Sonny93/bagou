@@ -1,6 +1,7 @@
 import { Link } from '@adonisjs/inertia/react';
 import type { ReactNode } from 'react';
 
+import { WhatsNewBanner } from '~/changelog/shared/whats_new_banner';
 import { APP_VERSION } from '~/shared/lib/app_version';
 import { cn } from '~/shared/lib/cn';
 import { FOCUS_RING_CLASSES } from '~/shared/ui/focus_ring_classes';
@@ -16,34 +17,37 @@ export const AppHeader = ({
 	children,
 	maxWidthClassName = 'max-w-3xl',
 }: Readonly<AppHeaderProps>) => (
-	<header className="shrink-0">
-		<div
-			className={cn(
-				'mx-auto flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6',
-				maxWidthClassName
-			)}
-		>
-			<Link
-				route="dictation.show_dictation"
+	<>
+		<header className="shrink-0">
+			<div
 				className={cn(
-					'flex items-center gap-2 rounded-md font-semibold',
-					FOCUS_RING_CLASSES
+					'mx-auto flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6',
+					maxWidthClassName
 				)}
 			>
-				<img
-					src="/icons/icon.svg"
-					width={BRAND_ICON_SIZE}
-					height={BRAND_ICON_SIZE}
-					alt=""
-				/>
-				<span className="flex flex-col">
-					Bagou
-					<span className="text-[0.625rem] leading-none font-normal text-muted">
-						v{APP_VERSION}
+				<Link
+					route="dictation.show_dictation"
+					className={cn(
+						'flex items-center gap-2 rounded-md font-semibold',
+						FOCUS_RING_CLASSES
+					)}
+				>
+					<img
+						src="/icons/icon.svg"
+						width={BRAND_ICON_SIZE}
+						height={BRAND_ICON_SIZE}
+						alt=""
+					/>
+					<span className="flex flex-col">
+						Bagou
+						<span className="text-[0.625rem] leading-none font-normal text-muted">
+							v{APP_VERSION}
+						</span>
 					</span>
-				</span>
-			</Link>
-			<div className="flex items-center gap-2 sm:gap-3">{children}</div>
-		</div>
-	</header>
+				</Link>
+				<div className="flex items-center gap-2 sm:gap-3">{children}</div>
+			</div>
+		</header>
+		<WhatsNewBanner maxWidthClassName={maxWidthClassName} />
+	</>
 );

@@ -14,6 +14,8 @@ export type ScannedRoutes = {
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }
     'user_settings.update_settings': { paramsTuple?: []; params?: {} }
     'user_settings.preview_cleanup': { paramsTuple?: []; params?: {} }
+    'changelog.show_changelog': { paramsTuple?: []; params?: {} }
+    'changelog.mark_changelog_seen': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }
@@ -30,6 +32,7 @@ export type ScannedRoutes = {
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }
+    'changelog.show_changelog': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'passkeys.show_passkey_invitation': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'passkeys.show_passkeys': { paramsTuple?: []; params?: {} }
@@ -38,6 +41,7 @@ export type ScannedRoutes = {
     'dictation.show_dictation': { paramsTuple?: []; params?: {} }
     'transcription_history.show_transcripts': { paramsTuple?: []; params?: {} }
     'user_settings.show_settings': { paramsTuple?: []; params?: {} }
+    'changelog.show_changelog': { paramsTuple?: []; params?: {} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'passkeys.show_passkey_invitation': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'passkeys.show_passkeys': { paramsTuple?: []; params?: {} }
@@ -51,6 +55,7 @@ export type ScannedRoutes = {
     'transcription_history.clean_transcript': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transcription_history.clean_draft': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
     'user_settings.preview_cleanup': { paramsTuple?: []; params?: {} }
+    'changelog.mark_changelog_seen': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }
     'passkeys.verify_authentication': { paramsTuple?: []; params?: {} }

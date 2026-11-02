@@ -67,6 +67,15 @@ router
 			.use(cleanupThrottle)
 			.as('user_settings.preview_cleanup');
 		router
+			.get('/changelog', [controllers.changelog.ShowChangelog, 'render'])
+			.as('changelog.show_changelog');
+		router
+			.post('/changelog/seen', [
+				controllers.changelog.MarkChangelogSeen,
+				'execute',
+			])
+			.as('changelog.mark_changelog_seen');
+		router
 			.post('/logout', [controllers.auth.Logout, 'execute'])
 			.as('auth.logout');
 	})

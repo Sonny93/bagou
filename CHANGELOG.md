@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- On the dictation page, you can clean the text again with a model of your choice and switch between the text before and after cleanup.
+- After an update, a banner shows what's new, and a What's new page lists every version.
+- On the dictation page, you can clean the text again on demand, hand edits included, with a model of your choice, and switch between the text before and after cleanup.
 - The settings let you choose between a standard cleanup model and a more precise, more expensive one.
 - The history groups dictations by day: today, yesterday, then the date.
 - The dictation page shows whether the text is saved in the history.
@@ -16,7 +17,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Leaving the dictation page asks for confirmation during a dictation or its cleanup, and while the text is not saved yet; so does starting a new dictation over unsaved text.
 - A new dictation can be started as soon as there is text, even before dictating.
 - A progress bar shows how far the text cleanup has gone.
-- The text can be cleaned again on demand from the dictation page, hand edits included.
 - Automatic copy to the clipboard can be turned off, per device.
 - Copying the text with Ctrl+C now shows the copy confirmation, and copying only part of it says so.
 

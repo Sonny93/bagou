@@ -19,7 +19,7 @@ msgstr "{dayLabel} at {time}"
 msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 msgstr "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:54
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:59
 msgid "{qualityLabel} (default)"
 msgstr "{qualityLabel} (default)"
 
@@ -47,7 +47,7 @@ msgstr "A dictation is already in progress"
 msgid "A dictation is in progress. If you leave now, it will be lost."
 msgstr "A dictation is in progress. If you leave now, it will be lost."
 
-#: inertia/dictation/show_dictation/account_menu.tsx:22
+#: inertia/dictation/show_dictation/account_menu.tsx:23
 msgid "Account"
 msgstr "Account"
 
@@ -68,6 +68,10 @@ msgstr "Adonis\n"
 msgid "Auto-start"
 msgstr "Auto-start"
 
+#: inertia/changelog/shared/whats_new_banner.tsx:42
+msgid "Bagou {currentVersion} is here"
+msgstr "Bagou {currentVersion} is here"
+
 #: inertia/dictation/show_dictation/recording_actions.tsx:12
 #: inertia/layouts/app_ui_provider.tsx:17
 #: inertia/user_settings/show_settings/dictation_preview.tsx:62
@@ -82,6 +86,10 @@ msgstr "Cannot delete the last passkey"
 msgid "Catches more agreement slips and misheard words, but costs much more per dictation."
 msgstr "Catches more agreement slips and misheard words, but costs much more per dictation."
 
+#: inertia/changelog/show_changelog/describe_section_kind.ts:11
+msgid "Changed"
+msgstr "Changed"
+
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:57
 msgid "Clean again"
 msgstr "Clean again"
@@ -90,11 +98,11 @@ msgstr "Clean again"
 msgid "Clean the dictation from {accessibleDate}"
 msgstr "Clean the dictation from {accessibleDate}"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:11
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:16
 msgid "Clean the text"
 msgstr "Clean the text"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:71
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:76
 msgid "Clean with"
 msgstr "Clean with"
 
@@ -108,7 +116,7 @@ msgid "Cleaned with {modelName}"
 msgstr "Cleaned with {modelName}"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:10
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:15
 #: inertia/dictation/show_dictation/dictation_dock.tsx:34
 #: inertia/dictation/show_dictation/dictation_dock.tsx:35
 msgid "Cleaning the text…"
@@ -194,6 +202,11 @@ msgstr "Copy the dictation from {accessibleDate}"
 msgid "Could not reach the transcription service"
 msgstr "Could not reach the transcription service"
 
+#: inertia/changelog/shared/use_dismiss_whats_new.ts:28
+#: inertia/changelog/show_changelog/use_mark_changelog_seen_on_mount.ts:12
+msgid "Could not save that you saw what's new"
+msgstr "Could not save that you saw what's new"
+
 #: inertia/pages/passkeys/show_passkey_invitation.tsx:29
 msgid "Create the passkey"
 msgstr "Create the passkey"
@@ -235,6 +248,10 @@ msgstr "Delete the passkey {label}?"
 msgid "Delete this dictation?"
 msgstr "Delete this dictation?"
 
+#: inertia/changelog/show_changelog/describe_section_kind.ts:12
+msgid "Deprecated"
+msgstr "Deprecated"
+
 #: inertia/dictation/show_dictation/save_indicator.tsx:24
 msgid "Dictate a segment to add this text to the history."
 msgstr "Dictate a segment to add this text to the history."
@@ -263,6 +280,10 @@ msgstr "Dictation is temporarily unavailable"
 #: inertia/user_settings/show_settings/dictation_language_select.tsx:34
 msgid "Dictation language"
 msgstr "Dictation language"
+
+#: inertia/changelog/shared/whats_new_banner.tsx:56
+msgid "Dismiss"
+msgstr "Dismiss"
 
 #: inertia/passkeys/shared/passkey_label_form.tsx:37
 msgid "E.g. MacBook, phone"
@@ -300,6 +321,10 @@ msgstr "Finish the dictation"
 msgid "Finishing…"
 msgstr "Finishing…"
 
+#: inertia/changelog/show_changelog/describe_section_kind.ts:14
+msgid "Fixed"
+msgstr "Fixed"
+
 #: inertia/user_settings/show_settings/dictation_language_options.ts:10
 msgid "French"
 msgstr "French"
@@ -308,7 +333,7 @@ msgstr "French"
 msgid "Give this passkey a name so you can recognize it later."
 msgstr "Give this passkey a name so you can recognize it later."
 
-#: inertia/dictation/show_dictation/account_menu.tsx:30
+#: inertia/dictation/show_dictation/account_menu.tsx:31
 #: inertia/pages/transcription_history/show_transcripts.tsx:41
 msgid "History"
 msgstr "History"
@@ -349,9 +374,18 @@ msgstr "Microphone access was denied, allow it in the browser"
 msgid "Modified since the copy"
 msgstr "Modified since the copy"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:94
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:99
 msgid "More cleanup options"
 msgstr "More cleanup options"
+
+#: inertia/changelog/show_changelog/release_card.tsx:39
+msgid "New"
+msgstr "New"
+
+#: inertia/changelog/show_changelog/describe_section_kind.ts:7
+msgctxt "Changelog section listing added features"
+msgid "New"
+msgstr "New"
 
 #: inertia/dictation/show_dictation/new_dictation_button.tsx:23
 #: inertia/dictation/show_dictation/new_dictation_button.tsx:28
@@ -423,7 +457,7 @@ msgstr "Passkey name"
 msgid "Passkey not found"
 msgstr "Passkey not found"
 
-#: inertia/dictation/show_dictation/account_menu.tsx:33
+#: inertia/dictation/show_dictation/account_menu.tsx:34
 msgid "Passkeys"
 msgstr "Passkeys"
 
@@ -431,7 +465,7 @@ msgstr "Passkeys"
 msgid "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
 msgstr "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:26
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:31
 msgid "Precise"
 msgstr "Precise"
 
@@ -459,6 +493,10 @@ msgstr "Register a passkey"
 #: inertia/shared/errors/error_fallback.tsx:18
 msgid "Reload"
 msgstr "Reload"
+
+#: inertia/changelog/show_changelog/describe_section_kind.ts:13
+msgid "Removed"
+msgstr "Removed"
 
 #: inertia/layouts/app_ui_provider.tsx:22
 msgid "required"
@@ -493,6 +531,14 @@ msgstr "Search a dictation"
 msgid "Search the history"
 msgstr "Search the history"
 
+#: inertia/changelog/show_changelog/describe_section_kind.ts:15
+msgid "Security"
+msgstr "Security"
+
+#: inertia/changelog/shared/whats_new_banner.tsx:51
+msgid "See what's new"
+msgstr "See what's new"
+
 #: inertia/dictation/show_dictation/copy_controls.tsx:35
 msgid "Selection copied"
 msgstr "Selection copied"
@@ -501,7 +547,7 @@ msgstr "Selection copied"
 msgid "Server error (HTTP {status}), try again"
 msgstr "Server error (HTTP {status}), try again"
 
-#: inertia/dictation/show_dictation/account_menu.tsx:36
+#: inertia/dictation/show_dictation/account_menu.tsx:37
 #: inertia/pages/user_settings/show_settings.tsx:36
 msgid "Settings"
 msgstr "Settings"
@@ -510,11 +556,11 @@ msgstr "Settings"
 msgid "Settings saved"
 msgstr "Settings saved"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:20
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:25
 msgid "Show the cleaned text"
 msgstr "Show the cleaned text"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:16
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:21
 msgid "Show the text before cleanup"
 msgstr "Show the text before cleanup"
 
@@ -526,7 +572,7 @@ msgstr "Sign in"
 msgid "Sign in with a passkey"
 msgstr "Sign in with a passkey"
 
-#: inertia/dictation/show_dictation/account_menu.tsx:39
+#: inertia/dictation/show_dictation/account_menu.tsx:43
 msgid "Sign out"
 msgstr "Sign out"
 
@@ -554,7 +600,7 @@ msgstr "Something went wrong, try again"
 msgid "Speak, the text is written here."
 msgstr "Speak, the text is written here."
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:25
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:30
 msgid "Standard"
 msgstr "Standard"
 
@@ -722,6 +768,10 @@ msgstr "The value is too short"
 msgid "The vocabulary is limited to {maxTermCount} terms"
 msgstr "The vocabulary is limited to {maxTermCount} terms"
 
+#: inertia/changelog/show_changelog/missing_release_notice.tsx:7
+msgid "There are no release notes for version {APP_VERSION}."
+msgstr "There are no release notes for version {APP_VERSION}."
+
 #: inertia/shared/i18n/describe_validation_rule.ts:12
 msgid "There are too many items"
 msgstr "There are too many items"
@@ -770,6 +820,16 @@ msgstr "Use a passkey registered on this device."
 #: inertia/user_settings/show_settings/vocabulary_field.tsx:30
 msgid "Vocabulary"
 msgstr "Vocabulary"
+
+#: inertia/pages/changelog/show_changelog.tsx:38
+msgid "What changed in each version of Bagou."
+msgstr "What changed in each version of Bagou."
+
+#: inertia/changelog/shared/whats_new_banner.tsx:31
+#: inertia/dictation/show_dictation/account_menu.tsx:40
+#: inertia/pages/changelog/show_changelog.tsx:35
+msgid "What's new"
+msgstr "What's new"
 
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:29
 msgid "Write numbers as digits.\n"

@@ -3,6 +3,8 @@ import type { NextFn } from '@adonisjs/core/types/http';
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware';
 import type { InferSharedProps } from '@adonisjs/inertia/types';
 
+import type { WhatsNew } from '#changelog/whats_new';
+import { WhatsNewService } from '#changelog/whats_new_service';
 import type { InterfaceLanguage } from '#user_settings/interface_language';
 import { UserSettingsService } from '#user_settings/user_settings_service';
 
@@ -11,6 +13,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
 		return {
 			errors: ctx.inertia.always(this.getValidationErrors(ctx)),
 			interfaceLanguage: await this.#readInterfaceLanguage(ctx),
+			whatsNew: await this.#readWhatsNew(ctx),
 		};
 	}
 
@@ -26,6 +29,16 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
 			await ctx.containerResolver.make(UserSettingsService);
 		const settings = await userSettingsService.get(ctx.auth.getUserOrFail().id);
 		return settings.interfaceLanguage;
+	}
+
+	/**
+	 * Reads the already-loaded user and the app version only: a guest gets
+	 * `null`, and nothing here can fail on the changelog.
+	 */
+	async #readWhatsNew(ctx: HttpContext): Promise<WhatsNew | null> {
+		if (!(await ctx.auth.check())) return null;
+		const whatsNewService = await ctx.containerResolver.make(WhatsNewService);
+		return whatsNewService.describe(ctx.auth.getUserOrFail().lastSeenVersion);
 	}
 
 	async handle(ctx: HttpContext, next: NextFn) {

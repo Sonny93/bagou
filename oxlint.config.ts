@@ -15,6 +15,12 @@ export default minimalstuffPreset({
 			},
 		},
 		{
+			files: ['**/inertia/changelog/show_changelog/changelog_sources.ts'],
+			rules: {
+				'@adonisjs/no-backend-import-in-frontend': 'off',
+			},
+		},
+		{
 			files: ['**/inertia/dictation/core/**/*.ts'],
 			rules: {
 				'no-restricted-imports': [

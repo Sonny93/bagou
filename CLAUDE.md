@@ -12,7 +12,7 @@ PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relay
 
 - Charger `typescript-conventions`, `adonis-conventions` et `react-conventions` avant toute modification de code.
 - Code, commentaires, noms de tests et commits en anglais. Textes d'UI en anglais, traduits en français avec Lingui : `pnpm i18n:extract`, puis remplir chaque `msgstr` français dans le même changement.
-- Tout changement visible par l'utilisateur ajoute une ligne en langage naturel, sans détail technique, dans `## [Unreleased]` de `CHANGELOG.md`, dans le même changement ; refactor, tests, outillage : rien. `CHANGELOG.md` est écrit à la main, une section `Unreleased` vide fait échouer `just release`.
+- Tout changement visible par l'utilisateur ajoute une ligne en langage naturel, sans détail technique, dans `## [Unreleased]` de `CHANGELOG.md` et de `CHANGELOG.fr.md`, dans le même changement ; refactor, tests, outillage : rien. Les deux fichiers sont écrits à la main, une section `Unreleased` vide fait échouer `just release`.
 
 ## Décisions
 

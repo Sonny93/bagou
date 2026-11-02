@@ -138,6 +138,32 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/preview_cleanup_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'changelog.show_changelog': {
+    methods: ["GET","HEAD"]
+    pattern: '/changelog'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/changelog/show_changelog_controller').default['render']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/changelog/show_changelog_controller').default['render']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/changelog/show_changelog_controller').default['render']>>>
+    }
+  }
+  'changelog.mark_changelog_seen': {
+    methods: ["POST"]
+    pattern: '/changelog/seen'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/changelog/mark_changelog_seen_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/changelog/mark_changelog_seen_controller').default['execute']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/changelog/mark_changelog_seen_controller').default['execute']>>>
+    }
+  }
   'auth.logout': {
     methods: ["POST"]
     pattern: '/logout'

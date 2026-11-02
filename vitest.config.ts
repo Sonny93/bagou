@@ -15,7 +15,7 @@ export default defineConfig({
 		},
 	},
 	test: {
-		include: ['inertia/**/*.spec.ts'],
+		include: ['inertia/**/*.spec.ts', 'scripts/**/*.spec.ts'],
 		environment: 'node',
 		setupFiles: ['./inertia/test_setup.ts'],
 	},

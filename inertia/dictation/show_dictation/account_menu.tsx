@@ -11,6 +11,7 @@ export function AccountMenu() {
 	const goToPasskeys = () => router.visit(urlFor('passkeys.show_passkeys'));
 	const goToSettings = () =>
 		router.visit(urlFor('user_settings.show_settings'));
+	const goToChangelog = () => router.visit(urlFor('changelog.show_changelog'));
 	const logout = () => router.post(urlFor('auth.logout'));
 
 	return (
@@ -34,6 +35,9 @@ export function AccountMenu() {
 			</MenuItem>
 			<MenuItem icon="i-tabler-settings" onClick={goToSettings}>
 				{t`Settings`}
+			</MenuItem>
+			<MenuItem icon="i-tabler-sparkles" onClick={goToChangelog}>
+				{t`What's new`}
 			</MenuItem>
 			<MenuItem icon="i-tabler-logout" onClick={logout}>
 				{t`Sign out`}

@@ -6,6 +6,7 @@ import { generateRegistry } from '@tuyau/core/hooks';
 
 const DOMAINS = [
 	'auth',
+	'changelog',
 	'dictation',
 	'dictation_quota',
 	'transcription_history',
@@ -69,6 +70,7 @@ export default defineConfig({
 					'app/**/*_provider.spec.ts',
 					'app/**/parse_*.spec.ts',
 					'app/**/build_*.spec.ts',
+					'app/**/compare_*.spec.ts',
 					'app/**/join_*.spec.ts',
 					'app/**/decode_*.spec.ts',
 					'app/**/describe_*.spec.ts',

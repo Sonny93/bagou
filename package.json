@@ -21,6 +21,7 @@
 		"#text_cleanup/*": "./app/text_cleanup/*.js",
 		"#stt_bench/*": "./app/stt_bench/*.js",
 		"#auth/*": "./app/auth/*.js",
+		"#changelog/*": "./app/changelog/*.js",
 		"#passkeys/*": "./app/passkeys/*.js",
 		"#user_settings/*": "./app/user_settings/*.js",
 		"#users/*": "./app/users/*.js",
@@ -31,7 +32,10 @@
 		"#tests/*": "./tests/*.js",
 		"#start/*": "./start/*.js",
 		"#config/*": "./config/*.js",
+		"#scripts/*.ts": "./scripts/*.ts",
 		"#package.json": "./package.json",
+		"#CHANGELOG.md": "./CHANGELOG.md",
+		"#CHANGELOG.fr.md": "./CHANGELOG.fr.md",
 		"#vite_app_version_define.ts": "./vite_app_version_define.ts"
 	},
 	"scripts": {

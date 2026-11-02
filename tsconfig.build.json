@@ -6,6 +6,7 @@
 		"build",
 		"**/*.spec.ts",
 		"tests/**/*",
-		"database/factories/**/*"
+		"database/factories/**/*",
+		"scripts/**/*"
 	]
 }

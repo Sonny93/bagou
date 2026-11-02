@@ -17,6 +17,8 @@ Dockerfile*
 *compose.yml
 .dockerignore
 *.md
+!CHANGELOG.md
+!CHANGELOG.fr.md
 .git
 .gitignore
 .github

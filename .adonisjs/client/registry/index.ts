@@ -68,6 +68,18 @@ const routes = {
     tokens: [[0,"settings"],[0,"preview"]],
     types: placeholder as Registry['user_settings.preview_cleanup']['types'],
   },
+  'changelog.show_changelog': {
+    methods: ["GET","HEAD"],
+    pattern: '/changelog',
+    tokens: [[0,"changelog"]],
+    types: placeholder as Registry['changelog.show_changelog']['types'],
+  },
+  'changelog.mark_changelog_seen': {
+    methods: ["POST"],
+    pattern: '/changelog/seen',
+    tokens: [[0,"changelog"],[0,"seen"]],
+    types: placeholder as Registry['changelog.mark_changelog_seen']['types'],
+  },
   'auth.logout': {
     methods: ["POST"],
     pattern: '/logout',

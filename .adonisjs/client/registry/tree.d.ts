@@ -18,6 +18,10 @@ export interface ApiDefinition {
     updateSettings: typeof routes['user_settings.update_settings']
     previewCleanup: typeof routes['user_settings.preview_cleanup']
   }
+  changelog: {
+    showChangelog: typeof routes['changelog.show_changelog']
+    markChangelogSeen: typeof routes['changelog.mark_changelog_seen']
+  }
   auth: {
     logout: typeof routes['auth.logout']
     login: typeof routes['auth.login']
