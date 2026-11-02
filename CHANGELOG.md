@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-02
+
 ### Added
 
 - After an update, a banner shows what's new, and a What's new page lists every version.
@@ -71,7 +73,8 @@ First public release.
 - Install it as an app and open it with a global keyboard shortcut.
 - Run your own copy with the ready-made Docker image.
 
-[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Sonny93/bagou/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Sonny93/bagou/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/Sonny93/bagou/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Sonny93/bagou/releases/tag/v1.0.0
