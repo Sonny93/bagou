@@ -4,6 +4,7 @@ import { useRef } from 'react';
 
 import type { DictationState } from '~/dictation/core/dictation_state';
 import { BusyStatus } from '~/dictation/show_dictation/busy_status';
+import type { CleanupControls } from '~/dictation/show_dictation/cleanup_controls';
 import { CopyControls } from '~/dictation/show_dictation/copy_controls';
 import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
 import { DockLayout } from '~/dictation/show_dictation/dock_layout';
@@ -24,7 +25,7 @@ type DictationDockProps = {
 	onStart: () => void;
 	onFinish: () => void;
 	onCancel: () => void;
-	onCleanDraft: () => void;
+	cleanup: CleanupControls;
 };
 
 const BUSY_LABELS = {
@@ -45,7 +46,7 @@ export function DictationDock({
 	onStart,
 	onFinish,
 	onCancel,
-	onCleanDraft,
+	cleanup,
 }: Readonly<DictationDockProps>) {
 	const { i18n } = useLingui();
 	const copyButtonRef = useRef<HTMLButtonElement>(null);
@@ -73,7 +74,7 @@ export function DictationDock({
 			isCleaned={isCleaned}
 			copyButtonRef={copyButtonRef}
 			onCopy={onCopy}
-			onCleanDraft={onCleanDraft}
+			cleanup={cleanup}
 		/>
 	);
 	const idleStatus = hasDraftText ? renderCopyControls(true) : quota;

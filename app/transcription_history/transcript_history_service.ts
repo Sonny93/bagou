@@ -4,6 +4,7 @@ import type { DateTime } from 'luxon';
 
 import transcriptionHistoryConfig from '#config/transcription_history';
 import { Clock } from '#shared/clock';
+import type { CleanupQuality } from '#text_cleanup/cleanup_quality';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
 import type { DraftSegment } from '#transcription_history/draft_segment';
 import Transcript from '#transcription_history/transcript';
@@ -117,7 +118,9 @@ export class TranscriptHistoryService {
 
 	/**
 	 * Cleans the current text of a draft with the user's saved settings, stores
-	 * the result in the entry of that draft and returns it. When no entry exists
+	 * the result in the entry of that draft and returns it. A given `quality`
+	 * replaces the saved one for this call only; the saved setting is never
+	 * modified. When no entry exists
 	 * for the draft (only if the original append failed) nothing is saved, by
 	 * design: a row is never created here. A failing cleanup or save propagates,
 	 * so the caller knows the history was not updated.
@@ -125,13 +128,14 @@ export class TranscriptHistoryService {
 	async cleanDraft(
 		userId: number,
 		draftId: string,
-		text: string
+		text: string,
+		quality?: CleanupQuality
 	): Promise<string> {
 		const settings = await this.userSettingsService.get(userId);
-		const cleanedText = await this.textCleanupService.clean(
-			text,
-			toCleanupPreferences(settings)
-		);
+		const cleanedText = await this.textCleanupService.clean(text, {
+			...toCleanupPreferences(settings),
+			quality: quality ?? settings.cleanupQuality,
+		});
 		await this.saveDraftText(userId, draftId, cleanedText);
 		return cleanedText;
 	}

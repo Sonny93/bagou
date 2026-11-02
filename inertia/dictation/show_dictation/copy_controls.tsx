@@ -4,7 +4,10 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Badge, Button, Kbd, Tooltip } from '@minimalstuff/ui';
 import type { Ref } from 'react';
 
+import type { CleanupControls } from '~/dictation/show_dictation/cleanup_controls';
+import { CleanupSplitButton } from '~/dictation/show_dictation/cleanup_split_button';
 import type { CopyStatus } from '~/dictation/show_dictation/copy_status';
+import { getVersionLabel } from '~/dictation/show_dictation/get_version_label';
 import { cn } from '~/shared/lib/cn';
 
 type CopyStatusDisplay = {
@@ -54,8 +57,6 @@ const COPY_STATUS_DISPLAYS = {
 	},
 } as const satisfies Record<CopyStatus, CopyStatusDisplay | null>;
 
-const CLEANING_MESSAGE = msg`Cleaning the text…`;
-
 type CopyControlsProps = {
 	copyStatus: CopyStatus;
 	copyCount: number;
@@ -63,7 +64,7 @@ type CopyControlsProps = {
 	isCleaningDraft: boolean;
 	copyButtonRef: Ref<HTMLButtonElement>;
 	onCopy: () => void;
-	onCleanDraft: () => void;
+	cleanup: CleanupControls;
 };
 
 export function CopyControls({
@@ -73,18 +74,29 @@ export function CopyControls({
 	isCleaningDraft,
 	copyButtonRef,
 	onCopy,
-	onCleanDraft,
+	cleanup,
 }: Readonly<CopyControlsProps>) {
 	const { t, i18n } = useLingui();
 	const display = COPY_STATUS_DISPLAYS[copyStatus];
 	const isCopyConfirmation =
 		copyStatus === 'copied' || copyStatus === 'selection-copied';
+	const versionLabel = getVersionLabel(
+		cleanup.qualities,
+		cleanup.shownQuality,
+		cleanup.versionToggle
+	);
+	const describeVersionLabel = (): string => {
+		if (versionLabel === null) return '';
+		if (versionLabel.kind === 'original') return t`Text before cleanup`;
+		const { modelName } = versionLabel;
+		return t`Cleaned with ${modelName}`;
+	};
 	const outputKey = isCopyConfirmation
 		? `${copyStatus}-${copyCount}`
 		: copyStatus;
 
 	return (
-		<div className="flex min-w-0 flex-1 items-center gap-3">
+		<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2">
 			<Tooltip
 				position="top"
 				content={
@@ -125,6 +137,9 @@ export function CopyControls({
 					<span className="truncate">{i18n._(display.message)}</span>
 				</output>
 			)}
+			<output className="w-full text-sm text-muted empty:absolute empty:w-0 sm:w-auto sm:min-w-0 sm:truncate">
+				{describeVersionLabel()}
+			</output>
 			{!isCleaned && (
 				<Badge
 					color="warning"
@@ -135,23 +150,10 @@ export function CopyControls({
 					<Trans>Not cleaned</Trans>
 				</Badge>
 			)}
-			<Button
-				variant="subtle"
-				startIcon={
-					isCleaningDraft
-						? 'i-tabler-loader-2 animate-spin'
-						: 'i-tabler-sparkles'
-				}
-				className="ml-auto shrink-0 whitespace-nowrap [&[aria-disabled=true]>*]:opacity-60"
-				aria-disabled={isCleaningDraft}
-				onClick={isCleaningDraft ? undefined : onCleanDraft}
-			>
-				{isCleaningDraft ? (
-					i18n._(CLEANING_MESSAGE)
-				) : (
-					<Trans>Clean the text</Trans>
-				)}
-			</Button>
+			<CleanupSplitButton
+				controls={cleanup}
+				isCleaningDraft={isCleaningDraft}
+			/>
 		</div>
 	);
 }

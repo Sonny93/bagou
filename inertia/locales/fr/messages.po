@@ -19,6 +19,10 @@ msgstr "{dayLabel} à {time}"
 msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
 msgstr "{maxSelectedValues, plural, one {Maximum de # valeur atteint} other {Maximum de # valeurs atteint}}"
 
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:54
+msgid "{qualityLabel} (default)"
+msgstr "{qualityLabel} (par défaut)"
+
 #: inertia/layouts/app_ui_provider.tsx:33
 msgid "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
 msgstr "{remainingCount, plural, one {# caractère restant} other {# caractères restants}}"
@@ -39,7 +43,7 @@ msgstr "{termCount} sur {maxTermCount} termes"
 msgid "A dictation is already in progress"
 msgstr "Une dictée est déjà en cours"
 
-#: inertia/pages/dictation/show_dictation.tsx:68
+#: inertia/pages/dictation/show_dictation.tsx:97
 msgid "A dictation is in progress. If you leave now, it will be lost."
 msgstr "Une dictée est en cours. Si vous quittez maintenant, elle sera perdue."
 
@@ -74,7 +78,7 @@ msgstr "Annuler"
 msgid "Cannot delete the last passkey"
 msgstr "Impossible de supprimer la dernière passkey"
 
-#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:24
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:21
 msgid "Catches more agreement slips and misheard words, but costs much more per dictation."
 msgstr "Corrige mieux les fautes d'accord et les mots mal compris, mais coûte nettement plus cher par dictée."
 
@@ -86,19 +90,27 @@ msgstr "Nettoyer à nouveau"
 msgid "Clean the dictation from {accessibleDate}"
 msgstr "Nettoyer la dictée de {accessibleDate}"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:152
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:11
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
+
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:71
+msgid "Clean with"
+msgstr "Nettoyer avec"
 
 #: inertia/user_settings/show_settings/dictation_preview_result.tsx:42
 #: inertia/user_settings/show_settings/text_preview.tsx:64
 msgid "Cleaned text"
 msgstr "Texte nettoyé"
 
+#: inertia/dictation/show_dictation/copy_controls.tsx:92
+msgid "Cleaned with {modelName}"
+msgstr "Nettoyé avec {modelName}"
+
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
-#: inertia/dictation/show_dictation/copy_controls.tsx:57
-#: inertia/dictation/show_dictation/dictation_dock.tsx:33
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:10
 #: inertia/dictation/show_dictation/dictation_dock.tsx:34
+#: inertia/dictation/show_dictation/dictation_dock.tsx:35
 msgid "Cleaning the text…"
 msgstr "Nettoyage du texte…"
 
@@ -115,7 +127,7 @@ msgstr "Consignes de nettoyage"
 msgid "Cleanup model"
 msgstr "Modèle de nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:133
+#: inertia/dictation/show_dictation/copy_controls.tsx:148
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
@@ -144,7 +156,7 @@ msgstr "Fermer"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:31
+#: inertia/dictation/show_dictation/dictation_dock.tsx:32
 msgid "Connecting…"
 msgstr "Connexion…"
 
@@ -152,7 +164,7 @@ msgstr "Connexion…"
 msgid "Continue the dictation"
 msgstr "Continuer la dictée"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:23
+#: inertia/dictation/show_dictation/copy_controls.tsx:26
 #: inertia/layouts/app_ui_provider.tsx:23
 msgid "Copied"
 msgstr "Copié"
@@ -161,8 +173,8 @@ msgstr "Copié"
 msgid "Copies the text to the clipboard after each dictation or cleanup"
 msgstr "Copie le texte dans le presse-papier après chaque dictée ou nettoyage"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:92
 #: inertia/dictation/show_dictation/copy_controls.tsx:104
+#: inertia/dictation/show_dictation/copy_controls.tsx:116
 msgid "Copy"
 msgstr "Copier"
 
@@ -170,7 +182,7 @@ msgstr "Copier"
 msgid "Copy automatically"
 msgstr "Copie automatique"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:49
+#: inertia/dictation/show_dictation/copy_controls.tsx:52
 msgid "Copy failed"
 msgstr "Copie impossible"
 
@@ -276,7 +288,7 @@ msgstr "Entrée"
 msgid "Esc"
 msgstr "Échap"
 
-#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:20
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:17
 msgid "Fast and inexpensive. May miss some agreement slips or misheard words."
 msgstr "Rapide et économique. Peut laisser passer quelques fautes d'accord ou mots mal compris."
 
@@ -284,7 +296,7 @@ msgstr "Rapide et économique. Peut laisser passer quelques fautes d'accord ou m
 msgid "Finish the dictation"
 msgstr "Terminer la dictée"
 
-#: inertia/dictation/show_dictation/dictation_dock.tsx:32
+#: inertia/dictation/show_dictation/dictation_dock.tsx:33
 msgid "Finishing…"
 msgstr "Finalisation…"
 
@@ -309,11 +321,11 @@ msgstr "Le comportement de la dictée et de l'interface."
 msgid "Interface language"
 msgstr "Langue de l'interface"
 
-#: inertia/pages/dictation/show_dictation.tsx:70
+#: inertia/pages/dictation/show_dictation.tsx:99
 msgid "Leave"
 msgstr "Quitter"
 
-#: inertia/pages/dictation/show_dictation.tsx:65
+#: inertia/pages/dictation/show_dictation.tsx:94
 msgid "Leave this page?"
 msgstr "Quitter cette page ?"
 
@@ -333,9 +345,13 @@ msgstr "Chargement d’autres dictées…"
 msgid "Microphone access was denied, allow it in the browser"
 msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:41
+#: inertia/dictation/show_dictation/copy_controls.tsx:44
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
+
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:94
+msgid "More cleanup options"
+msgstr "Plus d'options de nettoyage"
 
 #: inertia/dictation/show_dictation/new_dictation_button.tsx:23
 #: inertia/dictation/show_dictation/new_dictation_button.tsx:28
@@ -366,7 +382,7 @@ msgstr "Aucun résultat."
 msgid "not cleaned"
 msgstr "non nettoyé"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:135
+#: inertia/dictation/show_dictation/copy_controls.tsx:150
 msgid "Not cleaned"
 msgstr "Non nettoyé"
 
@@ -415,7 +431,11 @@ msgstr "Passkeys"
 msgid "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
 msgstr "Collez un texte brut, comme s'il venait d'être dicté. Ctrl+Entrée lance le test."
 
-#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:23
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:26
+msgid "Precise"
+msgstr "Précis"
+
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:20
 msgid "Precise ({modelName})"
 msgstr "Précis ({modelName})"
 
@@ -473,7 +493,7 @@ msgstr "Rechercher une dictée"
 msgid "Search the history"
 msgstr "Rechercher dans l'historique"
 
-#: inertia/dictation/show_dictation/copy_controls.tsx:32
+#: inertia/dictation/show_dictation/copy_controls.tsx:35
 msgid "Selection copied"
 msgstr "Sélection copiée"
 
@@ -489,6 +509,14 @@ msgstr "Paramètres"
 #: inertia/user_settings/show_settings/saved_status.tsx:6
 msgid "Settings saved"
 msgstr "Paramètres enregistrés"
+
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:20
+msgid "Show the cleaned text"
+msgstr "Afficher le texte nettoyé"
+
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:16
+msgid "Show the text before cleanup"
+msgstr "Afficher le texte avant nettoyage"
 
 #: inertia/pages/passkeys/show_login.tsx:14
 msgid "Sign in"
@@ -526,7 +554,11 @@ msgstr "Une erreur s'est produite, réessaie"
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
 
-#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:19
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:25
+msgid "Standard"
+msgstr "Standard"
+
+#: inertia/user_settings/show_settings/describe_cleanup_quality.ts:16
 msgid "Standard ({modelName})"
 msgstr "Standard ({modelName})"
 
@@ -566,6 +598,10 @@ msgstr "Test annulé, rien n'a été conservé."
 #: inertia/user_settings/show_settings/settings_preview.tsx:26
 msgid "Text"
 msgstr "Texte"
+
+#: inertia/dictation/show_dictation/copy_controls.tsx:90
+msgid "Text before cleanup"
+msgstr "Texte avant nettoyage"
 
 #: inertia/shared/errors/describe_cleanup_error.ts:7
 msgid "Text cleanup is unavailable"
@@ -745,7 +781,7 @@ msgstr "Écris les nombres en chiffres.\n"
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 
-#: inertia/dictation/show_dictation/use_save_draft_text.ts:98
+#: inertia/dictation/show_dictation/use_save_draft_text.ts:104
 msgid "Your edits could not be saved to the history, retrying on the next change"
 msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel essai à la prochaine modification"
 
@@ -753,6 +789,6 @@ msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel
 msgid "Your text is not saved in the history yet. A new dictation clears it."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Une nouvelle dictée l'efface."
 
-#: inertia/pages/dictation/show_dictation.tsx:69
+#: inertia/pages/dictation/show_dictation.tsx:98
 msgid "Your text is not saved in the history yet. If you leave now, it may be lost."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Si vous quittez maintenant, il risque d'être perdu."

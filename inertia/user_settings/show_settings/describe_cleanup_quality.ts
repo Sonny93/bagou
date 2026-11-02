@@ -1,13 +1,10 @@
-import type { Data } from '@generated/data';
 import type { I18n, MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 
-export type CleanupQuality = Data.UserSettings['cleanupQuality'];
-
-export type CleanupQualityOption = {
-	value: CleanupQuality;
-	modelName: string;
-};
+import type {
+	CleanupQuality,
+	CleanupQualityOption,
+} from '~/shared/cleanup_quality';
 
 type CleanupQualityDescriptors = {
 	label: MessageDescriptor;

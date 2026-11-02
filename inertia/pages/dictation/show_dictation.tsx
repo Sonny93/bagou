@@ -7,6 +7,7 @@ import { DictationDock } from '~/dictation/show_dictation/dictation_dock';
 import { DictationHeader } from '~/dictation/show_dictation/dictation_header';
 import { DictationStage } from '~/dictation/show_dictation/dictation_stage';
 import { getLeaveRisk } from '~/dictation/show_dictation/get_leave_risk';
+import { useCleanupControls } from '~/dictation/show_dictation/use_cleanup_controls';
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
 import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
@@ -14,6 +15,10 @@ import { useDraftCopy } from '~/dictation/show_dictation/use_draft_copy';
 import { useRefreshRemainingQuota } from '~/dictation/show_dictation/use_refresh_remaining_quota';
 import { useRequestNewDictation } from '~/dictation/show_dictation/use_request_new_dictation';
 import { useSaveDraftText } from '~/dictation/show_dictation/use_save_draft_text';
+import type {
+	CleanupQuality,
+	CleanupQualityOption,
+} from '~/shared/cleanup_quality';
 import { useLeaveConfirmation } from '~/shared/navigation/use_leave_confirmation';
 import { readBooleanPreference } from '~/shared/preferences/boolean_preference';
 import {
@@ -24,10 +29,14 @@ import { useBooleanPreference } from '~/shared/preferences/use_boolean_preferenc
 
 type ShowDictationProps = {
 	remainingMinutes: number;
+	cleanupQualities: CleanupQualityOption[];
+	cleanupQuality: CleanupQuality;
 };
 
 export default function ShowDictation({
 	remainingMinutes,
+	cleanupQualities,
+	cleanupQuality,
 }: Readonly<ShowDictationProps>) {
 	const { t } = useLingui();
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
@@ -44,7 +53,16 @@ export default function ShowDictation({
 			),
 		[copyDraft]
 	);
-	const { state, levels, finish, cancel, start, cleanDraft } = useDictation({
+	const {
+		state,
+		levels,
+		finish,
+		cancel,
+		start,
+		cleanDraft,
+		cleanDraftWith,
+		cleanupSnapshot,
+	} = useDictation({
 		shouldAutoStart: isAutoStartEnabled,
 		insertSegment: draft.insert,
 		replaceDraft: draft.replace,
@@ -52,6 +70,17 @@ export default function ShowDictation({
 		copyDraft: copyAutomatically,
 		draftId: draft.draftId,
 		draftText: draft.text,
+		savedQuality: cleanupQuality,
+	});
+	const cleanupControls = useCleanupControls({
+		draftId: draft.draftId,
+		draftText: draft.text,
+		editDraft: draft.edit,
+		snapshot: cleanupSnapshot,
+		qualities: cleanupQualities,
+		savedQuality: cleanupQuality,
+		cleanDraft,
+		cleanDraftWith,
 	});
 	const { saveStatus, explicitSave, saveNow } = useSaveDraftText({
 		draftId: draft.draftId,
@@ -123,7 +152,7 @@ export default function ShowDictation({
 				onStart={start}
 				onFinish={finish}
 				onCancel={cancel}
-				onCleanDraft={cleanDraft}
+				cleanup={cleanupControls}
 			/>
 		</div>
 	);

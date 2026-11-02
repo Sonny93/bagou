@@ -3,9 +3,9 @@ import { Trans } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 import type { SubmitEvent } from 'react';
 
+import type { CleanupQualityOption } from '~/shared/cleanup_quality';
 import { CleanupInstructionsField } from '~/user_settings/show_settings/cleanup_instructions_field';
 import { CleanupQualityField } from '~/user_settings/show_settings/cleanup_quality_field';
-import type { CleanupQualityOption } from '~/user_settings/show_settings/describe_cleanup_quality';
 import { DictationLanguageSelect } from '~/user_settings/show_settings/dictation_language_select';
 import { InterfaceLanguageSelect } from '~/user_settings/show_settings/interface_language_select';
 import { SavedStatus } from '~/user_settings/show_settings/saved_status';

@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { RadioOptions } from '@minimalstuff/ui';
 
-import {
-	describeCleanupQuality,
-	type CleanupQuality,
-	type CleanupQualityOption,
-} from '~/user_settings/show_settings/describe_cleanup_quality';
+import type {
+	CleanupQuality,
+	CleanupQualityOption,
+} from '~/shared/cleanup_quality';
+import { describeCleanupQuality } from '~/user_settings/show_settings/describe_cleanup_quality';
 
 type CleanupQualityFieldProps = {
 	value: CleanupQuality;

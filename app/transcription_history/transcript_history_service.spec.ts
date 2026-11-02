@@ -295,6 +295,36 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.lengthOf(textCleaner.receivedPreferences, 1);
 	});
 
+	test('should clean the draft text with the given quality and keep the saved setting when a quality is given', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'standard',
+		}).create();
+
+		await service.cleanDraft(user.id, DRAFT_ID, 'euh bonjour', 'precise');
+
+		assert.equal(textCleaner.receivedPreferences[0]?.quality, 'precise');
+		const settings = await new UserSettingsService().get(user.id);
+		assert.equal(settings.cleanupQuality, 'standard');
+	});
+
+	test('should clean the draft text with the saved quality when no quality is given', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'precise',
+		}).create();
+
+		await service.cleanDraft(user.id, DRAFT_ID, 'euh bonjour');
+
+		assert.equal(textCleaner.receivedPreferences[0]?.quality, 'precise');
+	});
+
 	test('should create no entry when cleaning the text of a draft without entry', async ({
 		assert,
 	}) => {

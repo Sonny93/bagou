@@ -12,11 +12,13 @@ export default class CleanDraftController {
 
 	/** Cleans the current draft text again and stores it in the history entry of the draft. */
 	async execute({ auth, request }: HttpContext) {
-		const { params, text } = await request.validateUsing(cleanDraftValidator);
+		const { params, text, cleanupQuality } =
+			await request.validateUsing(cleanDraftValidator);
 		const cleanedText = await this.transcriptHistoryService.cleanDraft(
 			auth.getUserOrFail().id,
 			params.draftId,
-			text
+			text,
+			cleanupQuality
 		);
 		return { cleanedText };
 	}

@@ -12,11 +12,13 @@ import type { DictationTranscript } from '~/dictation/core/dictation_transcript'
 import type { DraftContext } from '~/dictation/core/draft_context';
 import { createSocketDictationTransport } from '~/dictation/core/socket_dictation_transport';
 import { appendLevel } from '~/dictation/show_dictation/append_level';
+import type { CleanupSnapshot } from '~/dictation/show_dictation/cleanup_snapshot';
 import { describeDictationError } from '~/dictation/show_dictation/describe_dictation_error';
 import { DICTATION_WORKLET_URL } from '~/dictation/show_dictation/dictation_worklet_url';
 import { finalizeDictation } from '~/dictation/show_dictation/finalize_dictation';
 import { LEVEL_HISTORY_CAPACITY } from '~/dictation/show_dictation/level_history_capacity';
 import { useCleanDraft } from '~/dictation/show_dictation/use_clean_draft';
+import type { CleanupQuality } from '~/shared/cleanup_quality';
 import { logError } from '~/shared/errors/log_error';
 
 const EMPTY_TRANSCRIPT: DictationTranscript = {
@@ -32,6 +34,7 @@ type UseDictationOptions = {
 	copyDraft: (text: string) => Promise<boolean>;
 	draftId: string;
 	draftText: string;
+	savedQuality: CleanupQuality;
 };
 
 type UseDictationReturn = {
@@ -41,6 +44,8 @@ type UseDictationReturn = {
 	cancel: () => void;
 	start: () => void;
 	cleanDraft: () => void;
+	cleanDraftWith: (quality: CleanupQuality) => void;
+	cleanupSnapshot: CleanupSnapshot | null;
 };
 
 /**
@@ -49,8 +54,8 @@ type UseDictationReturn = {
  * or, when the server cleaned the whole draft, by `replaceDraft`, then copied
  * whole with `copyDraft`. Starts recording on mount only when `shouldAutoStart`
  * is true at that moment; later changes are ignored. `cleanDraft` re-cleans
- * the current draft (`draftText` of `draftId`) when the dictation ended
- * uncleaned.
+ * the current draft (`draftText` of `draftId`) with the `savedQuality`, and
+ * `cleanDraftWith` with another quality for that call only.
  */
 export function useDictation({
 	shouldAutoStart,
@@ -60,6 +65,7 @@ export function useDictation({
 	copyDraft,
 	draftId,
 	draftText,
+	savedQuality,
 }: Readonly<UseDictationOptions>): UseDictationReturn {
 	const { i18n } = useLingui();
 	const [state, dispatch] = useReducer(
@@ -137,13 +143,14 @@ export function useDictation({
 		void sessionRef.current?.cancel();
 	}, []);
 
-	const cleanDraft = useCleanDraft({
+	const { cleanDraft, cleanDraftWith, snapshot } = useCleanDraft({
 		status: state.status,
 		dispatch,
 		draftId,
 		draftText,
 		replaceDraft,
 		copyDraft,
+		savedQuality,
 	});
 
 	useEffect(() => {
@@ -158,5 +165,7 @@ export function useDictation({
 		cancel,
 		start: () => void start(),
 		cleanDraft,
+		cleanDraftWith,
+		cleanupSnapshot: snapshot,
 	};
 }

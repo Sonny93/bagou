@@ -3,11 +3,13 @@ import { test } from '@japa/runner';
 
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
+import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { MAX_DRAFT_TEXT_LENGTH } from '#dictation/validators/start_dictation_validator';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import Transcript from '#transcription_history/transcript';
+import UserSetting from '#user_settings/user_setting';
 
 const DRAFT_ID = '3f0a1c7e-9d54-4b6a-8e21-5c7d9a0b4f12';
 const UNKNOWN_DRAFT_ID = '9b2e4d68-1f3a-4c5b-8d7e-6a0f2c4e8b13';
@@ -52,6 +54,70 @@ test.group('CleanDraftController', (group) => {
 			(await Transcript.findOrFail(transcript.id)).cleanedText,
 			'EUH BONJOUR'
 		);
+	});
+
+	test('should clean with the given quality and keep the saved setting when a quality is given', async ({
+		client,
+		assert,
+		cleanup,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		cleanup(swapTextCleaner(textCleaner));
+		const user = await UserFactory.create();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'standard',
+		}).create();
+
+		const response = await client
+			.post(`/history/drafts/${DRAFT_ID}/clean`)
+			.header('Accept', 'application/json')
+			.json({ text: 'euh bonjour', cleanupQuality: 'precise' })
+			.loginAs(user)
+			.withCsrfToken();
+
+		response.assertStatus(200);
+		assert.equal(textCleaner.receivedPreferences[0]?.quality, 'precise');
+		const saved = await UserSetting.findByOrFail('userId', user.id);
+		assert.equal(saved.cleanupQuality, 'standard');
+	});
+
+	test('should clean with the saved quality when no quality is given', async ({
+		client,
+		assert,
+		cleanup,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		cleanup(swapTextCleaner(textCleaner));
+		const user = await UserFactory.create();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'precise',
+		}).create();
+
+		await client
+			.post(`/history/drafts/${DRAFT_ID}/clean`)
+			.header('Accept', 'application/json')
+			.json({ text: 'euh bonjour' })
+			.loginAs(user)
+			.withCsrfToken();
+
+		assert.equal(textCleaner.receivedPreferences[0]?.quality, 'precise');
+	});
+
+	test('should reject a cleanup quality that is unknown', async ({
+		client,
+	}) => {
+		const user = await UserFactory.create();
+
+		const response = await client
+			.post(`/history/drafts/${DRAFT_ID}/clean`)
+			.header('Accept', 'application/json')
+			.json({ text: 'euh bonjour', cleanupQuality: 'ultra' })
+			.loginAs(user)
+			.withCsrfToken();
+
+		response.assertStatus(422);
 	});
 
 	test('should return the cleaned text and create no entry when the draft is unknown', async ({

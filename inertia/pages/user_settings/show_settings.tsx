@@ -1,10 +1,10 @@
 import type { Data } from '@generated/data';
 import { Trans } from '@lingui/react/macro';
 
+import type { CleanupQualityOption } from '~/shared/cleanup_quality';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
-import type { CleanupQualityOption } from '~/user_settings/show_settings/describe_cleanup_quality';
 import { DeviceSettings } from '~/user_settings/show_settings/device_settings';
 import { SettingsForm } from '~/user_settings/show_settings/settings_form';
 import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';

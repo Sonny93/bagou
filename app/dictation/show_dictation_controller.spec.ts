@@ -3,6 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
 import { UserFactory } from '#database/factories/user_factory';
+import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 
 test.group('ShowDictationController', (group) => {
@@ -31,6 +32,25 @@ test.group('ShowDictationController', (group) => {
 		const response = await client.get('/').loginAs(user).withInertia();
 
 		assert.equal(response.inertiaProps.remainingMinutes, 40);
+	});
+
+	test('should expose the cleanup models and the saved cleanup quality', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'precise',
+		}).create();
+
+		const response = await client.get('/').loginAs(user).withInertia();
+
+		assert.deepEqual(response.inertiaProps.cleanupQualities, [
+			{ value: 'standard', modelName: 'Claude Haiku 5.5' },
+			{ value: 'precise', modelName: 'Claude Sonnet 5.5' },
+		]);
+		assert.equal(response.inertiaProps.cleanupQuality, 'precise');
 	});
 
 	test('should redirect to the login page when the visitor is a guest', async ({

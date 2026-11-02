@@ -6,9 +6,10 @@ const isFocusLost = (): boolean =>
 	document.activeElement === null || document.activeElement === document.body;
 
 /**
- * Once a cleanup retry succeeded and its button disappeared, moves focus to
- * the element, but only when focus was lost with the button: focus that
- * went elsewhere, or stayed on the button after a failure, is left alone.
+ * Once a re-clean ended in `done`, moves focus to the element, but only when
+ * focus was lost (on the document body). The cleanup button stays mounted, so
+ * focus normally stays on it, or on its menu trigger after a menu action;
+ * focus that went elsewhere is left alone.
  */
 export function useFocusAfterClean(
 	status: DictationState['status'],
