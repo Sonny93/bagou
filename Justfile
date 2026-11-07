@@ -23,9 +23,6 @@ check:
 build:
 	@pnpm run build
 
-release *args:
-	@pnpm release {{args}}
-
 prod:
 	@docker compose -f compose.yml -f local.compose.yml up -d --build --wait
 

@@ -1,11 +1,7 @@
 {
 	"$schema": "https://unpkg.com/release-it@21/schema/release-it.json",
 	"hooks": {
-		"before:init": [
-			"node scripts/check_changelog_twin.ts",
-			"pnpm run check",
-			"pnpm run build"
-		],
+		"before:init": "node scripts/check_changelog_twin.ts",
 		"before:git:release": "node scripts/roll_french_changelog.ts ${version} && git add CHANGELOG.fr.md"
 	},
 	"git": {
@@ -14,11 +10,10 @@
 		"tagName": "v${version}",
 		"commit": true,
 		"tag": true,
-		"push": true
+		"push": false
 	},
 	"github": {
-		"release": true,
-		"web": true
+		"release": false
 	},
 	"npm": {
 		"publish": false

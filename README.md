@@ -96,7 +96,6 @@ just dev     # Postgres, migrations, dev server
 just test    # back and front tests
 just check   # lint, format, types, knip, tests
 just build   # production build
-just release # bump, tag, publish the GitHub release and the image
 just prod    # production container through compose.yml
 just icons   # regenerate the PNG icons from resources/icons/
 just down    # stop the compose services
@@ -104,4 +103,14 @@ just down    # stop the compose services
 
 ## Releases
 
-User-visible changes go in the `Unreleased` section of [CHANGELOG.md](CHANGELOG.md), in plain language. `just release` (the first one: `just release 1.0.0`) runs the checks, moves `Unreleased` under the new version, tags, and opens the GitHub release prefilled with those notes. The tag push builds `ghcr.io/sonny93/bagou` (tags `X.Y.Z`, `X.Y`, `X`, `latest`) for amd64 and arm64.
+User-visible changes go in the `Unreleased` section of [CHANGELOG.md](CHANGELOG.md), in plain language, and in [CHANGELOG.fr.md](CHANGELOG.fr.md). Releases run only in CI, from `main`:
+
+```sh
+gh workflow run release.yml -f increment=minor
+```
+
+Or open Actions, Release, Run workflow. The workflow runs the checks, moves `Unreleased` under the new version, tags, and creates the GitHub release from those notes. The tag push builds `ghcr.io/sonny93/bagou` (tags `X.Y.Z`, `X.Y`, `X`, `latest`) for amd64 and arm64.
+
+### One-time setup
+
+The workflow needs an environment `release` restricted to `main`, holding the secret `RELEASE_DEPLOY_KEY` (the private half of a deploy key with write access), and a tag ruleset that only lets that deploy key create tags. Steps are in [releasing.md](https://github.com/minimalstuff/tooling/blob/main/docs/releasing.md).
