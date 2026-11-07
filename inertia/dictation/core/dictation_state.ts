@@ -25,6 +25,7 @@ export type DictationEvent =
 	| { type: 'cleanupProgressed'; percent: number }
 	| { type: 'cleaned'; isCleaned: boolean }
 	| { type: 'cancelRequested' }
+	| { type: 'resetRequested' }
 	| { type: 'failed'; message: string };
 
 /** Statuses a new dictation segment may start from. */
@@ -48,7 +49,9 @@ export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
  * demand, hand edits included, from `idle`, `done`, `cancelled` and `error`:
  * `recleaning` ends in `done` through `cleaned`, and cancel and failure do not
  * apply to it. A cancelled dictation remembers
- * whether it had text, which the server keeps raw in the history.
+ * whether it had text, which the server keeps raw in the history. A reset
+ * returns to the initial state from `idle`, `done`, `cancelled` and `error`,
+ * and is ignored in every other status.
  */
 export function dictationReducer(
 	state: DictationState,
@@ -106,6 +109,10 @@ export function dictationReducer(
 			}
 			return isLive(state)
 				? { status: 'cancelled', hasKeptText: hasText(state) }
+				: state;
+		case 'resetRequested':
+			return STARTABLE_STATUSES.has(state.status)
+				? INITIAL_DICTATION_STATE
 				: state;
 		case 'failed':
 			return state.status === 'connecting' ||

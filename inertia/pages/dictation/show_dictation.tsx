@@ -59,6 +59,7 @@ export default function ShowDictation({
 		finish,
 		cancel,
 		start,
+		reset,
 		cleanDraft,
 		cleanDraftWith,
 		cleanupSnapshot,
@@ -99,11 +100,14 @@ export default function ShowDictation({
 		confirmLabel: t`Leave`,
 	});
 	const { clear: clearDraft } = draft;
-	const startNew = useCallback(() => {
+	const startOver = useCallback(() => {
 		clearDraft();
-		start();
-	}, [clearDraft, start]);
-	const requestNewDictation = useRequestNewDictation({ saveStatus, startNew });
+		reset();
+	}, [clearDraft, reset]);
+	const requestNewDictation = useRequestNewDictation({
+		saveStatus,
+		startNew: startOver,
+	});
 	const hasDraftText = draft.text.trim() !== '';
 	const canStartNew = canStartNewDictation(state.status, draft.text);
 	const handleCopy = useCallback(

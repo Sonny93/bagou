@@ -190,6 +190,27 @@ describe('dictationReducer', () => {
 
 	it.each<[string, DictationState]>([
 		['idle', INITIAL_DICTATION_STATE],
+		['done', { status: 'done', isCleaned: true }],
+		['cancelled', { status: 'cancelled', hasKeptText: true }],
+		['error', { status: 'error', message: 'm' }],
+	])('should return to idle when resetting from %s', (_name, state) => {
+		expect(reduce(state, { type: 'resetRequested' })).toEqual(
+			INITIAL_DICTATION_STATE
+		);
+	});
+
+	it.each<DictationState>([
+		{ status: 'connecting' },
+		recording(),
+		finishing,
+		cleaning,
+		recleaning,
+	])('should ignore a reset request while $status', (state) => {
+		expect(dictationReducer(state, { type: 'resetRequested' })).toBe(state);
+	});
+
+	it.each<[string, DictationState]>([
+		['idle', INITIAL_DICTATION_STATE],
 		['done cleaned', { status: 'done', isCleaned: true }],
 		['done uncleaned', doneUncleaned],
 		['cancelled', { status: 'cancelled', hasKeptText: true }],

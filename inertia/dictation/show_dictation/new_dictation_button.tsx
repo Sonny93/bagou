@@ -8,7 +8,7 @@ type NewDictationButtonProps = {
 
 /**
  * Stays focusable while unavailable (`aria-disabled`), so focus never drops
- * when a dictation starts from it.
+ * when the page is cleared from it.
  */
 export function NewDictationButton({
 	isAvailable,

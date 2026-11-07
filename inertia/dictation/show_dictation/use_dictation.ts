@@ -43,6 +43,7 @@ type UseDictationReturn = {
 	finish: () => void;
 	cancel: () => void;
 	start: () => void;
+	reset: () => void;
 	cleanDraft: () => void;
 	cleanDraftWith: (quality: CleanupQuality) => void;
 	cleanupSnapshot: CleanupSnapshot | null;
@@ -55,7 +56,8 @@ type UseDictationReturn = {
  * whole with `copyDraft`. Starts recording on mount only when `shouldAutoStart`
  * is true at that moment; later changes are ignored. `cleanDraft` re-cleans
  * the current draft (`draftText` of `draftId`) with the `savedQuality`, and
- * `cleanDraftWith` with another quality for that call only.
+ * `cleanDraftWith` with another quality for that call only. `reset` returns
+ * to a fresh idle state when no dictation is running, without recording.
  */
 export function useDictation({
 	shouldAutoStart,
@@ -143,6 +145,11 @@ export function useDictation({
 		void sessionRef.current?.cancel();
 	}, []);
 
+	const reset = useCallback(() => {
+		dispatch({ type: 'resetRequested' });
+		setLevels([]);
+	}, []);
+
 	const { cleanDraft, cleanDraftWith, snapshot } = useCleanDraft({
 		status: state.status,
 		dispatch,
@@ -164,6 +171,7 @@ export function useDictation({
 		finish: () => void finish(),
 		cancel,
 		start: () => void start(),
+		reset,
 		cleanDraft,
 		cleanDraftWith,
 		cleanupSnapshot: snapshot,

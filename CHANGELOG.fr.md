@@ -6,6 +6,10 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 ## [Unreleased]
 
+### Changed
+
+- Nouvelle dictée (bouton ou touche N) vide désormais la page sans lancer l'enregistrement.
+
 ## [1.2.0] - 2026-11-02
 
 ### Added

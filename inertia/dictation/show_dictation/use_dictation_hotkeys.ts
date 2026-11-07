@@ -50,7 +50,7 @@ const isModifiedEnter = (event: KeyboardEvent): boolean =>
 /**
  * Enter toggles the dictation: it starts a new segment or finishes the running
  * one. Escape cancels a running segment, N clears the draft and starts over
- * when `canStartNew`, and C copies the draft when no segment is live and
+ * without recording when `canStartNew`, and C copies the draft when no segment is live and
  * the draft is not blank. C ignores Ctrl/Cmd/Alt, so Ctrl+C keeps copying a
  * selection.
  * Keys typed in a text field keep their normal meaning. A focused button keeps

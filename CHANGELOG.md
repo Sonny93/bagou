@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- New dictation (button or N key) now clears the page without starting to record.
+
 ## [1.2.0] - 2026-11-02
 
 ### Added
