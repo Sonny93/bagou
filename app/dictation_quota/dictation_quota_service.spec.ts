@@ -2,13 +2,17 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 import { DateTime } from 'luxon';
 
+import dictationConfig from '#config/dictation';
 import { UserFactory } from '#database/factories/user_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { FixedClock } from '#tests/helpers/fixed_clock';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 
 const SECONDS_PER_MINUTE = 60;
-const QUOTA_BYTES = 60 * SECONDS_PER_MINUTE * PCM_AUDIO_FORMAT.bytesPerSecond;
+const QUOTA_BYTES =
+	dictationConfig.dailyQuotaMinutes *
+	SECONDS_PER_MINUTE *
+	PCM_AUDIO_FORMAT.bytesPerSecond;
 const ONE_MINUTE_BYTES = SECONDS_PER_MINUTE * PCM_AUDIO_FORMAT.bytesPerSecond;
 
 const utc = (iso: string): DateTime => DateTime.fromISO(iso, { zone: 'utc' });
@@ -113,6 +117,9 @@ test.group('DictationQuotaService', (group) => {
 
 		await service.record(user.id, 18 * ONE_MINUTE_BYTES + 1);
 
-		assert.equal(await service.getRemainingMinutes(user.id), 42);
+		assert.equal(
+			await service.getRemainingMinutes(user.id),
+			dictationConfig.dailyQuotaMinutes - 18
+		);
 	});
 });

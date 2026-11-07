@@ -2,9 +2,14 @@ import app from '@adonisjs/core/services/app';
 import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
+import dictationConfig from '#config/dictation';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
+import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
+
+const SECONDS_PER_MINUTE = 60;
+const USED_MINUTES = 20;
 
 test.group('ShowDictationController', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
@@ -18,7 +23,9 @@ test.group('ShowDictationController', (group) => {
 
 		response.assertStatus(200);
 		response.assertInertiaComponent('dictation/show_dictation');
-		response.assertInertiaPropsContains({ remainingMinutes: 60 });
+		response.assertInertiaPropsContains({
+			remainingMinutes: dictationConfig.dailyQuotaMinutes,
+		});
 	});
 
 	test('should expose the minutes left today when part of the quota was used', async ({
@@ -27,11 +34,17 @@ test.group('ShowDictationController', (group) => {
 	}) => {
 		const user = await UserFactory.create();
 		const quotaService = await app.container.make(DictationQuotaService);
-		await quotaService.record(user.id, 20 * 60 * 32_000);
+		await quotaService.record(
+			user.id,
+			USED_MINUTES * SECONDS_PER_MINUTE * PCM_AUDIO_FORMAT.bytesPerSecond
+		);
 
 		const response = await client.get('/').loginAs(user).withInertia();
 
-		assert.equal(response.inertiaProps.remainingMinutes, 40);
+		assert.equal(
+			response.inertiaProps.remainingMinutes,
+			dictationConfig.dailyQuotaMinutes - USED_MINUTES
+		);
 	});
 
 	test('should expose the cleanup models and the saved cleanup quality', async ({

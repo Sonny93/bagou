@@ -6,6 +6,7 @@ import type { MiddlewareContext } from '@rlanz/socket/types';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import DictationChannel from '#app/dictation/dictation_channel';
+import dictationConfig from '#config/dictation';
 import { UserFactory } from '#database/factories/user_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { createFakeChannelSocket } from '#tests/helpers/fake_channel_socket';
@@ -16,6 +17,7 @@ import { SlowTranscriptionProvider } from '#tests/helpers/slow_transcription_pro
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import { swapTranscriptionProvider } from '#tests/helpers/swap_transcription_provider';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
+import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionErrorCode } from '#transcription/transcription_error_code';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import Transcript from '#transcription_history/transcript';
@@ -35,7 +37,11 @@ const PREVIEW_SETTINGS = {
 };
 const CHANNEL_NAME = `dictation/${DICTATION_ID}`;
 const START_REQUESTS_PER_MINUTE = 20;
-const DAILY_QUOTA_BYTES = 60 * 60 * 32_000;
+const SECONDS_PER_MINUTE = 60;
+const DAILY_QUOTA_BYTES =
+	dictationConfig.dailyQuotaMinutes *
+	SECONDS_PER_MINUTE *
+	PCM_AUDIO_FORMAT.bytesPerSecond;
 const VALID_CHUNK = Buffer.from(new Uint8Array([1, 0, 2, 0])).toString(
 	'base64'
 );

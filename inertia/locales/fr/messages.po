@@ -43,7 +43,7 @@ msgstr "{termCount} sur {maxTermCount} termes"
 msgid "A dictation is already in progress"
 msgstr "Une dictée est déjà en cours"
 
-#: inertia/pages/dictation/show_dictation.tsx:97
+#: inertia/pages/dictation/show_dictation.tsx:98
 msgid "A dictation is in progress. If you leave now, it will be lost."
 msgstr "Une dictée est en cours. Si vous quittez maintenant, elle sera perdue."
 
@@ -198,7 +198,7 @@ msgstr "Copie impossible"
 msgid "Copy the dictation from {accessibleDate}"
 msgstr "Copier la dictée de {accessibleDate}"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
 msgid "Could not reach the transcription service"
 msgstr "Impossible de joindre le service de transcription"
 
@@ -273,7 +273,7 @@ msgstr "Dictée annulée."
 msgid "Dictation cancelled. The raw text is kept in the history, you can clean it there."
 msgstr "Dictée annulée. Le texte brut est gardé dans l'historique, tu peux l'y nettoyer."
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:13
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:14
 msgid "Dictation is temporarily unavailable"
 msgstr "La dictée est momentanément indisponible"
 
@@ -346,11 +346,11 @@ msgstr "Le comportement de la dictée et de l'interface."
 msgid "Interface language"
 msgstr "Langue de l'interface"
 
-#: inertia/pages/dictation/show_dictation.tsx:99
+#: inertia/pages/dictation/show_dictation.tsx:100
 msgid "Leave"
 msgstr "Quitter"
 
-#: inertia/pages/dictation/show_dictation.tsx:94
+#: inertia/pages/dictation/show_dictation.tsx:95
 msgid "Leave this page?"
 msgstr "Quitter cette page ?"
 
@@ -653,7 +653,7 @@ msgstr "Texte avant nettoyage"
 msgid "Text cleanup is unavailable"
 msgstr "Le nettoyage du texte est indisponible"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:14
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:15
 msgid "The audio segment is invalid or too large"
 msgstr "Le segment audio est invalide ou trop volumineux"
 
@@ -665,7 +665,7 @@ msgstr "Le navigateur bloque l'audio, clique dans la page puis relance la dicté
 msgid "The cleanup is taking too long, your dictation will be in the history"
 msgstr "Le nettoyage prend trop de temps, ta dictée sera dans l'historique"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
 msgid "The connection to the transcription service was interrupted"
 msgstr "La connexion au service de transcription a été interrompue"
 
@@ -681,11 +681,11 @@ msgstr "Le quota quotidien de dictée est atteint, réessaie demain"
 msgid "The devices that can open your session."
 msgstr "Les appareils qui peuvent ouvrir ta session."
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:15
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
 msgid "The dictation identifier is invalid"
 msgstr "L'identifiant de dictée est invalide"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:13
 msgid "The dictation reached the maximum duration"
 msgstr "La dictée a atteint la durée maximale"
 
@@ -693,7 +693,11 @@ msgstr "La dictée a atteint la durée maximale"
 msgid "The dictation service is not responding, try again"
 msgstr "Le service de dictée ne répond pas, réessaie"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
+msgid "The dictation stopped because no speech was heard"
+msgstr "La dictée s'est arrêtée faute de parole détectée"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
 msgid "The draft is invalid or too large"
 msgstr "Le brouillon est invalide ou trop volumineux"
 
@@ -731,23 +735,23 @@ msgstr "Le serveur est injoignable"
 msgid "The server is unreachable, the action was not saved"
 msgstr "Le serveur est injoignable, l'action n'a pas été enregistrée"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
 msgid "The settings to test are invalid"
 msgstr "Les réglages à tester sont invalides"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
 msgid "The transcription service did not answer in time"
 msgstr "Le service de transcription n'a pas répondu à temps"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
 msgid "The transcription service refused the dictation"
 msgstr "Le service de transcription a refusé la dictée"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:23
 msgid "The transcription session is no longer active"
 msgstr "La session de transcription n'est plus active"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:23
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:24
 msgid "The transcription session was interrupted"
 msgstr "La session de transcription a été interrompue"
 
@@ -849,6 +853,6 @@ msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel
 msgid "Your text is not saved in the history yet. A new dictation clears it."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Une nouvelle dictée l'efface."
 
-#: inertia/pages/dictation/show_dictation.tsx:98
+#: inertia/pages/dictation/show_dictation.tsx:99
 msgid "Your text is not saved in the history yet. If you leave now, it may be lost."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Si vous quittez maintenant, il risque d'être perdu."

@@ -1,5 +1,6 @@
 import type { Logger } from '@adonisjs/core/logger';
 
+import dictationConfig from '#config/dictation';
 import { describeErrorForLog } from '#dictation/describe_error_for_log';
 import { DictationErrorCode } from '#dictation/dictation_error_code';
 import type { DictationListener } from '#dictation/dictation_listener';
@@ -12,12 +13,16 @@ import { TranscriptionProviderError } from '#transcription/transcription_provide
 import type { TranscriptionSession } from '#transcription/transcription_session';
 
 const MAX_DICTATION_DURATION_MS = 10 * 60 * 1000;
+const MILLISECONDS_PER_MINUTE = 60 * 1000;
+const SILENCE_TIMEOUT_MS =
+	dictationConfig.silenceTimeoutMinutes * MILLISECONDS_PER_MINUTE;
 const SECONDS_DECIMAL_FACTOR = 100;
 
 type DictationPhase = 'created' | 'starting' | 'active' | 'finishing' | 'ended';
 type DictationOutcome =
 	| 'completed'
 	| 'timed_out'
+	| 'silence_timed_out'
 	| 'quota_exceeded'
 	| 'cancelled'
 	| 'failed';
@@ -30,15 +35,17 @@ type DictationOutcome =
  * the listener, then completes it (cleanup) into the transcript `stop`
  * resolves. A cancelled dictation (Escape, socket left) is not thrown away:
  * once the provider session is flushed, its raw text is kept without any
- * cleanup or listener call. Cancelling while a finish is already running
- * changes nothing. Logs duration, provider and outcome once at
- * the end, never any text.
+ * cleanup or listener call. It also finishes by itself, keeping the text,
+ * when the provider recognized no speech for the silence timeout. Cancelling
+ * while a finish is already running changes nothing. Logs duration, provider
+ * and outcome once at the end, never any text.
  */
 export class Dictation {
 	#phase: DictationPhase = 'created';
 	#session: TranscriptionSession | undefined;
 	#finishing: Promise<DictationTranscript> | undefined;
 	#maxDurationTimer: NodeJS.Timeout | undefined;
+	#silenceTimer: NodeJS.Timeout | undefined;
 	#receivedBytes = 0;
 
 	constructor(
@@ -71,6 +78,7 @@ export class Dictation {
 				this.#finishAtLimit(session, DictationErrorCode.tooLong, 'timed_out'),
 			this.options.maxDurationMs ?? MAX_DICTATION_DURATION_MS
 		);
+		this.#armSilenceTimer(session);
 	}
 
 	appendAudio(pcm: Uint8Array): void {
@@ -122,9 +130,33 @@ export class Dictation {
 	}
 
 	#listenTo(session: TranscriptionSession): void {
-		session.on('final', ({ text }) => this.listener.onFinal(text));
-		session.on('partial', ({ text }) => this.listener.onPartial(text));
+		session.on('final', ({ text }) => {
+			this.#noteSpeech(session, text);
+			this.listener.onFinal(text);
+		});
+		session.on('partial', ({ text }) => {
+			this.#noteSpeech(session, text);
+			this.listener.onPartial(text);
+		});
 		session.on('error', ({ error }) => this.#reportProviderError(error));
+	}
+
+	#noteSpeech(session: TranscriptionSession, text: string): void {
+		if (text.trim() === '' || this.#phase !== 'active') return;
+		this.#armSilenceTimer(session);
+	}
+
+	#armSilenceTimer(session: TranscriptionSession): void {
+		clearTimeout(this.#silenceTimer);
+		this.#silenceTimer = setTimeout(
+			() =>
+				this.#finishAtLimit(
+					session,
+					DictationErrorCode.silenceTimeout,
+					'silence_timed_out'
+				),
+			this.options.silenceTimeoutMs ?? SILENCE_TIMEOUT_MS
+		);
 	}
 
 	#reportProviderError(error: TranscriptionProviderError): void {
@@ -212,6 +244,7 @@ export class Dictation {
 		if (this.#phase === 'ended') return;
 		this.#phase = 'ended';
 		clearTimeout(this.#maxDurationTimer);
+		clearTimeout(this.#silenceTimer);
 		this.#session?.abort();
 		this.logger.info(
 			{

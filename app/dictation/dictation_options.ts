@@ -13,4 +13,6 @@ export type DictationOptions = {
 	/** Keeps the raw text of a cancelled dictation, without any cleanup. */
 	keepRaw: DictationRawKeeper;
 	maxDurationMs?: number;
+	/** Silence (no recognized speech) after which the dictation finishes by itself. */
+	silenceTimeoutMs?: number;
 };

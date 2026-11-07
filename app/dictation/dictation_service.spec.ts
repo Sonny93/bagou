@@ -2,6 +2,7 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import dictationConfig from '#config/dictation';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { Dictation } from '#dictation/dictation';
@@ -42,13 +43,17 @@ const PREVIEW_SETTINGS = {
 } as const;
 const START_REQUESTS_PER_MINUTE = 20;
 const SHORT_MAX_DURATION_MS = 20;
-const DAILY_QUOTA_SECONDS = 60 * 60;
+const SECONDS_PER_MINUTE = 60;
+const SHORT_SILENCE_TIMEOUT_MS = 40;
+const DAILY_QUOTA_SECONDS =
+	dictationConfig.dailyQuotaMinutes * SECONDS_PER_MINUTE;
 const DAILY_QUOTA_BYTES = DAILY_QUOTA_SECONDS * PCM_AUDIO_FORMAT.bytesPerSecond;
 
 const AMPLE_REMAINING_BYTES = Number.MAX_SAFE_INTEGER;
 
 type CreateDictationOptions = {
 	maxDurationMs?: number;
+	silenceTimeoutMs?: number;
 	remainingBytes?: number;
 	recordUsage?: (receivedBytes: number) => Promise<void>;
 	complete?: (rawText: string) => Promise<DictationTranscript>;
@@ -66,6 +71,7 @@ function createDictation(
 	provider: TranscriptionProvider = new FakeTranscriptionProvider(),
 	{
 		maxDurationMs,
+		silenceTimeoutMs,
 		remainingBytes = AMPLE_REMAINING_BYTES,
 		recordUsage,
 		complete = completeWithUppercase,
@@ -93,6 +99,7 @@ function createDictation(
 			language: 'fr',
 			vocabulary: ['Adonis'],
 			maxDurationMs,
+			silenceTimeoutMs,
 			remainingBytes,
 			complete,
 			keepRaw:
@@ -438,6 +445,70 @@ test.group('Dictation', () => {
 		assert.equal((await dictation.stop()).rawText, 'texte long');
 		assert.equal(provider.session.finishCount, 1);
 		assert.include(readLogs(lines).at(-1), { outcome: 'timed_out' });
+	});
+
+	test('should finish by itself with a silence error, keeping the text, when no speech is recognized', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte oublie')
+		);
+		const { dictation, errors, lines } = createDictation(provider, {
+			silenceTimeoutMs: SHORT_SILENCE_TIMEOUT_MS,
+		});
+		await dictation.start();
+
+		await sleep(SHORT_SILENCE_TIMEOUT_MS * 3);
+
+		assert.deepEqual(
+			errors.map(({ code }) => code),
+			[DictationErrorCode.silenceTimeout]
+		);
+		assert.equal((await dictation.stop()).rawText, 'texte oublie');
+		assert.include(readLogs(lines).at(-1), { outcome: 'silence_timed_out' });
+	});
+
+	test('should not stop for silence while speech keeps arriving', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte')
+		);
+		const { dictation, errors } = createDictation(provider, {
+			silenceTimeoutMs: SHORT_SILENCE_TIMEOUT_MS,
+		});
+		await dictation.start();
+
+		for (const text of ['un', 'deux', 'trois']) {
+			await sleep(SHORT_SILENCE_TIMEOUT_MS / 2);
+			provider.session.simulatePartial(text);
+		}
+		await sleep(SHORT_SILENCE_TIMEOUT_MS / 2);
+
+		assert.deepEqual(errors, []);
+		assert.isTrue(dictation.isActive);
+		await dictation.stop();
+	});
+
+	test('should not count blank text as speech for the silence timeout', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('texte')
+		);
+		const { dictation, errors } = createDictation(provider, {
+			silenceTimeoutMs: SHORT_SILENCE_TIMEOUT_MS,
+		});
+		await dictation.start();
+
+		await sleep(SHORT_SILENCE_TIMEOUT_MS / 2);
+		provider.session.simulatePartial('   ');
+		await sleep(SHORT_SILENCE_TIMEOUT_MS * 2);
+
+		assert.deepEqual(
+			errors.map(({ code }) => code),
+			[DictationErrorCode.silenceTimeout]
+		);
 	});
 });
 

@@ -43,7 +43,7 @@ msgstr "{termCount} of {maxTermCount} terms"
 msgid "A dictation is already in progress"
 msgstr "A dictation is already in progress"
 
-#: inertia/pages/dictation/show_dictation.tsx:97
+#: inertia/pages/dictation/show_dictation.tsx:98
 msgid "A dictation is in progress. If you leave now, it will be lost."
 msgstr "A dictation is in progress. If you leave now, it will be lost."
 
@@ -198,7 +198,7 @@ msgstr "Copy failed"
 msgid "Copy the dictation from {accessibleDate}"
 msgstr "Copy the dictation from {accessibleDate}"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
 msgid "Could not reach the transcription service"
 msgstr "Could not reach the transcription service"
 
@@ -273,7 +273,7 @@ msgstr "Dictation cancelled."
 msgid "Dictation cancelled. The raw text is kept in the history, you can clean it there."
 msgstr "Dictation cancelled. The raw text is kept in the history, you can clean it there."
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:13
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:14
 msgid "Dictation is temporarily unavailable"
 msgstr "Dictation is temporarily unavailable"
 
@@ -346,11 +346,11 @@ msgstr "How the dictation and the interface behave for you."
 msgid "Interface language"
 msgstr "Interface language"
 
-#: inertia/pages/dictation/show_dictation.tsx:99
+#: inertia/pages/dictation/show_dictation.tsx:100
 msgid "Leave"
 msgstr "Leave"
 
-#: inertia/pages/dictation/show_dictation.tsx:94
+#: inertia/pages/dictation/show_dictation.tsx:95
 msgid "Leave this page?"
 msgstr "Leave this page?"
 
@@ -653,7 +653,7 @@ msgstr "Text before cleanup"
 msgid "Text cleanup is unavailable"
 msgstr "Text cleanup is unavailable"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:14
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:15
 msgid "The audio segment is invalid or too large"
 msgstr "The audio segment is invalid or too large"
 
@@ -665,7 +665,7 @@ msgstr "The browser blocks audio, click in the page then start the dictation aga
 msgid "The cleanup is taking too long, your dictation will be in the history"
 msgstr "The cleanup is taking too long, your dictation will be in the history"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
 msgid "The connection to the transcription service was interrupted"
 msgstr "The connection to the transcription service was interrupted"
 
@@ -681,11 +681,11 @@ msgstr "The daily dictation quota is reached, try again tomorrow"
 msgid "The devices that can open your session."
 msgstr "The devices that can open your session."
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:15
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
 msgid "The dictation identifier is invalid"
 msgstr "The dictation identifier is invalid"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:13
 msgid "The dictation reached the maximum duration"
 msgstr "The dictation reached the maximum duration"
 
@@ -693,7 +693,11 @@ msgstr "The dictation reached the maximum duration"
 msgid "The dictation service is not responding, try again"
 msgstr "The dictation service is not responding, try again"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:16
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:12
+msgid "The dictation stopped because no speech was heard"
+msgstr "The dictation stopped because no speech was heard"
+
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
 msgid "The draft is invalid or too large"
 msgstr "The draft is invalid or too large"
 
@@ -731,23 +735,23 @@ msgstr "The server is unreachable"
 msgid "The server is unreachable, the action was not saved"
 msgstr "The server is unreachable, the action was not saved"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:17
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:18
 msgid "The settings to test are invalid"
 msgstr "The settings to test are invalid"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
 msgid "The transcription service did not answer in time"
 msgstr "The transcription service did not answer in time"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:21
 msgid "The transcription service refused the dictation"
 msgstr "The transcription service refused the dictation"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:22
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:23
 msgid "The transcription session is no longer active"
 msgstr "The transcription session is no longer active"
 
-#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:23
+#: inertia/dictation/show_dictation/dictation_server_error_messages.ts:24
 msgid "The transcription session was interrupted"
 msgstr "The transcription session was interrupted"
 
@@ -849,6 +853,6 @@ msgstr "Your edits could not be saved to the history, retrying on the next chang
 msgid "Your text is not saved in the history yet. A new dictation clears it."
 msgstr "Your text is not saved in the history yet. A new dictation clears it."
 
-#: inertia/pages/dictation/show_dictation.tsx:98
+#: inertia/pages/dictation/show_dictation.tsx:99
 msgid "Your text is not saved in the history yet. If you leave now, it may be lost."
 msgstr "Your text is not saved in the history yet. If you leave now, it may be lost."

@@ -1,5 +1,6 @@
 const dictationConfig = {
-	dailyQuotaMinutes: 60,
+	dailyQuotaMinutes: 240,
+	silenceTimeoutMinutes: 2,
 	quotaTimezone: 'Europe/Paris',
 } as const;
 

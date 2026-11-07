@@ -9,6 +9,7 @@ export const DICTATION_SERVER_ERROR_MESSAGES: Readonly<
 	E_DICTATION_NOT_ACTIVE: msg`No dictation is in progress`,
 	E_DICTATION_QUOTA_EXCEEDED: msg`The daily dictation quota is reached, try again tomorrow`,
 	E_DICTATION_RATE_LIMITED: msg`Too many dictations started, wait a minute`,
+	E_DICTATION_SILENCE_TIMEOUT: msg`The dictation stopped because no speech was heard`,
 	E_DICTATION_TOO_LONG: msg`The dictation reached the maximum duration`,
 	E_DICTATION_UNAVAILABLE: msg`Dictation is temporarily unavailable`,
 	E_INVALID_AUDIO_CHUNK: msg`The audio segment is invalid or too large`,
