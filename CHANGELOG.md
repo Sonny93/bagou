@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The daily dictation time goes from 1 hour to 4 hours.
 - A dictation now stops by itself after 2 minutes without speech, and keeps the text.
 - A single dictation can now last up to 30 minutes instead of 10.
+- Long dictations now have enough time to be cleaned, and a cleanup that takes too long says so.
 
 ## [1.2.0] - 2026-11-02
 

@@ -5,6 +5,7 @@ const GENERIC_MESSAGE = msg`Cleanup failed, try again`;
 
 const CLEANUP_ERROR_MESSAGES: Readonly<Record<string, MessageDescriptor>> = {
 	E_TEXT_CLEANUP_UNAVAILABLE: msg`Text cleanup is unavailable`,
+	E_TEXT_CLEANUP_TIMEOUT: msg`The cleanup took too long, try again or use the standard model`,
 };
 
 /** Wording for the stable code the server flashes when a cleanup fails. */

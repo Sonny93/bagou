@@ -20,11 +20,11 @@ export const READY_TIMEOUT_MS = 20_000;
 /**
  * How long the client waits for the completed transcript after the server
  * acknowledged the stop. The server bound is the provider finish (10 s) plus
- * two cleanup attempts of 15 s each, plus a margin. Past it the client gives
- * up and disconnects, while the server still completes and saves the
- * dictation to the history.
+ * the cleanup bound (120 s), plus a margin. Past it the client gives up and
+ * disconnects, while the server still completes and saves the dictation to
+ * the history.
  */
-export const COMPLETION_TIMEOUT_MS = 60_000;
+export const COMPLETION_TIMEOUT_MS = 150_000;
 
 export type DictationClientListener = {
 	onPartial(text: string): void;

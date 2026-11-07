@@ -4,6 +4,7 @@ import { test } from '@japa/runner';
 import { UserFactory } from '#database/factories/user_factory';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
+import TextCleanupTimeoutException from '#text_cleanup/text_cleanup_timeout_exception';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import Transcript from '#transcription_history/transcript';
 import UserSetting from '#user_settings/user_setting';
@@ -146,6 +147,26 @@ test.group('PreviewCleanupController', (group) => {
 
 		response.assertStatus(503);
 		response.assertBodyContains({ code: 'E_TEXT_CLEANUP_UNAVAILABLE' });
+	});
+
+	test('should answer the timeout error code when the cleanup took too long', async ({
+		client,
+		cleanup,
+	}) => {
+		cleanup(
+			swapTextCleaner(new FakeTextCleaner(new TextCleanupTimeoutException()))
+		);
+		const user = await UserFactory.create();
+
+		const response = await client
+			.post('/settings/preview')
+			.header('Accept', 'application/json')
+			.json(VALID_BODY)
+			.loginAs(user)
+			.withCsrfToken();
+
+		response.assertStatus(503);
+		response.assertBodyContains({ code: 'E_TEXT_CLEANUP_TIMEOUT' });
 	});
 
 	test('should answer 429 once the user spent the cleanups of the minute', async ({

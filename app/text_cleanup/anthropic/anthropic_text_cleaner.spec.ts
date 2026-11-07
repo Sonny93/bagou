@@ -12,6 +12,7 @@ import { FakeMessagesApi } from '#tests/helpers/fake_messages_api';
 import { AnthropicTextCleaner } from '#text_cleanup/anthropic/anthropic_text_cleaner';
 import { buildAnthropicClient } from '#text_cleanup/anthropic/build_anthropic_client';
 import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
+import TextCleanupTimeoutException from '#text_cleanup/text_cleanup_timeout_exception';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 
 const RAW_TEXT = 'euh secret transcript text';
@@ -215,6 +216,27 @@ test.group('AnthropicTextCleaner', () => {
 		);
 	});
 
+	test('should throw the timeout exception when the request is aborted', async ({
+		assert,
+	}) => {
+		const { cleaner, lines } = createCleaner(
+			new Anthropic.APIUserAbortError({ message: 'secret abort' })
+		);
+
+		const error = await cleaner
+			.clean(RAW_TEXT, FRENCH_CLEANUP_PREFERENCES)
+			.catch((caught: unknown) => caught);
+
+		assert.instanceOf(error, TextCleanupTimeoutException);
+		assert.instanceOf(error, TextCleanupUnavailableException);
+		assert.equal(
+			(error as TextCleanupTimeoutException).code,
+			'E_TEXT_CLEANUP_TIMEOUT'
+		);
+		assert.include(readLogs(lines).at(-1), { kind: 'timeout' });
+		assert.notInclude(lines.join(''), 'secret');
+	});
+
 	test('should fail as stream_error when the real SDK stream breaks mid-response', async ({
 		assert,
 	}) => {
@@ -319,10 +341,6 @@ test.group('AnthropicTextCleaner', () => {
 					'secret provider text',
 					undefined
 				),
-			},
-			{
-				kind: 'timeout',
-				outcome: new Anthropic.APIUserAbortError({ message: 'secret abort' }),
 			},
 			{
 				kind: 'stream_error',

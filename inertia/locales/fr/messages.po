@@ -665,6 +665,10 @@ msgstr "Le navigateur bloque l'audio, clique dans la page puis relance la dicté
 msgid "The cleanup is taking too long, your dictation will be in the history"
 msgstr "Le nettoyage prend trop de temps, ta dictée sera dans l'historique"
 
+#: inertia/shared/errors/describe_cleanup_error.ts:8
+msgid "The cleanup took too long, try again or use the standard model"
+msgstr "Le nettoyage a pris trop de temps, réessaie ou utilise le modèle standard"
+
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:20
 msgid "The connection to the transcription service was interrupted"
 msgstr "La connexion au service de transcription a été interrompue"

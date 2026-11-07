@@ -5,6 +5,7 @@ import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
+import TextCleanupTimeoutException from '#text_cleanup/text_cleanup_timeout_exception';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 import Transcript from '#transcription_history/transcript';
 
@@ -116,6 +117,32 @@ test.group('CleanTranscriptController', (group) => {
 		});
 		await transcript.refresh();
 		assert.isNull(transcript.cleanedText);
+	});
+
+	test('should flash the timeout code when the cleanup took too long', async ({
+		client,
+		cleanup,
+	}) => {
+		cleanup(
+			swapTextCleaner(new FakeTextCleaner(new TextCleanupTimeoutException()))
+		);
+		const user = await UserFactory.create();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			cleanedText: null,
+		}).create();
+
+		const response = await client
+			.post(`/history/${transcript.id}/clean`)
+			.header('Referer', '/history')
+			.loginAs(user)
+			.withCsrfToken()
+			.withSession({})
+			.redirects(0);
+
+		response.assertFlashMessage('inputErrorsBag', {
+			clean: 'E_TEXT_CLEANUP_TIMEOUT',
+		});
 	});
 
 	test('should answer 429 once the user spent the cleanups of the minute', async ({

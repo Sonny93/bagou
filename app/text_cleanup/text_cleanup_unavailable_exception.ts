@@ -8,7 +8,7 @@ export default class TextCleanupUnavailableException extends Exception {
 	static status = 503;
 	static code = 'E_TEXT_CLEANUP_UNAVAILABLE';
 
-	constructor() {
-		super('Text cleanup is unavailable');
+	constructor(message = 'Text cleanup is unavailable') {
+		super(message);
 	}
 }

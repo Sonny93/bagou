@@ -12,9 +12,11 @@ import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
 import type { CleanupQuality } from '#text_cleanup/cleanup_quality';
 import { TextCleaner } from '#text_cleanup/text_cleaner';
 import type { TextCleanOptions } from '#text_cleanup/text_cleaner';
+import TextCleanupTimeoutException from '#text_cleanup/text_cleanup_timeout_exception';
 import TextCleanupUnavailableException from '#text_cleanup/text_cleanup_unavailable_exception';
 
-const CLEANUP_TIMEOUT_MS = 30_000;
+/** Fits a full 30-minute draft (several thousand output tokens) cleaned by the slower precise model. */
+const CLEANUP_TIMEOUT_MS = 120_000;
 const JSON_PREFIX_LENGTH = '{"cleaned_text":"'.length;
 
 type CleanupFailureKind =
@@ -160,6 +162,7 @@ export class AnthropicTextCleaner extends TextCleaner {
 			},
 			'Text cleanup failed'
 		);
+		if (kind === 'timeout') throw new TextCleanupTimeoutException();
 		throw new TextCleanupUnavailableException();
 	}
 }
