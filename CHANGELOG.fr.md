@@ -6,6 +6,8 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-07
+
 ### Added
 
 - Bagou remarque désormais quand tu corriges un mot mal entendu dans le texte et propose de le retenir.
