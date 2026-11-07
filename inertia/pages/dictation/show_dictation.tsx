@@ -2,16 +2,16 @@ import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useMemo } from 'react';
 
+import { CorrectionReview } from '~/correction_suggestions/show_dictation/correction_review';
+import { useCorrectionReview } from '~/correction_suggestions/show_dictation/use_correction_review';
 import { CLEANABLE_STATUSES } from '~/dictation/core/dictation_state';
 import { createAutoCopy } from '~/dictation/show_dictation/auto_copy';
 import { canStartNewDictation } from '~/dictation/show_dictation/can_start_new_dictation';
-import { CorrectionStrip } from '~/dictation/show_dictation/correction_strip';
 import { DictationDock } from '~/dictation/show_dictation/dictation_dock';
 import { DictationHeader } from '~/dictation/show_dictation/dictation_header';
 import { DictationStage } from '~/dictation/show_dictation/dictation_stage';
 import { getLeaveRisk } from '~/dictation/show_dictation/get_leave_risk';
 import { useCleanupControls } from '~/dictation/show_dictation/use_cleanup_controls';
-import { useCorrectionSuggestions } from '~/dictation/show_dictation/use_correction_suggestions';
 import { useDetectEditedCorrections } from '~/dictation/show_dictation/use_detect_edited_corrections';
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
@@ -37,6 +37,8 @@ type ShowDictationProps = {
 	cleanupQualities: CleanupQualityOption[];
 	cleanupQuality: CleanupQuality;
 	corrections: Data.Corrections.Correction[];
+	pendingSuggestions: Data.CorrectionSuggestions.CorrectionSuggestion[];
+	dismissedSuggestions: { heard: string; written: string }[];
 };
 
 export default function ShowDictation({
@@ -44,11 +46,18 @@ export default function ShowDictation({
 	cleanupQualities,
 	cleanupQuality,
 	corrections,
+	pendingSuggestions,
+	dismissedSuggestions,
 }: Readonly<ShowDictationProps>) {
 	const { t } = useLingui();
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
 	const draft = useDictationDraft();
-	const suggestions = useCorrectionSuggestions({ corrections, draft });
+	const { suggestions, reviewItems, resolve } = useCorrectionReview({
+		corrections,
+		dismissedSuggestions,
+		pendingSuggestions,
+		draft,
+	});
 	const { copyStatus, copyCount, copyDraft, recordSelectionCopy } =
 		useDraftCopy({
 			draftId: draft.draftId,
@@ -159,11 +168,10 @@ export default function ShowDictation({
 					onCopy: recordSelectionCopy,
 				}}
 			/>
-			<CorrectionStrip
-				queue={suggestions.queue}
-				isEditable={CLEANABLE_STATUSES.has(state.status)}
-				onResolve={suggestions.resolve}
-				onDismiss={suggestions.dismiss}
+			<CorrectionReview
+				items={reviewItems}
+				canReview={CLEANABLE_STATUSES.has(state.status)}
+				onResolved={resolve}
 			/>
 			<DictationDock
 				state={state}

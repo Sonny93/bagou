@@ -46,6 +46,7 @@ export function CorrectionsSection({
 
 	return (
 		<section
+			id="corrections"
 			aria-labelledby={headingId}
 			className="flex flex-col gap-4 border-t border-line pt-6"
 		>

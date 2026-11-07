@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-	MAX_DISMISSED_CORRECTIONS,
-	appendDismissedCorrection,
+	clearDismissedCorrections,
 	readDismissedCorrections,
 } from '~/dictation/show_dictation/dismissed_corrections';
 
@@ -13,7 +12,7 @@ const createFakeStorage = (initialValue?: string): Storage => {
 	}
 	return {
 		getItem: (key: string) => entries.get(key) ?? null,
-		setItem: (key: string, value: string) => void entries.set(key, value),
+		removeItem: (key: string) => void entries.delete(key),
 	} as unknown as Storage;
 };
 
@@ -21,7 +20,7 @@ const createThrowingStorage = (): Storage => {
 	const fail = () => {
 		throw new DOMException('blocked', 'SecurityError');
 	};
-	return { getItem: fail, setItem: fail } as unknown as Storage;
+	return { getItem: fail, removeItem: fail } as unknown as Storage;
 };
 
 const buildPair = (index: number) => ({
@@ -30,44 +29,15 @@ const buildPair = (index: number) => ({
 });
 
 describe('dismissed corrections', () => {
-	it('should read back the pairs appended, oldest first', () => {
-		const storage = createFakeStorage();
-
-		appendDismissedCorrection(buildPair(1), storage);
-		appendDismissedCorrection(buildPair(2), storage);
+	it('should read back the stored pairs, oldest first', () => {
+		const storage = createFakeStorage(
+			JSON.stringify([buildPair(1), buildPair(2)])
+		);
 
 		expect(readDismissedCorrections(storage)).toEqual([
 			buildPair(1),
 			buildPair(2),
 		]);
-	});
-
-	it('should keep a pair dismissed again once, as the most recent', () => {
-		const storage = createFakeStorage();
-		appendDismissedCorrection(buildPair(1), storage);
-		appendDismissedCorrection(buildPair(2), storage);
-
-		appendDismissedCorrection(
-			{ heard: 'HEARD 1', written: 'written 1' },
-			storage
-		);
-
-		expect(readDismissedCorrections(storage)).toEqual([
-			buildPair(2),
-			{ heard: 'HEARD 1', written: 'written 1' },
-		]);
-	});
-
-	it('should drop the oldest pairs beyond the cap', () => {
-		const storage = createFakeStorage();
-
-		for (let index = 0; index <= MAX_DISMISSED_CORRECTIONS; index += 1) {
-			appendDismissedCorrection(buildPair(index), storage);
-		}
-
-		const dismissed = readDismissedCorrections(storage);
-		expect(dismissed).toHaveLength(MAX_DISMISSED_CORRECTIONS);
-		expect(dismissed[0]).toEqual(buildPair(1));
 	});
 
 	it('should read nothing when the stored value is not a list of pairs', () => {
@@ -85,17 +55,23 @@ describe('dismissed corrections', () => {
 		expect(readDismissedCorrections(storage)).toEqual([buildPair(1)]);
 	});
 
+	it('should read nothing once cleared', () => {
+		const storage = createFakeStorage(JSON.stringify([buildPair(1)]));
+
+		clearDismissedCorrections(storage);
+
+		expect(readDismissedCorrections(storage)).toEqual([]);
+	});
+
 	it('should work without throwing when storage is blocked', () => {
 		const storage = createThrowingStorage();
 
-		expect(() =>
-			appendDismissedCorrection(buildPair(1), storage)
-		).not.toThrow();
+		expect(() => clearDismissedCorrections(storage)).not.toThrow();
 		expect(readDismissedCorrections(storage)).toEqual([]);
 	});
 
 	it('should work without throwing when storage is absent', () => {
-		expect(() => appendDismissedCorrection(buildPair(1), null)).not.toThrow();
+		expect(() => clearDismissedCorrections(null)).not.toThrow();
 		expect(readDismissedCorrections(null)).toEqual([]);
 	});
 });

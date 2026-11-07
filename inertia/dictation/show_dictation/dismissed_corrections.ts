@@ -1,8 +1,6 @@
 import type { CorrectionPair } from '~/dictation/core/correction_pair';
-import { isSameCorrectionPair } from '~/dictation/core/is_same_correction_pair';
 
 const STORAGE_KEY = 'bagou:dismissed-corrections';
-export const MAX_DISMISSED_CORRECTIONS = 200;
 
 const getDefaultStorage = (): Storage | null => {
 	try {
@@ -31,7 +29,7 @@ const parsePairs = (
 		.map(({ heard, written }) => ({ heard, written }));
 };
 
-/** Reads the pairs dismissed on this device, oldest first; empty when storage is absent, blocked or unparseable. */
+/** Reads the pairs dismissed on this device before dismissals went to the server, oldest first; empty when storage is absent, blocked or unparseable. */
 export function readDismissedCorrections(
 	storage: Storage | null = getDefaultStorage()
 ): readonly CorrectionPair[] {
@@ -42,21 +40,12 @@ export function readDismissedCorrections(
 	}
 }
 
-/**
- * Remembers a dismissed pair on this device, dropping the oldest ones beyond
- * `MAX_DISMISSED_CORRECTIONS`. A storage failure is ignored: the dismissal
- * then only lasts until the page is closed.
- */
-export function appendDismissedCorrection(
-	pair: Readonly<CorrectionPair>,
+/** Forgets the pairs dismissed on this device, once the server holds them. A storage failure is ignored. */
+export function clearDismissedCorrections(
 	storage: Storage | null = getDefaultStorage()
 ): void {
 	try {
-		const others = readDismissedCorrections(storage).filter(
-			(known) => !isSameCorrectionPair(known, pair)
-		);
-		const kept = [...others, pair].slice(-MAX_DISMISSED_CORRECTIONS);
-		storage?.setItem(STORAGE_KEY, JSON.stringify(kept));
+		storage?.removeItem(STORAGE_KEY);
 	} catch {
 		return;
 	}
