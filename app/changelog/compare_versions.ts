@@ -12,7 +12,8 @@ function parseVersion(version: string): number[] | null {
  * Orders two plain `x.y.z` versions: -1 when `first` is older, 1 when it is
  * newer, 0 when equal. Returns null, and never throws, when either version
  * is not plain `x.y.z`, so a caller testing for `=== 1` treats it as "no new
- * version". This project has no prereleases, so `1.2.0-beta.1` is unparseable.
+ * version". Prereleases such as `1.2.0-next.0` are unparseable on purpose:
+ * `WhatsNewService` relies on the null to keep them out of the seen versions.
  */
 export function compareVersions(
 	first: string,

@@ -76,4 +76,23 @@ test.group('WhatsNewService', (group) => {
 
 		assert.equal((await User.findOrFail(user.id)).lastSeenVersion, '1.6.0');
 	});
+
+	test('should report nothing unseen when the current version is a prerelease', ({
+		assert,
+	}) => {
+		const service = new WhatsNewService('1.5.0-next.0');
+
+		assert.isFalse(service.describe(null).hasUnseen);
+		assert.isFalse(service.describe('1.4.0').hasUnseen);
+	});
+
+	test('should store nothing when the current version is a prerelease', async ({
+		assert,
+	}) => {
+		const user = await UserFactory.merge({ lastSeenVersion: '1.4.0' }).create();
+
+		await new WhatsNewService('1.5.0-next.0').markSeen(user);
+
+		assert.equal((await User.findOrFail(user.id)).lastSeenVersion, '1.4.0');
+	});
 });

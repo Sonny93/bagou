@@ -1,12 +1,23 @@
+import app from '@adonisjs/core/services/app';
 import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
-import { APP_VERSION } from '#changelog/app_version';
+import { WhatsNewService } from '#changelog/whats_new_service';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
 
+const CURRENT_VERSION = '1.2.0';
+const OLDER_VERSION = '0.0.1';
+
 test.group('InertiaMiddleware', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
+	group.each.setup(() => {
+		app.container.swap(
+			WhatsNewService,
+			() => new WhatsNewService(CURRENT_VERSION)
+		);
+		return () => app.container.restore(WhatsNewService);
+	});
 
 	test('should share the interface language of the authenticated user', async ({
 		client,
@@ -52,7 +63,7 @@ test.group('InertiaMiddleware', (group) => {
 		const response = await client.get('/passkeys').loginAs(user).withInertia();
 
 		assert.deepEqual(response.inertiaProps.whatsNew, {
-			currentVersion: APP_VERSION,
+			currentVersion: CURRENT_VERSION,
 			hasUnseen: true,
 		});
 	});
@@ -61,7 +72,9 @@ test.group('InertiaMiddleware', (group) => {
 		client,
 		assert,
 	}) => {
-		const user = await UserFactory.merge({ lastSeenVersion: '0.0.1' }).create();
+		const user = await UserFactory.merge({
+			lastSeenVersion: OLDER_VERSION,
+		}).create();
 
 		const response = await client.get('/passkeys').loginAs(user).withInertia();
 
@@ -73,7 +86,7 @@ test.group('InertiaMiddleware', (group) => {
 		assert,
 	}) => {
 		const user = await UserFactory.merge({
-			lastSeenVersion: APP_VERSION,
+			lastSeenVersion: CURRENT_VERSION,
 		}).create();
 
 		const response = await client.get('/passkeys').loginAs(user).withInertia();

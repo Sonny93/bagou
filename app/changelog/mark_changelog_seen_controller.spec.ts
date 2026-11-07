@@ -1,15 +1,24 @@
+import app from '@adonisjs/core/services/app';
 import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
-import { APP_VERSION } from '#changelog/app_version';
+import { WhatsNewService } from '#changelog/whats_new_service';
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#users/user';
 
+const CURRENT_VERSION = '1.2.0';
 const OLDER_VERSION = '0.0.1';
 const NEWER_VERSION = '999.0.0';
 
 test.group('MarkChangelogSeenController', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
+	group.each.setup(() => {
+		app.container.swap(
+			WhatsNewService,
+			() => new WhatsNewService(CURRENT_VERSION)
+		);
+		return () => app.container.restore(WhatsNewService);
+	});
 
 	test('should store the current version when the user never saw one', async ({
 		client,
@@ -23,7 +32,10 @@ test.group('MarkChangelogSeenController', (group) => {
 			.withCsrfToken();
 
 		response.assertStatus(204);
-		assert.equal((await User.findOrFail(user.id)).lastSeenVersion, APP_VERSION);
+		assert.equal(
+			(await User.findOrFail(user.id)).lastSeenVersion,
+			CURRENT_VERSION
+		);
 	});
 
 	test('should store the current version when the stored one is older', async ({
@@ -40,7 +52,10 @@ test.group('MarkChangelogSeenController', (group) => {
 			.withCsrfToken();
 
 		response.assertStatus(204);
-		assert.equal((await User.findOrFail(user.id)).lastSeenVersion, APP_VERSION);
+		assert.equal(
+			(await User.findOrFail(user.id)).lastSeenVersion,
+			CURRENT_VERSION
+		);
 	});
 
 	test('should keep the stored version when it is newer than the current one', async ({
