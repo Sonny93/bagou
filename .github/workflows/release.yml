@@ -8,6 +8,10 @@ on:
         type: choice
         options: [patch, minor, major]
         required: true
+      prerelease:
+        description: Publish a prerelease (entries stay under Unreleased)
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -27,6 +31,7 @@ jobs:
     uses: minimalstuff/tooling/.github/workflows/release.yml@705224c97824f55bc28a6139ea0aacefe4da82e1 # v0.9.0
     with:
       increment: ${{ inputs.increment }}
+      release-script: ${{ inputs.prerelease && 'release:next' || 'release' }}
       node-version-file: mise.toml
     secrets:
       release-deploy-key: ${{ secrets.RELEASE_DEPLOY_KEY }}

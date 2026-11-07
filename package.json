@@ -53,7 +53,8 @@
 		"typecheck": "tsc --noEmit && tsc --noEmit --project inertia/tsconfig.json",
 		"knip": "knip",
 		"check": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run test:front",
-		"release": "release-it"
+		"release": "release-it",
+		"release:next": "release-it --preRelease=next --plugins.@release-it/keep-a-changelog.keepUnreleased"
 	},
 	"dependencies": {
 		"@adonisjs/auth": "^10.1.0",

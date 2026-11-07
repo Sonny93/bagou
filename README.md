@@ -111,6 +111,16 @@ gh workflow run release.yml -f increment=minor
 
 Or open Actions, Release, Run workflow. The workflow runs the checks, moves `Unreleased` under the new version, tags, and creates the GitHub release from those notes. The tag push builds `ghcr.io/sonny93/bagou` (tags `X.Y.Z`, `X.Y`, `X`, `latest`) for amd64 and arm64.
 
+### Prerelease
+
+To test the release chain without consuming the `Unreleased` entries:
+
+```sh
+gh workflow run release.yml -f increment=minor -f prerelease=true
+```
+
+This publishes a version like `v1.3.0-next.0`. The entries stay under `Unreleased` (and `CHANGELOG.fr.md` is left untouched), so the next stable release still lists them. The GitHub release is marked as a prerelease, and the image gets only the full version tag (`1.3.0-next.0`), never `latest`, `X.Y` or `X`.
+
 ### One-time setup
 
 The workflow needs an environment `release` restricted to `main`, holding the secret `RELEASE_DEPLOY_KEY` (the private half of a deploy key with write access), and a tag ruleset that only lets that deploy key create tags. Steps are in [releasing.md](https://github.com/minimalstuff/tooling/blob/main/docs/releasing.md).
