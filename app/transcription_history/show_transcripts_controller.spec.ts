@@ -3,6 +3,10 @@ import { test } from '@japa/runner';
 
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
+import { UserSettingFactory } from '#database/factories/user_setting_factory';
+import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
+import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
+import { toCleanupQualityOptions } from '#text_cleanup/cleanup_quality_options';
 
 test.group('ShowTranscriptsController', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
@@ -103,5 +107,26 @@ test.group('ShowTranscriptsController', (group) => {
 			.loginAs(user);
 
 		response.assertStatus(422);
+	});
+
+	test('should give the cleanup qualities with their model names and the saved quality', async ({
+		client,
+		assert,
+		cleanup,
+	}) => {
+		cleanup(swapTextCleaner(new FakeTextCleaner()));
+		const user = await UserFactory.create();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'precise',
+		}).create();
+
+		const response = await client.get('/history').loginAs(user).withInertia();
+
+		assert.equal(response.inertiaProps.cleanupQuality, 'precise');
+		assert.deepEqual(
+			response.inertiaProps.cleanupQualities,
+			toCleanupQualityOptions(new FakeTextCleaner().modelNames)
+		);
 	});
 });

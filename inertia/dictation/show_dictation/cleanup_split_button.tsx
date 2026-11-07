@@ -1,4 +1,3 @@
-import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import {
@@ -11,6 +10,7 @@ import {
 import type { CleanupControls } from '~/dictation/show_dictation/cleanup_controls';
 import type { VersionToggle } from '~/dictation/show_dictation/get_version_toggle';
 import type { CleanupQuality } from '~/shared/cleanup_quality';
+import { CLEANUP_QUALITY_LABELS } from '~/shared/cleanup_quality_labels';
 
 const CLEANING_MESSAGE = msg`Cleaning the text…`;
 const CLEAN_MESSAGE = msg`Clean the text`;
@@ -25,11 +25,6 @@ const VERSION_TOGGLE_DISPLAYS = {
 		message: msg`Show the cleaned text`,
 	},
 } as const satisfies Record<VersionToggle, unknown>;
-
-const QUALITY_LABELS = {
-	standard: msg`Standard`,
-	precise: msg`Precise`,
-} as const satisfies Record<CleanupQuality, MessageDescriptor>;
 
 type CleanupSplitButtonProps = {
 	controls: CleanupControls;
@@ -53,7 +48,7 @@ export function CleanupSplitButton({
 		value: CleanupQuality;
 		modelName: string;
 	}) => {
-		const qualityLabel = i18n._(QUALITY_LABELS[value]);
+		const qualityLabel = i18n._(CLEANUP_QUALITY_LABELS[value]);
 		const trailing =
 			value === controls.savedQuality
 				? t`${qualityLabel} (default)`

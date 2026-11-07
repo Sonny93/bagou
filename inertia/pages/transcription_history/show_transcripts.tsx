@@ -2,9 +2,14 @@ import type { Data } from '@generated/data';
 import { Trans } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 
+import type {
+	CleanupQuality,
+	CleanupQualityOption,
+} from '~/shared/cleanup_quality';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
+import { RecleanOptionsContext } from '~/transcription_history/show_transcripts/reclean_options_context';
 import { TranscriptEmptyState } from '~/transcription_history/show_transcripts/transcript_empty_state';
 import { TranscriptFeed } from '~/transcription_history/show_transcripts/transcript_feed';
 import { TranscriptSearchInput } from '~/transcription_history/show_transcripts/transcript_search_input';
@@ -16,17 +21,25 @@ type ShowTranscriptsProps = {
 	transcripts: { data: Data.Transcript[] };
 	query: string;
 	transcriptCount: number;
+	cleanupQualities: CleanupQualityOption[];
+	cleanupQuality: CleanupQuality;
 };
 
 export default function ShowTranscripts({
 	transcripts,
 	query,
 	transcriptCount,
+	cleanupQualities,
+	cleanupQuality,
 }: Readonly<ShowTranscriptsProps>) {
 	const { searchText, setSearchText } = useTranscriptSearch(query);
 	const deleteTranscript = useDeleteTranscript();
 	const deleteAllTranscripts = useDeleteAllTranscripts(transcriptCount);
 	const hasTranscripts = transcripts.data.length > 0;
+	const recleanOptions = {
+		qualities: cleanupQualities,
+		savedQuality: cleanupQuality,
+	};
 
 	return (
 		<div className="flex min-h-dvh flex-col">
@@ -57,11 +70,13 @@ export default function ShowTranscripts({
 				</div>
 				<TranscriptSearchInput value={searchText} onChange={setSearchText} />
 				{hasTranscripts ? (
-					<TranscriptFeed
-						transcripts={transcripts.data}
-						isSearching={query !== ''}
-						onDelete={deleteTranscript}
-					/>
+					<RecleanOptionsContext value={recleanOptions}>
+						<TranscriptFeed
+							transcripts={transcripts.data}
+							isSearching={query !== ''}
+							onDelete={deleteTranscript}
+						/>
+					</RecleanOptionsContext>
 				) : (
 					<TranscriptEmptyState isSearching={query !== ''} />
 				)}

@@ -1,11 +1,17 @@
 import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 import { Badge, IconButton } from '@minimalstuff/ui';
+import { useRef } from 'react';
 
+import type { CleanupQuality } from '~/shared/cleanup_quality';
 import { copyToClipboard } from '~/shared/lib/copy_to_clipboard';
 import { formatTranscriptFullDate } from '~/transcription_history/show_transcripts/format_transcript_full_date';
+import { RecleanMenu } from '~/transcription_history/show_transcripts/reclean_menu';
+import { RecleanPreviews } from '~/transcription_history/show_transcripts/reclean_previews';
+import { RecleanStatus } from '~/transcription_history/show_transcripts/reclean_status';
 import { TranscriptRawText } from '~/transcription_history/show_transcripts/transcript_raw_text';
 import { useCleanTranscript } from '~/transcription_history/show_transcripts/use_clean_transcript';
+import { useRecleanTranscript } from '~/transcription_history/show_transcripts/use_reclean_transcript';
 
 const CLEAN_ICON = 'i-tabler-sparkles';
 const CLEANING_ICON = 'i-tabler-loader-2 animate-spin';
@@ -28,17 +34,24 @@ export function TranscriptRow({
 	const fullDate = formatTranscriptFullDate(transcript.createdAt, i18n.locale);
 	const displayedText = cleanedText ?? rawText;
 	const { clean, isCleaning, errorMessage } = useCleanTranscript(transcript.id);
+	const reclean = useRecleanTranscript(transcript.id);
+	const recleanMenuRef = useRef<HTMLSpanElement>(null);
 
 	const handleCopy = () => void copyToClipboard(displayedText);
 	const handleDelete = () => onDelete(transcript);
+	const handleDiscard = (quality: CleanupQuality) => {
+		reclean.discard(quality);
+		recleanMenuRef.current?.querySelector('button')?.focus();
+	};
+	const isRecleaning = Object.keys(reclean.runningQualities).length > 0;
 
 	return (
 		<li className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
-			<div className="flex items-center gap-2">
+			<div className="flex flex-wrap items-center gap-2">
 				<time
 					dateTime={transcript.createdAt}
 					title={fullDate}
-					className="flex-1 text-sm text-muted"
+					className="min-w-24 flex-1 text-sm text-muted"
 				>
 					{dateLabel}
 				</time>
@@ -59,6 +72,12 @@ export function TranscriptRow({
 						onClick={clean}
 					/>
 				)}
+				<RecleanMenu
+					accessibleDate={accessibleDate}
+					runningQualities={reclean.runningQualities}
+					menuRef={recleanMenuRef}
+					onReclean={reclean.reclean}
+				/>
 				<IconButton
 					icon="i-tabler-copy"
 					aria-label={t`Copy the dictation from ${accessibleDate}`}
@@ -83,6 +102,16 @@ export function TranscriptRow({
 					{errorMessage}
 				</p>
 			)}
+			<RecleanStatus
+				isRunning={isRecleaning}
+				errorMessage={reclean.errorMessage}
+				announcement={reclean.announcement}
+			/>
+			<RecleanPreviews
+				previews={reclean.previews}
+				onCopy={reclean.copy}
+				onDiscard={handleDiscard}
+			/>
 			{cleanedText !== null && <TranscriptRawText rawText={rawText} />}
 		</li>
 	);

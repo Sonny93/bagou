@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Bagou now notices when you fix a misheard word in the text and offers to remember it.
 - Remembered corrections, which you can manage in the settings, help both speech recognition and the cleanup get those words right next time.
+- From the history, clean a dictation again from its raw text with the standard or precise model, to compare them side by side.
 
 ### Changed
 

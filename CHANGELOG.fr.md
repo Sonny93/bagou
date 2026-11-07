@@ -10,6 +10,7 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 - Bagou remarque désormais quand tu corriges un mot mal entendu dans le texte et propose de le retenir.
 - Les corrections retenues, que tu peux gérer dans les réglages, aident la reconnaissance vocale et le nettoyage à bien écrire ces mots la fois suivante.
+- Depuis l'historique, tu peux nettoyer une dictée à nouveau à partir de son texte brut avec le modèle standard ou précis, pour les comparer côte à côte.
 
 ### Changed
 

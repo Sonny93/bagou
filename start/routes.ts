@@ -33,6 +33,14 @@ router
 					.use(cleanupThrottle)
 					.as('transcription_history.clean_transcript');
 				router
+					.post('/:id/reclean', [
+						controllers.transcriptionHistory.RecleanTranscript,
+						'execute',
+					])
+					.where('id', router.matchers.number())
+					.use(cleanupThrottle)
+					.as('transcription_history.reclean_transcript');
+				router
 					.put('/drafts/:draftId', [
 						controllers.transcriptionHistory.SaveDraftText,
 						'execute',

@@ -700,4 +700,78 @@ test.group('TranscriptHistoryService', (group) => {
 		await transcript.refresh();
 		assert.isNull(transcript.cleanedText);
 	});
+
+	test('should clean the raw text with the given quality and never write the entry', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			cleanupQuality: 'standard',
+		}).create();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			rawText: 'euh bonjour',
+			cleanedText: 'Déjà propre.',
+		}).create();
+
+		const cleanedText = await service.recleanFromRaw(
+			user.id,
+			transcript.id,
+			'precise'
+		);
+
+		assert.equal(cleanedText, 'EUH BONJOUR');
+		assert.equal(textCleaner.receivedPreferences[0]?.quality, 'precise');
+		await transcript.refresh();
+		assert.equal(transcript.cleanedText, 'Déjà propre.');
+		assert.equal(transcript.rawText, 'euh bonjour');
+	});
+
+	test('should clean the raw text again with the saved corrections', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		await createCorrectionService().add(user.id, {
+			heard: 'cloud',
+			written: 'Claude',
+		});
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+		}).create();
+
+		await service.recleanFromRaw(user.id, transcript.id, 'standard');
+
+		assert.deepEqual(textCleaner.receivedPreferences[0]?.corrections, [
+			{ heard: 'cloud', written: 'Claude' },
+		]);
+	});
+
+	test('should throw not found when cleaning again an entry of another user', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		const foreign = await TranscriptFactory.with('user').create();
+
+		await assert.rejects(
+			() => service.recleanFromRaw(user.id, foreign.id, 'standard'),
+			'Transcript not found'
+		);
+		assert.lengthOf(textCleaner.cleaned, 0);
+	});
+
+	test('should throw not found when cleaning again an entry past the retention', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			createdAt: daysAgo(RETENTION_DAYS + 1),
+		}).create();
+
+		await assert.rejects(
+			() => service.recleanFromRaw(user.id, transcript.id, 'standard'),
+			'Transcript not found'
+		);
+	});
 });

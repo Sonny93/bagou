@@ -32,6 +32,12 @@ const routes = {
     tokens: [[0,"history"],[1,"id"],[0,"clean"]],
     types: placeholder as Registry['transcription_history.clean_transcript']['types'],
   },
+  'transcription_history.reclean_transcript': {
+    methods: ["POST"],
+    pattern: '/history/:id/reclean',
+    tokens: [[0,"history"],[1,"id"],[0,"reclean"]],
+    types: placeholder as Registry['transcription_history.reclean_transcript']['types'],
+  },
   'transcription_history.save_draft_text': {
     methods: ["PUT"],
     pattern: '/history/drafts/:draftId',

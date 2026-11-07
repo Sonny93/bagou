@@ -29,9 +29,26 @@ msgstr "{dayLabel} à {time}"
 msgid "{position} of {total}"
 msgstr "{position} sur {total}"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:59
+#: inertia/transcription_history/show_transcripts/reclean_preview.tsx:36
+msgid "{qualityLabel} · {modelName}, from the raw text, with your current settings, not saved"
+msgstr "{qualityLabel} · {modelName}, à partir du texte brut, avec tes réglages actuels, non enregistré"
+
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:54
+#: inertia/transcription_history/show_transcripts/reclean_menu.tsx:35
 msgid "{qualityLabel} (default)"
 msgstr "{qualityLabel} (par défaut)"
+
+#: inertia/transcription_history/show_transcripts/reclean_menu.tsx:34
+msgid "{qualityLabel} (running)"
+msgstr "{qualityLabel} (en cours)"
+
+#: inertia/transcription_history/show_transcripts/use_reclean_transcript.ts:124
+msgid "{qualityLabel} version copied"
+msgstr "Version {qualityLabel} copiée"
+
+#: inertia/transcription_history/show_transcripts/use_reclean_transcript.ts:104
+msgid "{qualityLabel} version ready"
+msgstr "Version {qualityLabel} prête"
 
 #: inertia/dictation/show_dictation/format_remaining_quota.ts:10
 msgid "{remainingMinutes} min left today"
@@ -58,7 +75,7 @@ msgstr "Compte"
 msgid "Add a passkey"
 msgstr "Ajouter une passkey"
 
-#: inertia/user_settings/show_settings/add_correction_form.tsx:56
+#: inertia/user_settings/show_settings/add_correction_form.tsx:63
 msgid "Add correction"
 msgstr "Ajouter la correction"
 
@@ -99,15 +116,23 @@ msgstr "Changements"
 msgid "Clean again"
 msgstr "Nettoyer à nouveau"
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:53
+#: inertia/transcription_history/show_transcripts/reclean_menu.tsx:78
+msgid "Clean again from the raw text with"
+msgstr "Nettoyer à nouveau à partir du texte brut avec"
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:66
 msgid "Clean the dictation from {accessibleDate}"
 msgstr "Nettoyer la dictée de {accessibleDate}"
+
+#: inertia/transcription_history/show_transcripts/reclean_menu.tsx:68
+msgid "Clean the dictation from {accessibleDate} again from the raw text"
+msgstr "Nettoyer à nouveau la dictée de {accessibleDate} à partir du texte brut"
 
 #: inertia/dictation/show_dictation/cleanup_split_button.tsx:16
 msgid "Clean the text"
 msgstr "Nettoyer le texte"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:76
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:71
 msgid "Clean with"
 msgstr "Nettoyer avec"
 
@@ -119,6 +144,10 @@ msgstr "Texte nettoyé"
 #: inertia/dictation/show_dictation/copy_controls.tsx:92
 msgid "Cleaned with {modelName}"
 msgstr "Nettoyé avec {modelName}"
+
+#: inertia/transcription_history/show_transcripts/reclean_status.tsx:20
+msgid "Cleaning again from the raw text…"
+msgstr "Nouveau nettoyage à partir du texte brut…"
 
 #: inertia/dictation/show_dictation/cleanup_progress_overlay.tsx:44
 #: inertia/dictation/show_dictation/cleanup_split_button.tsx:15
@@ -144,7 +173,7 @@ msgstr "Modèle de nettoyage"
 msgid "Cleanup unavailable, raw text"
 msgstr "Nettoyage indisponible, texte brut"
 
-#: inertia/pages/transcription_history/show_transcripts.tsx:54
+#: inertia/pages/transcription_history/show_transcripts.tsx:67
 #: inertia/transcription_history/show_transcripts/use_delete_all_transcripts.tsx:14
 msgid "Clear all"
 msgstr "Tout effacer"
@@ -171,6 +200,7 @@ msgstr "Copie le texte dans le presse-papier après chaque dictée ou nettoyage"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:104
 #: inertia/dictation/show_dictation/copy_controls.tsx:116
+#: inertia/transcription_history/show_transcripts/reclean_preview.tsx:50
 msgid "Copy"
 msgstr "Copier"
 
@@ -179,10 +209,15 @@ msgid "Copy automatically"
 msgstr "Copie automatique"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:52
+#: inertia/transcription_history/show_transcripts/use_reclean_transcript.ts:128
 msgid "Copy failed"
 msgstr "Copie impossible"
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:64
+#: inertia/transcription_history/show_transcripts/reclean_preview.tsx:47
+msgid "Copy the {qualityLabel} version"
+msgstr "Copier la version {qualityLabel}"
+
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:83
 msgid "Copy the dictation from {accessibleDate}"
 msgstr "Copier la dictée de {accessibleDate}"
 
@@ -244,7 +279,7 @@ msgstr "Supprimer"
 msgid "Delete {written} for {heard}"
 msgstr "Supprimer {written} pour {heard}"
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:72
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:91
 msgid "Delete the dictation from {accessibleDate}"
 msgstr "Supprimer la dictée de {accessibleDate}"
 
@@ -292,6 +327,14 @@ msgstr "La dictée est momentanément indisponible"
 #: inertia/user_settings/show_settings/dictation_language_select.tsx:34
 msgid "Dictation language"
 msgstr "Langue de dictée"
+
+#: inertia/transcription_history/show_transcripts/reclean_preview.tsx:59
+msgid "Discard"
+msgstr "Ignorer"
+
+#: inertia/transcription_history/show_transcripts/reclean_preview.tsx:56
+msgid "Discard the {qualityLabel} version"
+msgstr "Ignorer la version {qualityLabel}"
 
 #: inertia/changelog/shared/whats_new_banner.tsx:56
 #: inertia/dictation/show_dictation/correction_suggestion.tsx:62
@@ -356,7 +399,7 @@ msgid "Heard {heard}, written {written}"
 msgstr "Entendu {heard}, écrit {written}"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:31
-#: inertia/pages/transcription_history/show_transcripts.tsx:41
+#: inertia/pages/transcription_history/show_transcripts.tsx:54
 msgid "History"
 msgstr "Historique"
 
@@ -392,7 +435,7 @@ msgstr "L'accès au microphone a été refusé, autorise-le dans le navigateur"
 msgid "Modified since the copy"
 msgstr "Modifié depuis la copie"
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:99
+#: inertia/dictation/show_dictation/cleanup_split_button.tsx:94
 msgid "More cleanup options"
 msgstr "Plus d'options de nettoyage"
 
@@ -434,7 +477,7 @@ msgstr "Aucun microphone détecté"
 msgid "No results."
 msgstr "Aucun résultat."
 
-#: inertia/transcription_history/show_transcripts/transcript_row.tsx:47
+#: inertia/transcription_history/show_transcripts/transcript_row.tsx:60
 msgid "not cleaned"
 msgstr "non nettoyé"
 
@@ -487,7 +530,7 @@ msgstr "Passkeys"
 msgid "Paste a raw text, as if it had just been dictated. Ctrl+Enter runs the test."
 msgstr "Collez un texte brut, comme s'il venait d'être dicté. Ctrl+Entrée lance le test."
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:31
+#: inertia/shared/cleanup_quality_labels.ts:8
 msgid "Precise"
 msgstr "Précis"
 
@@ -622,7 +665,7 @@ msgstr "Une erreur s'est produite, réessaie"
 msgid "Speak, the text is written here."
 msgstr "Parle, le texte s'écrit ici."
 
-#: inertia/dictation/show_dictation/cleanup_split_button.tsx:30
+#: inertia/shared/cleanup_quality_labels.ts:7
 msgid "Standard"
 msgstr "Standard"
 
@@ -867,11 +910,11 @@ msgstr "Utilise une passkey enregistrée sur cet appareil."
 msgid "Vocabulary"
 msgstr "Vocabulaire"
 
-#: inertia/user_settings/show_settings/add_correction_form.tsx:34
+#: inertia/user_settings/show_settings/add_correction_form.tsx:41
 msgid "vox trale"
 msgstr "vox trale"
 
-#: inertia/user_settings/show_settings/add_correction_form.tsx:43
+#: inertia/user_settings/show_settings/add_correction_form.tsx:50
 msgid "Voxtral"
 msgstr "Voxtral"
 
@@ -879,11 +922,11 @@ msgstr "Voxtral"
 msgid "What changed in each version of Bagou."
 msgstr "Ce qui a changé dans chaque version de Bagou."
 
-#: inertia/user_settings/show_settings/add_correction_form.tsx:42
+#: inertia/user_settings/show_settings/add_correction_form.tsx:49
 msgid "What it should be"
 msgstr "Ce que ça devrait être"
 
-#: inertia/user_settings/show_settings/add_correction_form.tsx:33
+#: inertia/user_settings/show_settings/add_correction_form.tsx:40
 msgid "What was heard"
 msgstr "Ce qui a été entendu"
 
@@ -903,7 +946,7 @@ msgid "Write numbers as digits.\n"
 msgstr "Écris les nombres en chiffres.\n"
 "Utilise les guillemets français."
 
-#: inertia/pages/transcription_history/show_transcripts.tsx:44
+#: inertia/pages/transcription_history/show_transcripts.tsx:57
 msgid "Your dictations from the last 60 days."
 msgstr "Tes dictées des 60 derniers jours."
 

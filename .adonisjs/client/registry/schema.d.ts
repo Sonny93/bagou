@@ -60,6 +60,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/clean_transcript_controller').default['execute']>>>
     }
   }
+  'transcription_history.reclean_transcript': {
+    methods: ["POST"]
+    pattern: '/history/:id/reclean'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#transcription_history/validators/reclean_transcript_validator').recleanTranscriptValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#transcription_history/validators/reclean_transcript_validator').recleanTranscriptValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/transcription_history/reclean_transcript_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/transcription_history/reclean_transcript_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/transcription_history/reclean_transcript_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'transcription_history.save_draft_text': {
     methods: ["PUT"]
     pattern: '/history/drafts/:draftId'

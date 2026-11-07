@@ -148,6 +148,34 @@ export class TranscriptHistoryService {
 		return cleanedText;
 	}
 
+	/**
+	 * Cleans the raw text of an entry again with the given quality and the
+	 * user's current settings and corrections, to compare qualities on the same
+	 * input, and returns it. Never writes: the raw text is the chronological
+	 * segments, so it misses what was typed by hand and keeps the passages the
+	 * user deleted, and would not be a faithful replacement of the entry's text.
+	 */
+	async recleanFromRaw(
+		userId: number,
+		id: number,
+		quality: CleanupQuality
+	): Promise<string> {
+		const transcript = await Transcript.findOwned(
+			userId,
+			id,
+			this.#retentionStart()
+		);
+		if (!transcript) throw new TranscriptNotFoundException();
+		const [settings, corrections] = await Promise.all([
+			this.userSettingsService.get(userId),
+			this.correctionService.listPairs(userId),
+		]);
+		return this.textCleanupService.clean(transcript.rawText, {
+			...toCleanupPreferences(settings, corrections),
+			quality,
+		});
+	}
+
 	async delete(userId: number, id: number): Promise<void> {
 		const isDeleted = await Transcript.deleteOwned(userId, id);
 		if (!isDeleted) throw new TranscriptNotFoundException();
