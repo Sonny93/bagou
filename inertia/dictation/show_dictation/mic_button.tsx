@@ -1,7 +1,7 @@
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Kbd, Tooltip } from '@minimalstuff/ui';
+import { Kbd, Spinner, Tooltip } from '@minimalstuff/ui';
 import { useEffect, useRef } from 'react';
 
 import { cn } from '~/shared/lib/cn';
@@ -22,12 +22,8 @@ type MicButtonProps = {
 const BUTTON_CLASSES =
 	'flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-accent-600 text-white transition-colors hover:bg-accent-700 disabled:cursor-default disabled:opacity-60 dark:bg-accent-400 dark:text-canvas dark:hover:bg-accent-300';
 
-const getIcon = (isRecording: boolean, isBusy: boolean): string => {
-	if (isBusy) {
-		return 'i-tabler-loader-2 animate-spin';
-	}
-	return isRecording ? 'i-tabler-player-stop-filled' : 'i-tabler-microphone';
-};
+const getIcon = (isRecording: boolean): string =>
+	isRecording ? 'i-tabler-player-stop-filled' : 'i-tabler-microphone';
 
 const getLabel = (
 	isRecording: boolean,
@@ -87,10 +83,11 @@ export function MicButton({
 				onClick={handleClick}
 				className={cn(BUTTON_CLASSES, FOCUS_RING_CLASSES)}
 			>
-				<span
-					className={cn(getIcon(isRecording, isBusy), 'size-6')}
-					aria-hidden
-				/>
+				{isBusy ? (
+					<Spinner unstyled aria-hidden iconClassName="size-6" />
+				) : (
+					<span className={cn(getIcon(isRecording), 'size-6')} aria-hidden />
+				)}
 			</button>
 		</Tooltip>
 	);

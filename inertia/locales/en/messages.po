@@ -15,25 +15,13 @@ msgstr "{count, plural, one {# dictation will be permanently deleted.} other {# 
 msgid "{dayLabel} at {time}"
 msgstr "{dayLabel} at {time}"
 
-#: inertia/layouts/app_ui_provider.tsx:40
-msgid "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
-msgstr "{maxSelectedValues, plural, one {Maximum of # value reached} other {Maximum of # values reached}}"
-
 #: inertia/dictation/show_dictation/cleanup_split_button.tsx:59
 msgid "{qualityLabel} (default)"
 msgstr "{qualityLabel} (default)"
 
-#: inertia/layouts/app_ui_provider.tsx:33
-msgid "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
-msgstr "{remainingCount, plural, one {# character remaining} other {# characters remaining}}"
-
 #: inertia/dictation/show_dictation/format_remaining_quota.ts:10
 msgid "{remainingMinutes} min left today"
 msgstr "{remainingMinutes} min left today"
-
-#: inertia/layouts/app_ui_provider.tsx:29
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# selected} other {# selected}}"
 
 #: inertia/user_settings/show_settings/vocabulary_field.tsx:39
 msgid "{termCount} of {maxTermCount} terms"
@@ -73,7 +61,6 @@ msgid "Bagou {currentVersion} is here"
 msgstr "Bagou {currentVersion} is here"
 
 #: inertia/dictation/show_dictation/recording_actions.tsx:12
-#: inertia/layouts/app_ui_provider.tsx:17
 #: inertia/user_settings/show_settings/dictation_preview.tsx:62
 msgid "Cancel"
 msgstr "Cancel"
@@ -139,10 +126,6 @@ msgstr "Cleanup model"
 msgid "Cleanup unavailable, raw text"
 msgstr "Cleanup unavailable, raw text"
 
-#: inertia/layouts/app_ui_provider.tsx:21
-msgid "Clear"
-msgstr "Clear"
-
 #: inertia/pages/transcription_history/show_transcripts.tsx:54
 #: inertia/transcription_history/show_transcripts/use_delete_all_transcripts.tsx:14
 msgid "Clear all"
@@ -152,28 +135,15 @@ msgstr "Clear all"
 msgid "Clear all?"
 msgstr "Clear all?"
 
-#: inertia/layouts/app_ui_provider.tsx:19
-msgid "Clear selection"
-msgstr "Clear selection"
-
-#: inertia/layouts/app_ui_provider.tsx:15
-msgid "Close"
-msgstr "Close"
-
-#: inertia/layouts/app_ui_provider.tsx:16
-msgid "Confirm"
-msgstr "Confirm"
-
 #: inertia/dictation/show_dictation/dictation_dock.tsx:32
 msgid "Connecting…"
 msgstr "Connecting…"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:39
+#: inertia/dictation/show_dictation/mic_button.tsx:35
 msgid "Continue the dictation"
 msgstr "Continue the dictation"
 
 #: inertia/dictation/show_dictation/copy_controls.tsx:26
-#: inertia/layouts/app_ui_provider.tsx:23
 msgid "Copied"
 msgstr "Copied"
 
@@ -223,10 +193,6 @@ msgstr "Created on {createdDate}, used on {lastUsedDate}"
 msgid "Daily quota reached"
 msgstr "Daily quota reached"
 
-#: inertia/layouts/app_ui_provider.tsx:9
-msgid "Dark theme"
-msgstr "Dark theme"
-
 #: inertia/passkeys/show_passkeys/use_delete_passkey.ts:15
 #: inertia/transcription_history/show_transcripts/use_delete_transcript.tsx:17
 msgid "Delete"
@@ -252,7 +218,7 @@ msgstr "Delete this dictation?"
 msgid "Deprecated"
 msgstr "Deprecated"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:24
+#: inertia/dictation/show_dictation/save_indicator.tsx:25
 msgid "Dictate a segment to add this text to the history."
 msgstr "Dictate a segment to add this text to the history."
 
@@ -260,7 +226,7 @@ msgstr "Dictate a segment to add this text to the history."
 msgid "Dictated text"
 msgstr "Dictated text"
 
-#: inertia/shared/ui/back_to_dictation_link.tsx:16
+#: inertia/shared/ui/back_to_dictation_link.tsx:15
 #: inertia/user_settings/show_settings/settings_preview.tsx:36
 msgid "Dictation"
 msgstr "Dictation"
@@ -293,7 +259,7 @@ msgstr "E.g. MacBook, phone"
 msgid "Each term is limited to {maxTermLength} characters"
 msgstr "Each term is limited to {maxTermLength} characters"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:23
+#: inertia/dictation/show_dictation/save_indicator.tsx:24
 msgid "Edits are saved to the history automatically. Ctrl+S saves now."
 msgstr "Edits are saved to the history automatically. Ctrl+S saves now."
 
@@ -301,7 +267,7 @@ msgstr "Edits are saved to the history automatically. Ctrl+S saves now."
 msgid "English"
 msgstr "English"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:74
+#: inertia/dictation/show_dictation/mic_button.tsx:70
 msgid "Enter"
 msgstr "Enter"
 
@@ -313,7 +279,7 @@ msgstr "Esc"
 msgid "Fast and inexpensive. May miss some agreement slips or misheard words."
 msgstr "Fast and inexpensive. May miss some agreement slips or misheard words."
 
-#: inertia/dictation/show_dictation/mic_button.tsx:37
+#: inertia/dictation/show_dictation/mic_button.tsx:33
 msgid "Finish the dictation"
 msgstr "Finish the dictation"
 
@@ -354,15 +320,7 @@ msgstr "Leave"
 msgid "Leave this page?"
 msgstr "Leave this page?"
 
-#: inertia/layouts/app_ui_provider.tsx:8
-msgid "Light theme"
-msgstr "Light theme"
-
-#: inertia/layouts/app_ui_provider.tsx:24
-msgid "Loading"
-msgstr "Loading"
-
-#: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:18
+#: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:17
 msgid "Loading more dictations…"
 msgstr "Loading more dictations…"
 
@@ -404,10 +362,6 @@ msgstr "No dictations yet."
 msgid "No microphone detected"
 msgstr "No microphone detected"
 
-#: inertia/layouts/app_ui_provider.tsx:18
-msgid "No results"
-msgstr "No results"
-
 #: inertia/transcription_history/show_transcripts/transcript_empty_state.tsx:12
 msgid "No results."
 msgstr "No results."
@@ -420,12 +374,12 @@ msgstr "not cleaned"
 msgid "Not cleaned"
 msgstr "Not cleaned"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:47
-#: inertia/dictation/show_dictation/save_indicator.tsx:100
+#: inertia/dictation/show_dictation/save_indicator.tsx:48
+#: inertia/dictation/show_dictation/save_indicator.tsx:101
 msgid "Not in history yet"
 msgstr "Not in history yet"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:55
+#: inertia/dictation/show_dictation/save_indicator.tsx:56
 msgid "Not saved"
 msgstr "Not saved"
 
@@ -498,10 +452,6 @@ msgstr "Reload"
 msgid "Removed"
 msgstr "Removed"
 
-#: inertia/layouts/app_ui_provider.tsx:22
-msgid "required"
-msgstr "required"
-
 #: inertia/user_settings/show_settings/text_preview.tsx:42
 msgid "Sample text"
 msgstr "Sample text"
@@ -510,18 +460,14 @@ msgstr "Sample text"
 msgid "Save"
 msgstr "Save"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:39
-#: inertia/dictation/show_dictation/save_indicator.tsx:99
+#: inertia/dictation/show_dictation/save_indicator.tsx:40
+#: inertia/dictation/show_dictation/save_indicator.tsx:100
 msgid "Saved"
 msgstr "Saved"
 
-#: inertia/dictation/show_dictation/save_indicator.tsx:31
+#: inertia/dictation/show_dictation/save_indicator.tsx:32
 msgid "Saving…"
 msgstr "Saving…"
-
-#: inertia/layouts/app_ui_provider.tsx:20
-msgid "Search"
-msgstr "Search"
 
 #: inertia/transcription_history/show_transcripts/transcript_search_input.tsx:25
 msgid "Search a dictation"
@@ -616,7 +562,7 @@ msgstr "Start a new dictation?"
 msgid "Start new"
 msgstr "Start new"
 
-#: inertia/dictation/show_dictation/mic_button.tsx:40
+#: inertia/dictation/show_dictation/mic_button.tsx:36
 msgid "Start the dictation"
 msgstr "Start the dictation"
 
@@ -627,10 +573,6 @@ msgstr "Starts the dictation on opening, on this device"
 #: inertia/user_settings/show_settings/interface_language_options.ts:26
 msgid "System language"
 msgstr "System language"
-
-#: inertia/layouts/app_ui_provider.tsx:10
-msgid "System theme"
-msgstr "System theme"
 
 #: inertia/user_settings/show_settings/settings_preview.tsx:45
 #: inertia/user_settings/show_settings/text_preview.tsx:57

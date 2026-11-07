@@ -1,6 +1,7 @@
 import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { Spinner } from '@minimalstuff/ui';
 import { useEffect, useState } from 'react';
 
 import type { SaveStatus } from '~/dictation/show_dictation/save_status';
@@ -10,7 +11,7 @@ import { cn } from '~/shared/lib/cn';
 const ANNOUNCEMENT_DURATION_MS = 2000;
 
 type SaveStatusDisplay = {
-	icon: string;
+	icon: string | null;
 	message: MessageDescriptor;
 	hint: MessageDescriptor;
 	className: string;
@@ -27,7 +28,7 @@ const SAVE_STATUS_DISPLAYS = {
 	none: null,
 	pending: null,
 	saving: {
-		icon: 'i-tabler-loader-2 animate-spin',
+		icon: null,
 		message: msg`Saving…`,
 		hint: AUTO_SAVE_HINT,
 		className: 'text-muted',
@@ -115,15 +116,23 @@ export function SaveIndicator({
 						isAfterExplicitSave && 'copy-confirmation'
 					)}
 				>
-					<span
-						className={cn(
-							display.icon,
-							'size-4 shrink-0',
-							display.iconClassName,
-							isAfterExplicitSave && 'copy-confirmation-icon'
-						)}
-						aria-hidden
-					/>
+					{display.icon === null ? (
+						<Spinner
+							unstyled
+							aria-hidden
+							iconClassName={cn('size-4 shrink-0', display.iconClassName)}
+						/>
+					) : (
+						<span
+							className={cn(
+								display.icon,
+								'size-4 shrink-0',
+								display.iconClassName,
+								isAfterExplicitSave && 'copy-confirmation-icon'
+							)}
+							aria-hidden
+						/>
+					)}
 					<span className={display.textClassName}>
 						{i18n._(display.message)}
 					</span>

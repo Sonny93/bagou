@@ -1,16 +1,15 @@
 import { Link } from '@adonisjs/inertia/react';
 import { Trans } from '@lingui/react/macro';
-
-import { cn } from '~/shared/lib/cn';
-import { FOCUS_RING_CLASSES } from '~/shared/ui/focus_ring_classes';
+import { buttonClassName } from '@minimalstuff/ui';
 
 export const BackToDictationLink = () => (
 	<Link
 		route="dictation.show_dictation"
-		className={cn(
-			'inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-muted transition-colors hover:bg-line/60 hover:text-ink',
-			FOCUS_RING_CLASSES
-		)}
+		className={buttonClassName({
+			variant: 'ghost',
+			size: 'sm',
+			className: 'gap-1.5',
+		})}
 	>
 		<span className="i-tabler-arrow-left size-4" aria-hidden />
 		<Trans>Dictation</Trans>

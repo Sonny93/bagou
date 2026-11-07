@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dictation now stops by itself after 2 minutes without speech, and keeps the text.
 - A single dictation can now last up to 30 minutes instead of 10.
 - Long dictations now have enough time to be cleaned, and a cleanup that takes too long says so.
+- Loading indicators no longer spin for people who ask their device to reduce motion.
 
 ## [1.2.0] - 2026-11-02
 

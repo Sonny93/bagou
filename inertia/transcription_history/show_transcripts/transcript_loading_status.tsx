@@ -1,23 +1,24 @@
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
+import { Spinner } from '@minimalstuff/ui';
 
 type TranscriptLoadingStatusProps = {
 	loadingNext: boolean;
 };
 
-export const TranscriptLoadingStatus = ({
+export function TranscriptLoadingStatus({
 	loadingNext,
-}: Readonly<TranscriptLoadingStatusProps>) => (
-	<output className="flex justify-center pt-4 text-muted">
-		{loadingNext && (
-			<>
-				<span
-					aria-hidden="true"
-					className="i-tabler-loader-2 size-5 animate-spin"
+}: Readonly<TranscriptLoadingStatusProps>) {
+	const { t } = useLingui();
+
+	return (
+		<output className="flex justify-center pt-4 text-muted">
+			{loadingNext && (
+				<Spinner
+					role="none"
+					label={t`Loading more dictations…`}
+					labelClassName="sr-only"
 				/>
-				<span className="sr-only">
-					<Trans>Loading more dictations…</Trans>
-				</span>
-			</>
-		)}
-	</output>
-);
+			)}
+		</output>
+	);
+}
