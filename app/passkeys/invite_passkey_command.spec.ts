@@ -3,7 +3,14 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
 import PasskeyInvitation from '#passkeys/passkey_invitation';
+import env from '#start/env';
 import InvitePasskey from '../../commands/invite_passkey.ts';
+
+const INVITATION_TOKEN_PATTERN = '/passkeys/invitations/[A-Za-z0-9_-]{43}$';
+
+function escapeRegExp(text: string): string {
+	return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 test.group('InvitePasskey command', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
@@ -23,7 +30,7 @@ test.group('InvitePasskey command', (group) => {
 			.find((message: string) => message.includes('/passkeys/invitations/'));
 		assert.match(
 			printedUrl ?? '',
-			/http:\/\/localhost:3334\/passkeys\/invitations\/[A-Za-z0-9_-]{43}$/
+			new RegExp(escapeRegExp(env.get('APP_URL')) + INVITATION_TOKEN_PATTERN)
 		);
 		assert.equal((await PasskeyInvitation.all()).length, 1);
 	});
