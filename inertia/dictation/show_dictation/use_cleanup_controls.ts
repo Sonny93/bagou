@@ -11,6 +11,7 @@ type UseCleanupControlsOptions = {
 	draftId: string;
 	draftText: string;
 	editDraft: (text: string, selection: DraftSelection) => void;
+	rebaseCorrections: (text: string) => void;
 	snapshot: CleanupSnapshot | null;
 	qualities: readonly CleanupQualityOption[];
 	savedQuality: CleanupQuality;
@@ -21,12 +22,15 @@ type UseCleanupControlsOptions = {
 /**
  * Gathers what the cleanup button and its menu need. The version toggle puts
  * the other version back as a hand edit, not as a server-cleaned text, so the
- * draft is saved to the history like any edit.
+ * draft is saved to the history like any edit. It is not a hand edit for
+ * the corrections detection though: `rebaseCorrections` makes it the text the
+ * next hand edits are measured against.
  */
 export function useCleanupControls({
 	draftId,
 	draftText,
 	editDraft,
+	rebaseCorrections,
 	snapshot,
 	qualities,
 	savedQuality,
@@ -43,6 +47,7 @@ export function useCleanupControls({
 			versionToggle === 'show-original'
 				? snapshot.originalText
 				: snapshot.cleanedText;
+		rebaseCorrections(text);
 		editDraft(text, { start: text.length, end: text.length });
 	};
 

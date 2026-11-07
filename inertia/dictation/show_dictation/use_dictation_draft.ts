@@ -21,7 +21,7 @@ const createEmptyDraft = (): Draft => ({
 	cleanedText: '',
 });
 
-type UseDictationDraftReturn = {
+export type UseDictationDraftReturn = {
 	draftId: string;
 	text: string;
 	selection: DraftSelection;
@@ -31,6 +31,7 @@ type UseDictationDraftReturn = {
 	insert: (segment: string) => string;
 	replace: (text: string) => string;
 	getContext: () => DraftContext;
+	getText: () => string;
 	clear: () => void;
 };
 
@@ -40,8 +41,8 @@ type UseDictationDraftReturn = {
  * so the whole draft is one history entry; `clear` starts a new draft with a
  * new id. `replace` takes the draft cleaned by the server, which is then also
  * the text the history holds (`cleanedText`). `insert` and `replace` return the new draft text synchronously, so
- * the caller can use it before React re-renders; `getContext` reads the
- * current draft the same way.
+ * the caller can use it before React re-renders; `getContext` and `getText`
+ * read the current draft the same way.
  */
 export function useDictationDraft(): UseDictationDraftReturn {
 	const [draft, setDraft] = useState<Draft>(createEmptyDraft);
@@ -96,6 +97,8 @@ export function useDictationDraft(): UseDictationDraftReturn {
 		return { draftId, textBefore, textAfter };
 	}, []);
 
+	const getText = useCallback(() => draftRef.current.text, []);
+
 	const clear = useCallback(() => update(createEmptyDraft()), [update]);
 
 	return {
@@ -108,6 +111,7 @@ export function useDictationDraft(): UseDictationDraftReturn {
 		insert,
 		replace,
 		getContext,
+		getText,
 		clear,
 	};
 }

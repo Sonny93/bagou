@@ -1,13 +1,18 @@
+import type { Data } from '@generated/data';
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useMemo } from 'react';
 
+import { CLEANABLE_STATUSES } from '~/dictation/core/dictation_state';
 import { createAutoCopy } from '~/dictation/show_dictation/auto_copy';
 import { canStartNewDictation } from '~/dictation/show_dictation/can_start_new_dictation';
+import { CorrectionStrip } from '~/dictation/show_dictation/correction_strip';
 import { DictationDock } from '~/dictation/show_dictation/dictation_dock';
 import { DictationHeader } from '~/dictation/show_dictation/dictation_header';
 import { DictationStage } from '~/dictation/show_dictation/dictation_stage';
 import { getLeaveRisk } from '~/dictation/show_dictation/get_leave_risk';
 import { useCleanupControls } from '~/dictation/show_dictation/use_cleanup_controls';
+import { useCorrectionSuggestions } from '~/dictation/show_dictation/use_correction_suggestions';
+import { useDetectEditedCorrections } from '~/dictation/show_dictation/use_detect_edited_corrections';
 import { useDictation } from '~/dictation/show_dictation/use_dictation';
 import { useDictationDraft } from '~/dictation/show_dictation/use_dictation_draft';
 import { useDictationHotkeys } from '~/dictation/show_dictation/use_dictation_hotkeys';
@@ -31,16 +36,19 @@ type ShowDictationProps = {
 	remainingMinutes: number;
 	cleanupQualities: CleanupQualityOption[];
 	cleanupQuality: CleanupQuality;
+	corrections: Data.Corrections.Correction[];
 };
 
 export default function ShowDictation({
 	remainingMinutes,
 	cleanupQualities,
 	cleanupQuality,
+	corrections,
 }: Readonly<ShowDictationProps>) {
 	const { t } = useLingui();
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
 	const draft = useDictationDraft();
+	const suggestions = useCorrectionSuggestions({ corrections, draft });
 	const { copyStatus, copyCount, copyDraft, recordSelectionCopy } =
 		useDraftCopy({
 			draftId: draft.draftId,
@@ -65,8 +73,8 @@ export default function ShowDictation({
 		cleanupSnapshot,
 	} = useDictation({
 		shouldAutoStart: isAutoStartEnabled,
-		insertSegment: draft.insert,
-		replaceDraft: draft.replace,
+		insertSegment: suggestions.insert,
+		replaceDraft: suggestions.replace,
 		getDraftContext: draft.getContext,
 		copyDraft: copyAutomatically,
 		draftId: draft.draftId,
@@ -77,6 +85,7 @@ export default function ShowDictation({
 		draftId: draft.draftId,
 		draftText: draft.text,
 		editDraft: draft.edit,
+		rebaseCorrections: suggestions.rebase,
 		snapshot: cleanupSnapshot,
 		qualities: cleanupQualities,
 		savedQuality: cleanupQuality,
@@ -99,7 +108,7 @@ export default function ShowDictation({
 				: t`Your text is not saved in the history yet. If you leave now, it may be lost.`,
 		confirmLabel: t`Leave`,
 	});
-	const { clear: clearDraft } = draft;
+	const { clear: clearDraft } = suggestions;
 	const startOver = useCallback(() => {
 		clearDraft();
 		reset();
@@ -126,6 +135,11 @@ export default function ShowDictation({
 		save: saveNow,
 	});
 	useRefreshRemainingQuota(state.status);
+	useDetectEditedCorrections({
+		text: draft.text,
+		status: state.status,
+		detectEdits: suggestions.detectEdits,
+	});
 
 	return (
 		<div className="flex h-dvh flex-col">
@@ -144,6 +158,12 @@ export default function ShowDictation({
 					onSelectionChange: draft.select,
 					onCopy: recordSelectionCopy,
 				}}
+			/>
+			<CorrectionStrip
+				queue={suggestions.queue}
+				isEditable={CLEANABLE_STATUSES.has(state.status)}
+				onResolve={suggestions.resolve}
+				onDismiss={suggestions.dismiss}
 			/>
 			<DictationDock
 				state={state}

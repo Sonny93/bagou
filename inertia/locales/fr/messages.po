@@ -7,6 +7,16 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: fr\n"
 
+#. placeholder {0}: corrections.length
+#. placeholder {1}: limits.maxCorrections
+#: inertia/user_settings/show_settings/corrections_section.tsx:70
+msgid "{0} of {1} corrections"
+msgstr "{0} sur {1} corrections"
+
+#: inertia/user_settings/show_settings/beyond_speech_limit_warning.tsx:16
+msgid "{count, plural, one {# corrected word no longer reaches speech recognition, only the cleanup.} other {# corrected words no longer reach speech recognition, only the cleanup.}}"
+msgstr "{count, plural, one {# mot corrigé n'atteint plus la reconnaissance vocale, seulement le nettoyage.} other {# mots corrigés n'atteignent plus la reconnaissance vocale, seulement le nettoyage.}}"
+
 #: inertia/transcription_history/show_transcripts/describe_deletion_count.ts:6
 msgid "{count, plural, one {# dictation will be permanently deleted.} other {# dictations will be permanently deleted.}}"
 msgstr "{count, plural, one {# dictée sera supprimée définitivement.} other {# dictées seront supprimées définitivement.}}"
@@ -14,6 +24,10 @@ msgstr "{count, plural, one {# dictée sera supprimée définitivement.} other {
 #: inertia/transcription_history/show_transcripts/transcript_day_group.tsx:26
 msgid "{dayLabel} at {time}"
 msgstr "{dayLabel} à {time}"
+
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:39
+msgid "{position} of {total}"
+msgstr "{position} sur {total}"
 
 #: inertia/dictation/show_dictation/cleanup_split_button.tsx:59
 msgid "{qualityLabel} (default)"
@@ -31,7 +45,7 @@ msgstr "{termCount} sur {maxTermCount} termes"
 msgid "A dictation is already in progress"
 msgstr "Une dictée est déjà en cours"
 
-#: inertia/pages/dictation/show_dictation.tsx:98
+#: inertia/pages/dictation/show_dictation.tsx:107
 msgid "A dictation is in progress. If you leave now, it will be lost."
 msgstr "Une dictée est en cours. Si vous quittez maintenant, elle sera perdue."
 
@@ -43,6 +57,10 @@ msgstr "Compte"
 #: inertia/passkeys/show_passkeys/add_passkey_form.tsx:17
 msgid "Add a passkey"
 msgstr "Ajouter une passkey"
+
+#: inertia/user_settings/show_settings/add_correction_form.tsx:56
+msgid "Add correction"
+msgstr "Ajouter la correction"
 
 #: inertia/user_settings/show_settings/vocabulary_field.tsx:32
 msgid "Adonis\n"
@@ -168,6 +186,30 @@ msgstr "Copie impossible"
 msgid "Copy the dictation from {accessibleDate}"
 msgstr "Copier la dictée de {accessibleDate}"
 
+#: inertia/user_settings/show_settings/corrections_section.tsx:35
+msgid "Correction added: {written} for {heard}"
+msgstr "Correction ajoutée : {written} pour {heard}"
+
+#: inertia/user_settings/show_settings/corrections_section.tsx:42
+msgid "Correction deleted: {written} for {heard}"
+msgstr "Correction supprimée : {written} pour {heard}"
+
+#: inertia/dictation/show_dictation/describe_suggestion_announcement.ts:17
+msgid "Correction suggested ({position} of {total}): remember {written} for {heard}?"
+msgstr "Correction suggérée ({position} sur {total}) : retenir {written} pour {heard} ?"
+
+#: inertia/dictation/show_dictation/describe_suggestion_announcement.ts:13
+msgid "Correction suggested: remember {written} for {heard}?"
+msgstr "Correction suggérée : retenir {written} pour {heard} ?"
+
+#: inertia/user_settings/show_settings/corrections_section.tsx:59
+msgid "Corrections"
+msgstr "Corrections"
+
+#: inertia/corrections/shared/describe_correction_failure.ts:11
+msgid "Corrections limit reached. Remove some in the settings."
+msgstr "Limite de corrections atteinte. Supprime-en quelques-unes dans les réglages."
+
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:19
 msgid "Could not reach the transcription service"
 msgstr "Impossible de joindre le service de transcription"
@@ -198,6 +240,10 @@ msgstr "Quota du jour atteint"
 msgid "Delete"
 msgstr "Supprimer"
 
+#: inertia/user_settings/show_settings/correction_row.tsx:33
+msgid "Delete {written} for {heard}"
+msgstr "Supprimer {written} pour {heard}"
+
 #: inertia/transcription_history/show_transcripts/transcript_row.tsx:72
 msgid "Delete the dictation from {accessibleDate}"
 msgstr "Supprimer la dictée de {accessibleDate}"
@@ -222,7 +268,7 @@ msgstr "Obsolète"
 msgid "Dictate a segment to add this text to the history."
 msgstr "Dictez un segment pour ajouter ce texte à l'historique."
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:59
+#: inertia/dictation/show_dictation/dictation_result.tsx:61
 msgid "Dictated text"
 msgstr "Texte dicté"
 
@@ -248,8 +294,13 @@ msgid "Dictation language"
 msgstr "Langue de dictée"
 
 #: inertia/changelog/shared/whats_new_banner.tsx:56
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:62
 msgid "Dismiss"
 msgstr "Fermer"
+
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:59
+msgid "Dismiss {written} for {heard}"
+msgstr "Ignorer {written} pour {heard}"
 
 #: inertia/passkeys/shared/passkey_label_form.tsx:37
 msgid "E.g. MacBook, phone"
@@ -299,12 +350,17 @@ msgstr "Français"
 msgid "Give this passkey a name so you can recognize it later."
 msgstr "Donne un nom à cette passkey pour la reconnaître plus tard."
 
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:36
+#: inertia/user_settings/show_settings/correction_row.tsx:27
+msgid "Heard {heard}, written {written}"
+msgstr "Entendu {heard}, écrit {written}"
+
 #: inertia/dictation/show_dictation/account_menu.tsx:31
 #: inertia/pages/transcription_history/show_transcripts.tsx:41
 msgid "History"
 msgstr "Historique"
 
-#: inertia/pages/user_settings/show_settings.tsx:39
+#: inertia/pages/user_settings/show_settings.tsx:44
 msgid "How the dictation and the interface behave for you."
 msgstr "Le comportement de la dictée et de l'interface."
 
@@ -312,15 +368,19 @@ msgstr "Le comportement de la dictée et de l'interface."
 msgid "Interface language"
 msgstr "Langue de l'interface"
 
-#: inertia/pages/dictation/show_dictation.tsx:100
+#: inertia/pages/dictation/show_dictation.tsx:109
 msgid "Leave"
 msgstr "Quitter"
 
-#: inertia/pages/dictation/show_dictation.tsx:95
+#: inertia/pages/dictation/show_dictation.tsx:104
 msgid "Leave this page?"
 msgstr "Quitter cette page ?"
 
-#: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:17
+#: inertia/corrections/shared/describe_correction_rule.ts:9
+msgid "Line breaks, < and > are not allowed"
+msgstr "Les retours à la ligne, < et > ne sont pas autorisés"
+
+#: inertia/transcription_history/show_transcripts/transcript_loading_status.tsx:18
 msgid "Loading more dictations…"
 msgstr "Chargement d’autres dictées…"
 
@@ -336,6 +396,10 @@ msgstr "Modifié depuis la copie"
 msgid "More cleanup options"
 msgstr "Plus d'options de nettoyage"
 
+#: inertia/corrections/shared/describe_correction_rule.ts:10
+msgid "Must be different from what was heard"
+msgstr "Doit être différent de ce qui a été entendu"
+
 #: inertia/changelog/show_changelog/release_card.tsx:39
 msgid "New"
 msgstr "Nouveau"
@@ -349,6 +413,10 @@ msgstr "Nouveautés"
 #: inertia/dictation/show_dictation/new_dictation_button.tsx:28
 msgid "New dictation"
 msgstr "Nouvelle dictée"
+
+#: inertia/user_settings/show_settings/corrections_list.tsx:18
+msgid "No corrections yet."
+msgstr "Aucune correction pour l'instant."
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:9
 msgid "No dictation is in progress"
@@ -431,7 +499,7 @@ msgstr "Précis ({modelName})"
 msgid "Preferences for the cleanup, e.g. how to write numbers or quotes. They never make it rephrase your text."
 msgstr "Préférences pour le nettoyage, par exemple la façon d'écrire les nombres ou les guillemets. Elles ne lui font jamais reformuler ton texte."
 
-#: inertia/dictation/show_dictation/dictation_result.tsx:60
+#: inertia/dictation/show_dictation/dictation_result.tsx:62
 msgid "Press Enter or the mic to dictate."
 msgstr "Appuie sur Entrée ou sur le micro pour dicter."
 
@@ -447,6 +515,14 @@ msgstr "Enregistrer une passkey"
 #: inertia/shared/errors/error_fallback.tsx:18
 msgid "Reload"
 msgstr "Recharger"
+
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:53
+msgid "Remember"
+msgstr "Retenir"
+
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:50
+msgid "Remember {written} for {heard}"
+msgstr "Retenir {written} pour {heard}"
 
 #: inertia/changelog/show_changelog/describe_section_kind.ts:13
 msgid "Removed"
@@ -494,7 +570,7 @@ msgid "Server error (HTTP {status}), try again"
 msgstr "Erreur serveur (HTTP {status}), réessaie"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:37
-#: inertia/pages/user_settings/show_settings.tsx:36
+#: inertia/pages/user_settings/show_settings.tsx:41
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -570,6 +646,10 @@ msgstr "Démarrer la dictée"
 msgid "Starts the dictation on opening, on this device"
 msgstr "Démarre la dictée à l'ouverture, sur cet appareil"
 
+#: inertia/dictation/show_dictation/correction_suggestion.tsx:31
+msgid "Suggested correction"
+msgstr "Correction suggérée"
+
 #: inertia/user_settings/show_settings/interface_language_options.ts:26
 msgid "System language"
 msgstr "Langue du système"
@@ -618,6 +698,15 @@ msgstr "La connexion au service de transcription a été interrompue"
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:15
 msgid "The connection was interrupted, the dictation is lost"
 msgstr "La connexion a été interrompue, la dictée est perdue"
+
+#: inertia/user_settings/show_settings/use_delete_correction.ts:17
+msgid "The correction could not be deleted, try again"
+msgstr "La correction n'a pas pu être supprimée, réessaie"
+
+#: inertia/corrections/shared/describe_correction_failure.ts:7
+#: inertia/corrections/shared/describe_correction_failure.ts:12
+msgid "The correction could not be saved, try again"
+msgstr "La correction n'a pas pu être enregistrée, réessaie"
 
 #: inertia/dictation/show_dictation/dictation_server_error_messages.ts:10
 msgid "The daily dictation quota is reached, try again tomorrow"
@@ -671,6 +760,7 @@ msgstr "La demande a expiré, recommence"
 msgid "The selected value is not available"
 msgstr "La valeur choisie n'est pas disponible"
 
+#: inertia/corrections/shared/describe_correction_failure.ts:6
 #: inertia/dictation/show_dictation/describe_dictation_error.ts:12
 #: inertia/passkeys/describe_passkey_error.ts:10
 #: inertia/shared/errors/describe_cleanup_request_error.ts:7
@@ -701,6 +791,7 @@ msgstr "La session de transcription n'est plus active"
 msgid "The transcription session was interrupted"
 msgstr "La session de transcription a été interrompue"
 
+#: inertia/corrections/shared/describe_correction_rule.ts:6
 #: inertia/shared/i18n/describe_validation_rule.ts:9
 #: inertia/user_settings/show_settings/describe_field_error.ts:9
 msgid "The value is not valid"
@@ -734,6 +825,10 @@ msgstr "Ces réglages s'appliquent uniquement à ce navigateur et sont enregistr
 msgid "This browser cannot record the microphone"
 msgstr "Ce navigateur ne permet pas d'enregistrer le micro"
 
+#: inertia/corrections/shared/describe_correction_failure.ts:8
+msgid "This correction is not valid"
+msgstr "Cette correction n'est pas valide"
+
 #: inertia/shared/i18n/describe_validation_rule.ts:5
 msgid "This field is required"
 msgstr "Ce champ est requis"
@@ -750,6 +845,7 @@ msgstr "Cette passkey est déjà enregistrée"
 msgid "Too many dictations started, wait a minute"
 msgstr "Trop de dictées lancées, patiente une minute"
 
+#: inertia/corrections/shared/describe_correction_failure.ts:13
 #: inertia/passkeys/describe_passkey_error.ts:19
 #: inertia/shared/errors/describe_cleanup_request_error.ts:9
 msgid "Too many requests, wait a minute"
@@ -771,15 +867,35 @@ msgstr "Utilise une passkey enregistrée sur cet appareil."
 msgid "Vocabulary"
 msgstr "Vocabulaire"
 
+#: inertia/user_settings/show_settings/add_correction_form.tsx:34
+msgid "vox trale"
+msgstr "vox trale"
+
+#: inertia/user_settings/show_settings/add_correction_form.tsx:43
+msgid "Voxtral"
+msgstr "Voxtral"
+
 #: inertia/pages/changelog/show_changelog.tsx:38
 msgid "What changed in each version of Bagou."
 msgstr "Ce qui a changé dans chaque version de Bagou."
+
+#: inertia/user_settings/show_settings/add_correction_form.tsx:42
+msgid "What it should be"
+msgstr "Ce que ça devrait être"
+
+#: inertia/user_settings/show_settings/add_correction_form.tsx:33
+msgid "What was heard"
+msgstr "Ce qui a été entendu"
 
 #: inertia/changelog/shared/whats_new_banner.tsx:31
 #: inertia/dictation/show_dictation/account_menu.tsx:40
 #: inertia/pages/changelog/show_changelog.tsx:35
 msgid "What's new"
 msgstr "Nouveautés"
+
+#: inertia/user_settings/show_settings/corrections_section.tsx:62
+msgid "Words you fixed after they were misheard. They teach the cleanup and the speech recognition your past mishearings, are saved as soon as you change them, and are kept apart from the history: deleting the history keeps them."
+msgstr "Les mots que tu as corrigés après une mauvaise écoute. Ils apprennent au nettoyage et à la reconnaissance vocale tes erreurs passées, sont enregistrés dès que tu les modifies et sont conservés à part de l'historique : supprimer l'historique ne les efface pas."
 
 #: inertia/user_settings/show_settings/cleanup_instructions_field.tsx:29
 msgid "Write numbers as digits.\n"
@@ -799,6 +915,6 @@ msgstr "Tes retouches n'ont pas pu être enregistrées dans l'historique, nouvel
 msgid "Your text is not saved in the history yet. A new dictation clears it."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Une nouvelle dictée l'efface."
 
-#: inertia/pages/dictation/show_dictation.tsx:99
+#: inertia/pages/dictation/show_dictation.tsx:108
 msgid "Your text is not saved in the history yet. If you leave now, it may be lost."
 msgstr "Votre texte n'est pas encore enregistré dans l'historique. Si vous quittez maintenant, il risque d'être perdu."

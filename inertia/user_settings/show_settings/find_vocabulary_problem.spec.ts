@@ -7,6 +7,8 @@ const LIMITS: SettingsLimits = {
 	maxVocabularyTerms: 2,
 	maxTermLength: 5,
 	maxInstructionsLength: 100,
+	maxCorrections: 5,
+	maxCorrectionSideLength: 10,
 	maxSampleTextLength: 1000,
 };
 

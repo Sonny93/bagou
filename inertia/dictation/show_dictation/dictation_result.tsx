@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useLayoutEffect, useRef } from 'react';
 
 import type { DraftSelection } from '~/dictation/core/dictation_draft';
+import { DRAFT_TEXTAREA_ID } from '~/dictation/show_dictation/draft_textarea';
 import { cn } from '~/shared/lib/cn';
 
 type DictationResultProps = {
@@ -56,6 +57,7 @@ export function DictationResult({
 	return (
 		<textarea
 			ref={textareaRef}
+			id={DRAFT_TEXTAREA_ID}
 			aria-label={t`Dictated text`}
 			placeholder={t`Press Enter or the mic to dictate.`}
 			value={text}

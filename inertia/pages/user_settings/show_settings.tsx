@@ -5,12 +5,15 @@ import type { CleanupQualityOption } from '~/shared/cleanup_quality';
 import { AppHeader } from '~/shared/ui/app_header';
 import { AppThemeToggle } from '~/shared/ui/app_theme_toggle';
 import { BackToDictationLink } from '~/shared/ui/back_to_dictation_link';
+import { CorrectionsSection } from '~/user_settings/show_settings/corrections_section';
 import { DeviceSettings } from '~/user_settings/show_settings/device_settings';
 import { SettingsForm } from '~/user_settings/show_settings/settings_form';
 import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 
 type ShowSettingsProps = {
 	settings: Data.UserSettings;
+	corrections: Data.Corrections.Correction[];
+	correctionsBeyondSpeechLimit: number;
 	limits: SettingsLimits;
 	options: {
 		dictationLanguages: Data.UserSettings['dictationLanguage'][];
@@ -21,6 +24,8 @@ type ShowSettingsProps = {
 
 export default function ShowSettings({
 	settings,
+	corrections,
+	correctionsBeyondSpeechLimit,
 	limits,
 	options,
 }: Readonly<ShowSettingsProps>) {
@@ -45,6 +50,11 @@ export default function ShowSettings({
 					dictationLanguages={options.dictationLanguages}
 					interfaceLanguages={options.interfaceLanguages}
 					cleanupQualities={options.cleanupQualities}
+				/>
+				<CorrectionsSection
+					corrections={corrections}
+					beyondSpeechLimit={correctionsBeyondSpeechLimit}
+					limits={limits}
 				/>
 				<DeviceSettings />
 			</main>

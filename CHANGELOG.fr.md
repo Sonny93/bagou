@@ -6,6 +6,11 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 ## [Unreleased]
 
+### Added
+
+- Bagou remarque désormais quand tu corriges un mot mal entendu dans le texte et propose de le retenir.
+- Les corrections retenues, que tu peux gérer dans les réglages, aident la reconnaissance vocale et le nettoyage à bien écrire ces mots la fois suivante.
+
 ### Changed
 
 - Nouvelle dictée (bouton ou touche N) vide désormais la page sans lancer l'enregistrement.
