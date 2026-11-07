@@ -37,6 +37,7 @@ PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relay
 
 - `@rlanz/socket` 0.2.4 ne gère pas les frames binaires (tout passe par `JSON.parse`) : l'audio voyage en base64 dans un événement JSON. À recontrôler à chaque montée de version.
 - Ack socket limité à 5 s côté client, non réglable : un handler acquitte tout de suite, tout résultat lent part en diffusion, attendue par `DictationClient` avec ses propres délais.
+- release-it 21.1.2 avale l'incrément positionnel (`minor`, ajouté après le script par le workflow Release) quand il suit un flag sans `=` ou `--preRelease=…` : dans `release:next`, garder `--preRelease=next` en premier et `keepUnreleased=true` en dernier, sinon la pré-release sort en patch.
 - Micro, WebAuthn et presse-papier exigent un contexte sécurisé : en dev, accès par `localhost` uniquement (tunnel SSH), jamais par `http://<ip>`.
 
 ## Écarté
