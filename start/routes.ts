@@ -85,6 +85,18 @@ router
 			.where('id', router.matchers.number())
 			.as('corrections.delete_correction');
 		router
+			.post('/correction-suggestions', [
+				controllers.correctionSuggestions.PushSuggestions,
+				'execute',
+			])
+			.as('correction_suggestions.push_suggestions');
+		router
+			.post('/correction-suggestions/dismissals', [
+				controllers.correctionSuggestions.DismissSuggestions,
+				'execute',
+			])
+			.as('correction_suggestions.dismiss_suggestions');
+		router
 			.get('/changelog', [controllers.changelog.ShowChangelog, 'render'])
 			.as('changelog.show_changelog');
 		router

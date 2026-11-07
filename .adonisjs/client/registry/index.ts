@@ -86,6 +86,18 @@ const routes = {
     tokens: [[0,"corrections"],[1,"id"]],
     types: placeholder as Registry['corrections.delete_correction']['types'],
   },
+  'correction_suggestions.push_suggestions': {
+    methods: ["POST"],
+    pattern: '/correction-suggestions',
+    tokens: [[0,"correction-suggestions"]],
+    types: placeholder as Registry['correction_suggestions.push_suggestions']['types'],
+  },
+  'correction_suggestions.dismiss_suggestions': {
+    methods: ["POST"],
+    pattern: '/correction-suggestions/dismissals',
+    tokens: [[0,"correction-suggestions"],[0,"dismissals"]],
+    types: placeholder as Registry['correction_suggestions.dismiss_suggestions']['types'],
+  },
   'changelog.show_changelog': {
     methods: ["GET","HEAD"],
     pattern: '/changelog',

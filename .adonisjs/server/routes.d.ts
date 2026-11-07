@@ -17,6 +17,8 @@ export type ScannedRoutes = {
     'user_settings.preview_cleanup': { paramsTuple?: []; params?: {} }
     'corrections.add_correction': { paramsTuple?: []; params?: {} }
     'corrections.delete_correction': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'correction_suggestions.push_suggestions': { paramsTuple?: []; params?: {} }
+    'correction_suggestions.dismiss_suggestions': { paramsTuple?: []; params?: {} }
     'changelog.show_changelog': { paramsTuple?: []; params?: {} }
     'changelog.mark_changelog_seen': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
@@ -61,6 +63,8 @@ export type ScannedRoutes = {
     'transcription_history.clean_draft': { paramsTuple: [ParamValue]; params: {'draftId': ParamValue} }
     'user_settings.preview_cleanup': { paramsTuple?: []; params?: {} }
     'corrections.add_correction': { paramsTuple?: []; params?: {} }
+    'correction_suggestions.push_suggestions': { paramsTuple?: []; params?: {} }
+    'correction_suggestions.dismiss_suggestions': { paramsTuple?: []; params?: {} }
     'changelog.mark_changelog_seen': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'passkeys.create_authentication_options': { paramsTuple?: []; params?: {} }

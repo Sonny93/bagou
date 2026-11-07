@@ -2,11 +2,13 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
 import userSettingsConfig from '#config/user_settings';
+import CorrectionSuggestion from '#correction_suggestions/correction_suggestion';
 import Correction from '#corrections/correction';
 import { CorrectionService } from '#corrections/correction_service';
 import CorrectionsFullException from '#corrections/corrections_full_exception';
 import CorrectionsStorageException from '#corrections/corrections_storage_exception';
 import { CorrectionFactory } from '#database/factories/correction_factory';
+import { CorrectionSuggestionFactory } from '#database/factories/correction_suggestion_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
@@ -273,5 +275,66 @@ test.group('CorrectionService concurrency', () => {
 		for (const rejection of rejections) {
 			assert.instanceOf(rejection.reason, CorrectionsFullException);
 		}
+	});
+});
+
+test.group('CorrectionService suggestions', (group) => {
+	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
+
+	test('should remove the pending suggestion of the pair, whatever its case, when it is remembered', async ({
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		const other = await UserFactory.create();
+		await CorrectionSuggestionFactory.merge({
+			userId: user.id,
+			heard: 'Vox Tral',
+			written: 'Voxtral',
+		}).create();
+		await CorrectionSuggestionFactory.merge({
+			userId: other.id,
+			heard: 'Vox Tral',
+			written: 'Voxtral',
+		}).create();
+
+		await createCorrectionService().add(user.id, {
+			heard: 'vox tral',
+			written: 'voxtral',
+		});
+
+		assert.lengthOf(
+			await CorrectionSuggestion.query().where('userId', user.id),
+			0
+		);
+		assert.lengthOf(
+			await CorrectionSuggestion.query().where('userId', other.id),
+			1
+		);
+	});
+
+	test('should keep the pending suggestion when the user reached the cap', async ({
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		await fillToCap(user.id);
+		await CorrectionSuggestionFactory.merge({
+			userId: user.id,
+			heard: 'cloud',
+			written: 'Claude',
+		}).create();
+
+		await assert.rejects(
+			() =>
+				createCorrectionService().add(user.id, {
+					heard: 'cloud',
+					written: 'Claude',
+				}),
+			CorrectionsFullException
+		);
+
+		assert.lengthOf(
+			await CorrectionSuggestion.query().where('userId', user.id),
+			1
+		);
 	});
 });

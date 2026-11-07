@@ -177,6 +177,32 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/corrections/delete_correction_controller').default['execute']>>>
     }
   }
+  'correction_suggestions.push_suggestions': {
+    methods: ["POST"]
+    pattern: '/correction-suggestions'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#correction_suggestions/validators/push_suggestions_validator').pushSuggestionsValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#correction_suggestions/validators/push_suggestions_validator').pushSuggestionsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/correction_suggestions/push_suggestions_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/correction_suggestions/push_suggestions_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/correction_suggestions/push_suggestions_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'correction_suggestions.dismiss_suggestions': {
+    methods: ["POST"]
+    pattern: '/correction-suggestions/dismissals'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#correction_suggestions/validators/dismiss_suggestions_validator').dismissSuggestionsValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#correction_suggestions/validators/dismiss_suggestions_validator').dismissSuggestionsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/correction_suggestions/dismiss_suggestions_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/correction_suggestions/dismiss_suggestions_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/correction_suggestions/dismiss_suggestions_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'changelog.show_changelog': {
     methods: ["GET","HEAD"]
     pattern: '/changelog'

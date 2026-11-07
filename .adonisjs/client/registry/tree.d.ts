@@ -23,6 +23,10 @@ export interface ApiDefinition {
     addCorrection: typeof routes['corrections.add_correction']
     deleteCorrection: typeof routes['corrections.delete_correction']
   }
+  correctionSuggestions: {
+    pushSuggestions: typeof routes['correction_suggestions.push_suggestions']
+    dismissSuggestions: typeof routes['correction_suggestions.dismiss_suggestions']
+  }
   changelog: {
     showChangelog: typeof routes['changelog.show_changelog']
     markChangelogSeen: typeof routes['changelog.mark_changelog_seen']

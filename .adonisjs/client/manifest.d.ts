@@ -5,6 +5,7 @@
 
 /// <reference path="../../adonisrc.ts" />
 /// <reference path="../../config/auth.ts" />
+/// <reference path="../../config/correction_suggestions.ts" />
 /// <reference path="../../config/dictation.ts" />
 /// <reference path="../../config/limiter.ts" />
 /// <reference path="../../config/logger.ts" />

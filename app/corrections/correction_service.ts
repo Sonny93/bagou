@@ -4,6 +4,7 @@ import db from '@adonisjs/lucid/services/db';
 import type { TransactionClientContract } from '@adonisjs/lucid/types/database';
 
 import userSettingsConfig from '#config/user_settings';
+import CorrectionSuggestion from '#correction_suggestions/correction_suggestion';
 import Correction from '#corrections/correction';
 import type { CorrectionPair } from '#corrections/correction_pair';
 import CorrectionsFullException from '#corrections/corrections_full_exception';
@@ -37,6 +38,8 @@ export class CorrectionService {
 	 * Remembers the pair; one that already exists, whatever its case, is
 	 * refreshed instead, even at the cap. Adds of one user are serialized by a
 	 * transaction-scoped advisory lock, so concurrent adds never exceed the cap.
+	 * The user's pending suggestion of the same pair, whatever its case, is
+	 * resolved in the same transaction.
 	 */
 	async add(
 		userId: number,
@@ -57,7 +60,19 @@ export class CorrectionService {
 				if (!isKnown && (await this.#isFull(userId, trx))) {
 					throw new CorrectionsFullException();
 				}
-				return Correction.upsertPair(userId, heard, written, trx);
+				const correction = await Correction.upsertPair(
+					userId,
+					heard,
+					written,
+					trx
+				);
+				await CorrectionSuggestion.deletePendingPair(
+					userId,
+					heard,
+					written,
+					trx
+				);
+				return correction;
 			})
 		);
 	}

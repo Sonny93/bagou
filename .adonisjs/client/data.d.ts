@@ -6,6 +6,7 @@
 /// <reference path="./manifest.d.ts" />
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
 import type { InferSharedProps, InferFlashData } from '@adonisjs/inertia/types'
+import type CorrectionSuggestionsCorrectionSuggestionTransformer from '../../app/correction_suggestions/correction_suggestion_transformer.ts'
 import type CorrectionsCorrectionTransformer from '../../app/corrections/correction_transformer.ts'
 import type PasskeyTransformer from '../../app/passkeys/passkey_transformer.ts'
 import type TranscriptTransformer from '../../app/transcription_history/transcript_transformer.ts'
@@ -13,6 +14,12 @@ import type UserSettingsTransformer from '../../app/user_settings/user_settings_
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
+  export namespace CorrectionSuggestions {
+    export type CorrectionSuggestion = InferData<CorrectionSuggestionsCorrectionSuggestionTransformer>
+    export namespace CorrectionSuggestion {
+      export type Variants = InferVariants<CorrectionSuggestionsCorrectionSuggestionTransformer>
+    }
+  }
   export namespace Corrections {
     export type Correction = InferData<CorrectionsCorrectionTransformer>
     export namespace Correction {

@@ -14,6 +14,7 @@
 		"#generated/*": "./.adonisjs/server/*.js",
 		"#app/*": "./app/*.js",
 		"#corrections/*": "./app/corrections/*.js",
+		"#correction_suggestions/*": "./app/correction_suggestions/*.js",
 		"#dictation/*": "./app/dictation/*.js",
 		"#dictation_quota/*": "./app/dictation_quota/*.js",
 		"#shared/*": "./app/shared/*.js",

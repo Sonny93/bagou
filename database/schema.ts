@@ -7,6 +7,27 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class CorrectionSuggestionSchema extends BaseModel {
+  static $columns = ['createdAt', 'heard', 'id', 'status', 'transcriptId', 'updatedAt', 'userId', 'written'] as const
+  $columns = CorrectionSuggestionSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare heard: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare status: string
+  @column()
+  declare transcriptId: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: number
+  @column()
+  declare written: string
+}
+
 export class CorrectionSchema extends BaseModel {
   static $columns = ['createdAt', 'heard', 'id', 'updatedAt', 'userId', 'written'] as const
   $columns = CorrectionSchema.$columns
