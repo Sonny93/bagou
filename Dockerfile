@@ -1,5 +1,5 @@
 # Keep in sync with the pnpm version in mise.toml
-FROM ghcr.io/pnpm/pnpm:12.16.1-alpine AS pnpm
+FROM ghcr.io/pnpm/pnpm:12.18.0-alpine AS pnpm
 
 # Keep in sync with the node version in mise.toml
 FROM node:26.12.1-alpine3.24 AS base
