@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - New dictation (button or N key) now clears the page without starting to record.
 - The daily dictation time goes from 1 hour to 4 hours.
 - A dictation now stops by itself after 2 minutes without speech, and keeps the text.
+- A single dictation can now last up to 30 minutes instead of 10.
 
 ## [1.2.0] - 2026-11-02
 

@@ -11,6 +11,7 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 - Nouvelle dictée (bouton ou touche N) vide désormais la page sans lancer l'enregistrement.
 - Le temps de dictée quotidien passe de 1 heure à 4 heures.
 - Une dictée s'arrête désormais toute seule après 2 minutes sans parole, et garde le texte.
+- Une seule dictée peut désormais durer jusqu'à 30 minutes au lieu de 10.
 
 ## [1.2.0] - 2026-11-02
 

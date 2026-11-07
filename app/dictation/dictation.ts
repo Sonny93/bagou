@@ -12,8 +12,9 @@ import type { TranscriptionProvider } from '#transcription/transcription_provide
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import type { TranscriptionSession } from '#transcription/transcription_session';
 
-const MAX_DICTATION_DURATION_MS = 10 * 60 * 1000;
 const MILLISECONDS_PER_MINUTE = 60 * 1000;
+const MAX_DICTATION_DURATION_MS =
+	dictationConfig.maxDictationMinutes * MILLISECONDS_PER_MINUTE;
 const SILENCE_TIMEOUT_MS =
 	dictationConfig.silenceTimeoutMinutes * MILLISECONDS_PER_MINUTE;
 const SECONDS_DECIMAL_FACTOR = 100;
