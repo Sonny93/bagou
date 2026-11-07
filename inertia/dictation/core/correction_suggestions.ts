@@ -1,4 +1,5 @@
 import type { CorrectionPair } from './correction_pair';
+import { countWordSequence } from './count_word_sequence';
 import { extractCorrectionCandidates } from './extract_correction_candidates';
 import { isSameCorrectionPair } from './is_same_correction_pair';
 
@@ -67,11 +68,34 @@ const extractFrom = (
 		...state.flushed,
 	]);
 
+const isFixStillApplied = (
+	pair: Readonly<CorrectionPair>,
+	baseline: string,
+	currentText: string
+): boolean =>
+	countWordSequence(currentText, pair.written) >
+		countWordSequence(baseline, pair.written) &&
+	countWordSequence(currentText, pair.heard) <
+		countWordSequence(baseline, pair.heard);
+
+const mergeLive = (
+	kept: readonly CorrectionPair[],
+	found: readonly CorrectionPair[]
+): readonly CorrectionPair[] => [
+	...kept,
+	...found.filter(
+		(pair) => !kept.some((candidate) => isSameCorrectionPair(candidate, pair))
+	),
+];
+
 const recomputeLive = (
 	state: CorrectionSuggestions,
 	currentText: string
 ): CorrectionSuggestions => {
-	const live = extractFrom(state, currentText);
+	const kept = state.live.filter((pair) =>
+		isFixStillApplied(pair, state.baseline, currentText)
+	);
+	const live = mergeLive(kept, extractFrom(state, currentText));
 	return arePairsEqual(live, state.live)
 		? state
 		: withPairs(state, state.flushed, live);
@@ -97,8 +121,12 @@ const withoutPair = (
 	pairs.filter((candidate) => !isSameCorrectionPair(candidate, pair));
 
 /**
- * Keeps the corrections to offer. `edited` recomputes the live ones from
- * scratch, so a half-typed word or a reverted edit leaves nothing behind.
+ * Keeps the corrections to offer. `edited` keeps a live pair as long as its
+ * fix is still applied (the written words occur more often than in the
+ * baseline and the heard words less often, on whole words, ignoring case),
+ * even when the diff no longer yields it, then appends the newly found pairs.
+ * A half-typed word, a reverted edit or deleted written words leave nothing
+ * behind.
  * `rebased` is for the text being replaced by something the user did not type:
  * the live corrections are first moved to the flushed ones, which survive,
  * then the baseline moves. `resolved` drops a pair that was remembered or

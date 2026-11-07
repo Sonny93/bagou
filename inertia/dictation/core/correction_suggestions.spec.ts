@@ -205,4 +205,61 @@ describe('correctionSuggestionsReducer', () => {
 
 		expect(state.queue).toEqual([]);
 	});
+
+	describe('when the user keeps typing after a fix', () => {
+		const MORE_WORDS = Array.from(
+			{ length: 30 },
+			(_, index) => `w${index}`
+		).join(' ');
+
+		const edit = (
+			state: CorrectionSuggestions,
+			currentText: string
+		): CorrectionSuggestions =>
+			correctionSuggestionsReducer(state, { type: 'edited', currentText });
+
+		it('should keep a pair after 30 more words typed after the fix', () => {
+			const fixed = edit(buildState(), WRITTEN_VOXTRAL);
+
+			const state = edit(fixed, `${WRITTEN_VOXTRAL} ${MORE_WORDS}`);
+
+			expect(state.queue).toEqual([VOXTRAL]);
+		});
+
+		it('should keep a pair when the user edits the word right next to it', () => {
+			const fixed = edit(buildState(), WRITTEN_VOXTRAL);
+
+			const state = edit(fixed, 'I employ Voxtral today');
+
+			expect(state.queue).toContainEqual(VOXTRAL);
+		});
+
+		it('should drop a kept pair when the fix is reverted', () => {
+			const fixed = edit(buildState(), WRITTEN_VOXTRAL);
+			const typed = edit(fixed, `${WRITTEN_VOXTRAL} ${MORE_WORDS}`);
+
+			const state = edit(typed, `${SPOKEN_VOXTRAL} ${MORE_WORDS}`);
+
+			expect(state.queue).toEqual([]);
+		});
+
+		it('should drop a kept pair when the written word is deleted', () => {
+			const fixed = edit(buildState(), WRITTEN_VOXTRAL);
+			const typed = edit(fixed, `${WRITTEN_VOXTRAL} ${MORE_WORDS}`);
+
+			const state = edit(typed, `I use today ${MORE_WORDS}`);
+
+			expect(state.queue).toEqual([]);
+		});
+
+		it('should not keep their to there alive through therefore or a baseline there', () => {
+			const pair: CorrectionPair = { heard: 'their', written: 'there' };
+			const baseline = 'there is their car';
+			const kept = buildState({ baseline, live: [pair], queue: [pair] });
+
+			const state = edit(kept, 'there is therefore their car');
+
+			expect(state.queue).toEqual([]);
+		});
+	});
 });
