@@ -1,3 +1,4 @@
+import type { CorrectionPair } from '#corrections/correction_pair';
 import { CLEANUP_LANGUAGE_EXAMPLES } from '#text_cleanup/anthropic/cleanup_language_examples';
 import type { CleanupPreferences } from '#text_cleanup/cleanup_preferences';
 
@@ -9,6 +10,21 @@ The speaker's vocabulary is listed inside <vocabulary> tags, one term per line. 
 <vocabulary>
 ${vocabulary.join('\n')}
 </vocabulary>`;
+}
+
+function buildCorrectionsSection(
+	corrections: readonly CorrectionPair[]
+): string {
+	if (corrections.length === 0) return '';
+	const lines = corrections.map(({ heard, written }) =>
+		JSON.stringify({ heard, meant: written })
+	);
+	return `
+
+The speaker also taught you past recognition mistakes, inside <corrections> tags, one JSON object per line, most recent first: "heard" is what the engine wrote, "meant" is what the speaker actually wanted. They are hints with lower priority than the rule that text that is already clean must come back unchanged. Keep the heard word as it is unless the meant word clearly fits the context of the sentence. When several lines share the same heard word, choose the meant word that fits the context.
+<corrections>
+${lines.join('\n')}
+</corrections>`;
 }
 
 function buildSpeakerPreferencesSection(instructions: string): string {
@@ -25,6 +41,7 @@ export function buildSystemPrompt({
 	language,
 	vocabulary,
 	instructions,
+	corrections,
 }: Readonly<CleanupPreferences>): string {
 	const { languageName, fillers, selfCorrections } =
 		CLEANUP_LANGUAGE_EXAMPLES[language];
@@ -40,5 +57,5 @@ Rules:
 - Do not rephrase, summarise, translate, shorten or change the register: keep the speaker's words and word order.
 - Keep technical vocabulary, English terms, code identifiers, product names and acronyms as dictated.
 
-Put the cleaned text in cleaned_text. If nothing remains after cleaning, return an empty string.${buildVocabularySection(vocabulary)}${buildSpeakerPreferencesSection(instructions)}`;
+Put the cleaned text in cleaned_text. If nothing remains after cleaning, return an empty string.${buildVocabularySection(vocabulary)}${buildCorrectionsSection(corrections)}${buildSpeakerPreferencesSection(instructions)}`;
 }

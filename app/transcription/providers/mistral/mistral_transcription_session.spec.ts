@@ -3,6 +3,7 @@ import { test } from '@japa/runner';
 import { FakeRealtimeSocket } from '#tests/helpers/fake_realtime_socket';
 import type { OpenTranscriptionOptions } from '#transcription/open_transcription_options';
 import {
+	MAX_CONTEXT_BIAS_TERMS,
 	type MistralTimeouts,
 	MistralTranscriptionSession,
 } from '#transcription/providers/mistral/mistral_transcription_session';
@@ -73,6 +74,24 @@ test.group('MistralTranscriptionSession', () => {
 			language: 'fr',
 			target_streaming_delay_ms: 480,
 			context_bias: ['Adonis', 'Voxtral'],
+		});
+	});
+
+	test('should send only the first terms as context bias when there are more than the provider accepts', async ({
+		assert,
+	}) => {
+		const vocabulary = Array.from(
+			{ length: 150 },
+			(_, index) => `term ${index}`
+		);
+
+		const { socket } = await createReadySession({ language: 'fr', vocabulary });
+
+		assert.deepEqual(socket.sent[0]?.session, {
+			audio_format: { encoding: 'pcm_s16le', sample_rate: 16_000 },
+			language: 'fr',
+			target_streaming_delay_ms: 480,
+			context_bias: vocabulary.slice(0, MAX_CONTEXT_BIAS_TERMS),
 		});
 	});
 

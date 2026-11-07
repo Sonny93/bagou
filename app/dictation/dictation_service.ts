@@ -1,6 +1,9 @@
 import { inject } from '@adonisjs/core';
 import { Logger } from '@adonisjs/core/logger';
 
+import type { CorrectionPair } from '#corrections/correction_pair';
+import { CorrectionService } from '#corrections/correction_service';
+import { joinSpeechTerms } from '#corrections/join_speech_terms';
 import { Dictation } from '#dictation/dictation';
 import { DictationCompletionService } from '#dictation/dictation_completion_service';
 import type { DictationListener } from '#dictation/dictation_listener';
@@ -25,15 +28,16 @@ export class DictationService {
 		private readonly quotaService: DictationQuotaService,
 		private readonly startLimiter: DictationStartLimiter,
 		private readonly completionService: DictationCompletionService,
-		private readonly userSettingsService: UserSettingsService
+		private readonly userSettingsService: UserSettingsService,
+		private readonly correctionService: CorrectionService
 	) {}
 
 	/**
 	 * Refuses a user who started too many dictations or spent today's quota,
 	 * before any provider session is opened. The completion and the raw
 	 * keeping of the dictation are bound to the draft it is dictated into. The
-	 * user's settings are read once: language and vocabulary for the provider
-	 * session, preferences for the cleanup.
+	 * user's settings and corrections are read once: language, vocabulary and
+	 * corrected words for the provider session, preferences for the cleanup.
 	 */
 	async create(
 		userId: number,
@@ -41,11 +45,14 @@ export class DictationService {
 		listener: DictationListener
 	): Promise<Dictation> {
 		const { remainingBytes, userLogger } = await this.#admit(userId);
-		const settings = await this.userSettingsService.get(userId);
-		const preferences = toCleanupPreferences(settings);
+		const [settings, corrections] = await Promise.all([
+			this.userSettingsService.get(userId),
+			this.correctionService.listPairs(userId),
+		]);
+		const preferences = toCleanupPreferences(settings, corrections);
 		return new Dictation(this.provider, userLogger, listener, {
 			language: settings.dictationLanguage,
-			vocabulary: settings.vocabulary,
+			vocabulary: this.#toSpeechTerms(settings.vocabulary, corrections),
 			remainingBytes,
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
@@ -61,7 +68,7 @@ export class DictationService {
 	/**
 	 * Same limiter and quota as a regular dictation, but language, vocabulary
 	 * and preferences come from the given settings, which are never read from
-	 * nor written to the database. Completion cleans the raw segment alone and
+	 * nor written to the database; the saved corrections still apply. Completion cleans the raw segment alone and
 	 * a cancelled preview keeps nothing; the audio still counts in the quota.
 	 */
 	async createPreview(
@@ -70,10 +77,11 @@ export class DictationService {
 		listener: DictationListener
 	): Promise<Dictation> {
 		const { remainingBytes, userLogger } = await this.#admit(userId);
-		const preferences = toCleanupPreferences(settings);
+		const corrections = await this.correctionService.listPairs(userId);
+		const preferences = toCleanupPreferences(settings, corrections);
 		return new Dictation(this.provider, userLogger, listener, {
 			language: settings.dictationLanguage,
-			vocabulary: settings.vocabulary,
+			vocabulary: this.#toSpeechTerms(settings.vocabulary, corrections),
 			remainingBytes,
 			recordUsage: (receivedBytes) =>
 				this.quotaService.record(userId, receivedBytes),
@@ -81,6 +89,16 @@ export class DictationService {
 				this.completionService.completePreview(rawText, preferences),
 			keepRaw: keepNothing,
 		});
+	}
+
+	#toSpeechTerms(
+		vocabulary: readonly string[],
+		corrections: readonly CorrectionPair[]
+	): string[] {
+		return joinSpeechTerms(
+			vocabulary,
+			corrections.map(({ written }) => written)
+		);
 	}
 
 	async #admit(

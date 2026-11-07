@@ -67,6 +67,16 @@ router
 			.use(cleanupThrottle)
 			.as('user_settings.preview_cleanup');
 		router
+			.post('/corrections', [controllers.corrections.AddCorrection, 'execute'])
+			.as('corrections.add_correction');
+		router
+			.delete('/corrections/:id', [
+				controllers.corrections.DeleteCorrection,
+				'execute',
+			])
+			.where('id', router.matchers.number())
+			.as('corrections.delete_correction');
+		router
 			.get('/changelog', [controllers.changelog.ShowChangelog, 'render'])
 			.as('changelog.show_changelog');
 		router

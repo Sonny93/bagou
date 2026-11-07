@@ -18,6 +18,10 @@ export interface ApiDefinition {
     updateSettings: typeof routes['user_settings.update_settings']
     previewCleanup: typeof routes['user_settings.preview_cleanup']
   }
+  corrections: {
+    addCorrection: typeof routes['corrections.add_correction']
+    deleteCorrection: typeof routes['corrections.delete_correction']
+  }
   changelog: {
     showChangelog: typeof routes['changelog.show_changelog']
     markChangelogSeen: typeof routes['changelog.mark_changelog_seen']

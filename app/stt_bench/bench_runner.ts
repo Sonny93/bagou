@@ -80,6 +80,7 @@ export class BenchRunner {
 			vocabulary: [],
 			instructions: '',
 			quality: 'standard',
+			corrections: [],
 		});
 		return {
 			status: 'succeeded',

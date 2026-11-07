@@ -6,6 +6,7 @@ import dictationConfig from '#config/dictation';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 
 const SECONDS_PER_MINUTE = 60;
@@ -73,5 +74,27 @@ test.group('ShowDictationController', (group) => {
 
 		response.assertStatus(302);
 		response.assertHeader('location', '/login');
+	});
+
+	test('should expose the stored corrections, newest first', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		const corrections = createCorrectionService();
+		await corrections.add(user.id, { heard: 'cloud', written: 'Claude' });
+		const vox = await corrections.add(user.id, {
+			heard: 'vox',
+			written: 'Voxtral',
+		});
+
+		const response = await client.get('/').loginAs(user).withInertia();
+
+		assert.deepEqual(response.inertiaProps.corrections[0], {
+			id: vox.id,
+			heard: 'vox',
+			written: 'Voxtral',
+		});
+		assert.lengthOf(response.inertiaProps.corrections, 2);
 	});
 });

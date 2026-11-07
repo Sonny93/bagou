@@ -3,6 +3,7 @@ import { test } from '@japa/runner';
 
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 
 test.group('ShowSettingsController', (group) => {
 	group.each.setup(() => testUtils.db().wrapInGlobalTransaction());
@@ -44,6 +45,8 @@ test.group('ShowSettingsController', (group) => {
 			maxVocabularyTerms: 100,
 			maxTermLength: 100,
 			maxInstructionsLength: 2000,
+			maxCorrections: 500,
+			maxCorrectionSideLength: 100,
 			maxSampleTextLength: 100_000,
 		});
 		assert.deepEqual(response.inertiaProps.options, {
@@ -67,5 +70,54 @@ test.group('ShowSettingsController', (group) => {
 		assert.equal(response.inertiaProps.settings.dictationLanguage, 'en');
 		assert.deepEqual(response.inertiaProps.settings.vocabulary, []);
 		assert.equal(response.inertiaProps.settings.cleanupQuality, 'standard');
+	});
+
+	test('should render the corrections, newest first, with none beyond the speech limit', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		const corrections = createCorrectionService();
+		await corrections.add(user.id, { heard: 'cloud', written: 'Claude' });
+		const vox = await corrections.add(user.id, {
+			heard: 'vox',
+			written: 'Voxtral',
+		});
+
+		const response = await client.get('/settings').loginAs(user).withInertia();
+
+		assert.equal(response.inertiaProps.corrections[0]?.id, vox.id);
+		assert.deepEqual(
+			response.inertiaProps.corrections.map(
+				({ heard, written }: { heard: string; written: string }) => ({
+					heard,
+					written,
+				})
+			),
+			[
+				{ heard: 'vox', written: 'Voxtral' },
+				{ heard: 'cloud', written: 'Claude' },
+			]
+		);
+		assert.equal(response.inertiaProps.correctionsBeyondSpeechLimit, 0);
+	});
+
+	test('should count the corrected words that do not reach speech recognition against the saved vocabulary', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		await UserSettingFactory.merge({
+			userId: user.id,
+			vocabulary: Array.from({ length: 99 }, (_, index) => `term ${index}`),
+		}).create();
+		const corrections = createCorrectionService();
+		await corrections.add(user.id, { heard: 'a', written: 'Alpha' });
+		await corrections.add(user.id, { heard: 'b', written: 'Bravo' });
+		await corrections.add(user.id, { heard: 'c', written: 'Charlie' });
+
+		const response = await client.get('/settings').loginAs(user).withInertia();
+
+		assert.equal(response.inertiaProps.correctionsBeyondSpeechLimit, 2);
 	});
 });

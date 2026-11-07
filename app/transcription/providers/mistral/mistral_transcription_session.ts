@@ -19,6 +19,8 @@ const DEFAULT_MISTRAL_TIMEOUTS: MistralTimeouts = {
 };
 const STREAMING_DELAY_MS = 480;
 const PCM_ENCODING = 'pcm_s16le';
+/** Mistral documents 100 `context_bias` terms as the cap; the first ones win. */
+export const MAX_CONTEXT_BIAS_TERMS = 100;
 
 type SessionPhase =
 	| 'connecting'
@@ -157,7 +159,9 @@ export class MistralTranscriptionSession extends TranscriptionSession {
 				},
 				language,
 				target_streaming_delay_ms: STREAMING_DELAY_MS,
-				...(vocabulary.length > 0 && { context_bias: vocabulary }),
+				...(vocabulary.length > 0 && {
+					context_bias: vocabulary.slice(0, MAX_CONTEXT_BIAS_TERMS),
+				}),
 			},
 		});
 	}

@@ -2,6 +2,7 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
 import { UserFactory } from '#database/factories/user_factory';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import TextCleanupTimeoutException from '#text_cleanup/text_cleanup_timeout_exception';
@@ -56,10 +57,40 @@ test.group('PreviewCleanupController', (group) => {
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
 				quality: 'precise',
+				corrections: [],
 			},
 		]);
 		assert.lengthOf(await UserSetting.query().where('userId', user.id), 0);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);
+	});
+
+	test('should clean with the form values and the saved corrections', async ({
+		client,
+		assert,
+		cleanup,
+	}) => {
+		const textCleaner = new FakeTextCleaner();
+		cleanup(swapTextCleaner(textCleaner));
+		const user = await UserFactory.create();
+		await createCorrectionService().add(user.id, {
+			heard: 'cloud',
+			written: 'Claude',
+		});
+
+		await client
+			.post('/settings/preview')
+			.header('Accept', 'application/json')
+			.json(VALID_BODY)
+			.loginAs(user)
+			.withCsrfToken();
+
+		assert.deepEqual(textCleaner.receivedPreferences[0], {
+			language: 'fr',
+			vocabulary: ['Adonis'],
+			instructions: 'Use bullet points',
+			quality: 'precise',
+			corrections: [{ heard: 'cloud', written: 'Claude' }],
+		});
 	});
 
 	test('should accept empty cleanup instructions and an empty vocabulary', async ({
@@ -80,7 +111,13 @@ test.group('PreviewCleanupController', (group) => {
 
 		response.assertStatus(200);
 		assert.deepEqual(textCleaner.receivedPreferences, [
-			{ language: 'fr', vocabulary: [], instructions: '', quality: 'precise' },
+			{
+				language: 'fr',
+				vocabulary: [],
+				instructions: '',
+				quality: 'precise',
+				corrections: [],
+			},
 		]);
 	});
 

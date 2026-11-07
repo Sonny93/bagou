@@ -5,6 +5,7 @@ import { DateTime } from 'luxon';
 import { UserFactory } from '#database/factories/user_factory';
 import { DictationCompletionService } from '#dictation/dictation_completion_service';
 import { FRENCH_CLEANUP_PREFERENCES } from '#tests/helpers/cleanup_preferences_fixture';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
@@ -41,7 +42,8 @@ function createServiceFor(
 	historyService: TranscriptHistoryService = new TranscriptHistoryService(
 		new FixedClock(DateTime.now()),
 		new TextCleanupService(textCleaner, createRecordingLogger().logger),
-		new UserSettingsService()
+		new UserSettingsService(),
+		createCorrectionService()
 	)
 ) {
 	const { logger, lines } = createRecordingLogger();
@@ -134,6 +136,7 @@ test.group('DictationCompletionService', (group) => {
 			vocabulary: ['Adonis'],
 			instructions: 'Use bullet points',
 			quality: 'standard',
+			corrections: [],
 		} as const;
 
 		await service.complete(user.id, DRAFT, 'um hello', preferences);
@@ -265,7 +268,8 @@ test.group('DictationCompletionService', (group) => {
 					new FakeTextCleaner(),
 					createRecordingLogger().logger
 				),
-				new UserSettingsService()
+				new UserSettingsService(),
+				createCorrectionService()
 			)
 		);
 
@@ -335,7 +339,8 @@ test.group('DictationCompletionService', (group) => {
 					new FakeTextCleaner(),
 					createRecordingLogger().logger
 				),
-				new UserSettingsService()
+				new UserSettingsService(),
+				createCorrectionService()
 			)
 		);
 

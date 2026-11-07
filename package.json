@@ -13,6 +13,7 @@
 		"#client/*": "./.adonisjs/client/*.ts",
 		"#generated/*": "./.adonisjs/server/*.js",
 		"#app/*": "./app/*.js",
+		"#corrections/*": "./app/corrections/*.js",
 		"#dictation/*": "./app/dictation/*.js",
 		"#dictation_quota/*": "./app/dictation_quota/*.js",
 		"#shared/*": "./app/shared/*.js",

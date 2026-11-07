@@ -538,6 +538,7 @@ test.group('DictationChannel', (group) => {
 				vocabulary: ['Adonis'],
 				instructions: '',
 				quality: 'precise',
+				corrections: [],
 			},
 		]);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);

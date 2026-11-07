@@ -11,6 +11,10 @@ export const controllers = {
     MarkChangelogSeen: () => import('#app/changelog/mark_changelog_seen_controller'),
     ShowChangelog: () => import('#app/changelog/show_changelog_controller'),
   },
+  corrections: {
+    AddCorrection: () => import('#app/corrections/add_correction_controller'),
+    DeleteCorrection: () => import('#app/corrections/delete_correction_controller'),
+  },
   dictation: {
     ShowDictation: () => import('#app/dictation/show_dictation_controller'),
   },

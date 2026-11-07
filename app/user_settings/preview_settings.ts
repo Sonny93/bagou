@@ -1,6 +1,10 @@
 import type { UserSettings } from '#user_settings/user_settings';
 
-/** The settings a preview tries on the fly: never read from nor written to the database. */
+/**
+ * The settings a preview tries on the fly: never read from nor written to the
+ * database. The saved corrections are not part of them: a preview always uses
+ * the stored ones.
+ */
 export type PreviewSettings = Pick<
 	UserSettings,
 	'dictationLanguage' | 'vocabulary' | 'cleanupQuality' | 'cleanupInstructions'

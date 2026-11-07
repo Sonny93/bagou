@@ -14,6 +14,7 @@ import { DictationStartLimiter } from '#dictation/dictation_start_limiter';
 import type { DictationTranscript } from '#dictation/dictation_transcript';
 import { DictationQuotaService } from '#dictation_quota/dictation_quota_service';
 import { Clock } from '#shared/clock';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
@@ -789,11 +790,13 @@ test.group('DictationService', (group) => {
 				new TranscriptHistoryService(
 					new Clock(),
 					new TextCleanupService(textCleaner, createRecordingLogger().logger),
-					new UserSettingsService()
+					new UserSettingsService(),
+					createCorrectionService()
 				),
 				logger
 			),
-			new UserSettingsService()
+			new UserSettingsService(),
+			createCorrectionService()
 		);
 		const user = await UserFactory.create();
 		return { service, quotaService, user, provider, lines, textCleaner };
@@ -918,7 +921,68 @@ test.group('DictationService', (group) => {
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
 				quality: 'precise',
+				corrections: [],
 			},
+		]);
+	});
+
+	test('should open the session with the vocabulary then the corrected words, and clean with the corrections', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('um hello')
+		);
+		const { service, user, textCleaner } = await createService(provider);
+		await UserSettingFactory.merge({
+			userId: user.id,
+			vocabulary: ['Adonis', 'claude'],
+		}).create();
+		const corrections = createCorrectionService();
+		await corrections.add(user.id, { heard: 'cloud', written: 'Claude' });
+		await corrections.add(user.id, { heard: 'vox', written: 'Voxtral' });
+		const dictation = await service.create(user.id, DRAFT_CONTEXT, listener);
+		await dictation.start();
+
+		await dictation.stop();
+
+		assert.deepEqual(provider.openedWith[0]?.vocabulary, [
+			'Adonis',
+			'claude',
+			'Voxtral',
+		]);
+		assert.deepEqual(textCleaner.receivedPreferences[0]?.corrections, [
+			{ heard: 'vox', written: 'Voxtral' },
+			{ heard: 'cloud', written: 'Claude' },
+		]);
+	});
+
+	test('should apply the saved corrections to a preview, after the given vocabulary', async ({
+		assert,
+	}) => {
+		const provider = new FakeTranscriptionProvider(
+			new FakeTranscriptionSession('um hello')
+		);
+		const { service, user, textCleaner } = await createService(provider);
+		await createCorrectionService().add(user.id, {
+			heard: 'cloud',
+			written: 'Claude',
+		});
+		const dictation = await service.createPreview(
+			user.id,
+			PREVIEW_SETTINGS,
+			listener
+		);
+		await dictation.start();
+
+		await dictation.stop();
+
+		assert.deepEqual(provider.openedWith[0]?.vocabulary, [
+			'Adonis',
+			'Voxtral',
+			'Claude',
+		]);
+		assert.deepEqual(textCleaner.receivedPreferences[0]?.corrections, [
+			{ heard: 'cloud', written: 'Claude' },
 		]);
 	});
 
@@ -1010,6 +1074,7 @@ test.group('DictationService', (group) => {
 				vocabulary: ['Adonis', 'Voxtral'],
 				instructions: 'Use bullet points',
 				quality: 'precise',
+				corrections: [],
 			},
 		]);
 		assert.lengthOf(await Transcript.query().where('userId', user.id), 0);

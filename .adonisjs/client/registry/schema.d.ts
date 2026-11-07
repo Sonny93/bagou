@@ -138,6 +138,32 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/user_settings/preview_cleanup_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'corrections.add_correction': {
+    methods: ["POST"]
+    pattern: '/corrections'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#corrections/validators/add_correction_validator').addCorrectionValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#corrections/validators/add_correction_validator').addCorrectionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#app/corrections/add_correction_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/corrections/add_correction_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/corrections/add_correction_controller').default['execute']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'corrections.delete_correction': {
+    methods: ["DELETE"]
+    pattern: '/corrections/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/corrections/delete_correction_controller').default['execute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/corrections/delete_correction_controller').default['execute']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#app/corrections/delete_correction_controller').default['execute']>>>
+    }
+  }
   'changelog.show_changelog': {
     methods: ["GET","HEAD"]
     pattern: '/changelog'

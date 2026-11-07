@@ -3,6 +3,8 @@ const userSettingsConfig = {
 	maxVocabularyTerms: 100,
 	maxTermLength: 100,
 	maxInstructionsLength: 2000,
+	maxCorrections: 500,
+	maxCorrectionSideLength: 100,
 	defaults: {
 		dictationLanguage: 'en',
 		interfaceLanguage: 'system',

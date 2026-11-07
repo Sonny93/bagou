@@ -3,6 +3,7 @@ import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import type { DateTime } from 'luxon';
 
 import transcriptionHistoryConfig from '#config/transcription_history';
+import { CorrectionService } from '#corrections/correction_service';
 import { Clock } from '#shared/clock';
 import type { CleanupQuality } from '#text_cleanup/cleanup_quality';
 import { TextCleanupService } from '#text_cleanup/text_cleanup_service';
@@ -26,7 +27,8 @@ export class TranscriptHistoryService {
 	constructor(
 		private readonly clock: Clock,
 		private readonly textCleanupService: TextCleanupService,
-		private readonly userSettingsService: UserSettingsService
+		private readonly userSettingsService: UserSettingsService,
+		private readonly correctionService: CorrectionService
 	) {}
 
 	/**
@@ -98,7 +100,7 @@ export class TranscriptHistoryService {
 	/**
 	 * Cleans the stored raw text of an entry that has no cleaned text yet; an
 	 * already cleaned one is left alone so no credits are spent twice. Uses the
-	 * user's current language, vocabulary and instructions.
+	 * user's current language, vocabulary, instructions and corrections.
 	 */
 	async clean(userId: number, id: number): Promise<void> {
 		const transcript = await Transcript.findOwned(
@@ -108,16 +110,19 @@ export class TranscriptHistoryService {
 		);
 		if (!transcript) throw new TranscriptNotFoundException();
 		if (transcript.cleanedText !== null) return;
-		const settings = await this.userSettingsService.get(userId);
+		const [settings, corrections] = await Promise.all([
+			this.userSettingsService.get(userId),
+			this.correctionService.listPairs(userId),
+		]);
 		transcript.cleanedText = await this.textCleanupService.clean(
 			transcript.rawText,
-			toCleanupPreferences(settings)
+			toCleanupPreferences(settings, corrections)
 		);
 		await transcript.save();
 	}
 
 	/**
-	 * Cleans the current text of a draft with the user's saved settings, stores
+	 * Cleans the current text of a draft with the user's saved settings and corrections, stores
 	 * the result in the entry of that draft and returns it. A given `quality`
 	 * replaces the saved one for this call only; the saved setting is never
 	 * modified. When no entry exists
@@ -131,9 +136,12 @@ export class TranscriptHistoryService {
 		text: string,
 		quality?: CleanupQuality
 	): Promise<string> {
-		const settings = await this.userSettingsService.get(userId);
+		const [settings, corrections] = await Promise.all([
+			this.userSettingsService.get(userId),
+			this.correctionService.listPairs(userId),
+		]);
 		const cleanedText = await this.textCleanupService.clean(text, {
-			...toCleanupPreferences(settings),
+			...toCleanupPreferences(settings, corrections),
 			quality: quality ?? settings.cleanupQuality,
 		});
 		await this.saveDraftText(userId, draftId, cleanedText);

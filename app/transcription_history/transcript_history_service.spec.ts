@@ -2,9 +2,12 @@ import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 import { DateTime } from 'luxon';
 
+import Correction from '#corrections/correction';
+import { CorrectionFactory } from '#database/factories/correction_factory';
 import { TranscriptFactory } from '#database/factories/transcript_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
+import { createCorrectionService } from '#tests/helpers/create_correction_service';
 import { createRecordingLogger } from '#tests/helpers/create_recording_logger';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FixedClock } from '#tests/helpers/fixed_clock';
@@ -27,7 +30,8 @@ async function createService(textCleaner = new FakeTextCleaner()) {
 	const service = new TranscriptHistoryService(
 		new FixedClock(NOW),
 		new TextCleanupService(textCleaner, createRecordingLogger().logger),
-		new UserSettingsService()
+		new UserSettingsService(),
+		createCorrectionService()
 	);
 	return { user, service, textCleaner };
 }
@@ -311,6 +315,22 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.equal(settings.cleanupQuality, 'standard');
 	});
 
+	test('should clean the draft text with the saved corrections, newest first', async ({
+		assert,
+	}) => {
+		const { service, user, textCleaner } = await createService();
+		const corrections = createCorrectionService();
+		await corrections.add(user.id, { heard: 'cloud', written: 'Claude' });
+		await corrections.add(user.id, { heard: 'vox', written: 'Voxtral' });
+
+		await service.cleanDraft(user.id, DRAFT_ID, 'euh bonjour');
+
+		assert.deepEqual(textCleaner.receivedPreferences[0]?.corrections, [
+			{ heard: 'vox', written: 'Voxtral' },
+			{ heard: 'cloud', written: 'Claude' },
+		]);
+	});
+
 	test('should clean the draft text with the saved quality when no quality is given', async ({
 		assert,
 	}) => {
@@ -539,6 +559,18 @@ test.group('TranscriptHistoryService', (group) => {
 		assert.isNotNull(await Transcript.find(foreign.id));
 	});
 
+	test('should leave the corrections of the user intact when deleting all the rows', async ({
+		assert,
+	}) => {
+		const { service, user } = await createService();
+		await TranscriptFactory.merge({ userId: user.id }).createMany(2);
+		await CorrectionFactory.merge({ userId: user.id }).create();
+
+		await service.deleteAll(user.id);
+
+		assert.lengthOf(await Correction.query().where('userId', user.id), 1);
+	});
+
 	test('should store the cleaned text of a row without one', async ({
 		assert,
 	}) => {
@@ -579,7 +611,27 @@ test.group('TranscriptHistoryService', (group) => {
 				vocabulary: ['Adonis'],
 				instructions: 'Use bullet points',
 				quality: 'precise',
+				corrections: [],
 			},
+		]);
+	});
+
+	test('should clean a row with the saved corrections', async ({ assert }) => {
+		const { service, user, textCleaner } = await createService();
+		await createCorrectionService().add(user.id, {
+			heard: 'cloud',
+			written: 'Claude',
+		});
+		const transcript = await TranscriptFactory.merge({
+			userId: user.id,
+			rawText: 'um cloud',
+			cleanedText: null,
+		}).create();
+
+		await service.clean(user.id, transcript.id);
+
+		assert.deepEqual(textCleaner.receivedPreferences[0]?.corrections, [
+			{ heard: 'cloud', written: 'Claude' },
 		]);
 	});
 

@@ -68,6 +68,18 @@ const routes = {
     tokens: [[0,"settings"],[0,"preview"]],
     types: placeholder as Registry['user_settings.preview_cleanup']['types'],
   },
+  'corrections.add_correction': {
+    methods: ["POST"],
+    pattern: '/corrections',
+    tokens: [[0,"corrections"]],
+    types: placeholder as Registry['corrections.add_correction']['types'],
+  },
+  'corrections.delete_correction': {
+    methods: ["DELETE"],
+    pattern: '/corrections/:id',
+    tokens: [[0,"corrections"],[1,"id"]],
+    types: placeholder as Registry['corrections.delete_correction']['types'],
+  },
   'changelog.show_changelog': {
     methods: ["GET","HEAD"],
     pattern: '/changelog',
