@@ -13,6 +13,7 @@ import { createFakeChannelSocket } from '#tests/helpers/fake_channel_socket';
 import { FakeTextCleaner } from '#tests/helpers/fake_text_cleaner';
 import { FakeTranscriptionProvider } from '#tests/helpers/fake_transcription_provider';
 import { FakeTranscriptionSession } from '#tests/helpers/fake_transcription_session';
+import { FreshSessionTranscriptionProvider } from '#tests/helpers/fresh_session_transcription_provider';
 import { SlowTranscriptionProvider } from '#tests/helpers/slow_transcription_provider';
 import { swapTextCleaner } from '#tests/helpers/swap_text_cleaner';
 import { swapTranscriptionProvider } from '#tests/helpers/swap_transcription_provider';
@@ -449,6 +450,8 @@ test.group('DictationChannel', (group) => {
 	test('should reject starting once the start rate limit is exceeded', async ({
 		assert,
 	}) => {
+		const freshProvider = new FreshSessionTranscriptionProvider();
+		swapTranscriptionProvider(freshProvider);
 		const { send } = await joinChannel();
 		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
 			await send('dictation:start', DRAFT_CONTEXT);
@@ -459,10 +462,11 @@ test.group('DictationChannel', (group) => {
 			() => send('dictation:start', DRAFT_CONTEXT),
 			'E_DICTATION_RATE_LIMITED'
 		);
-		assert.lengthOf(provider.openedWith, START_REQUESTS_PER_MINUTE);
+		assert.lengthOf(freshProvider.openedWith, START_REQUESTS_PER_MINUTE);
 	});
 
 	test('should count the start rate limit per user', async ({ assert }) => {
+		swapTranscriptionProvider(new FreshSessionTranscriptionProvider());
 		const first = await joinChannel();
 		for (let attempt = 0; attempt < START_REQUESTS_PER_MINUTE; attempt += 1) {
 			await first.send('dictation:start', DRAFT_CONTEXT);
