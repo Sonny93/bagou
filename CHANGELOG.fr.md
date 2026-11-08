@@ -6,6 +6,8 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-08
+
 ### Changed
 
 - Les corrections suggérées attendent désormais dans une liste que tu peux ouvrir à tout moment, sur tous tes appareils, au lieu d'une bannière qui pouvait disparaître.
