@@ -3,7 +3,7 @@ allowBuilds:
   esbuild: true
 
 minimumReleaseAgeExclude:
-  - '@minimalstuff/tooling@0.10.0'
+  - '@minimalstuff/*'
   - '@oxfmt/binding-android-arm-eabi@0.77.0'
   - '@oxfmt/binding-android-arm64@0.77.0'
   - '@oxfmt/binding-darwin-arm64@0.77.0'
