@@ -13,6 +13,7 @@ import type { SettingsLimits } from '~/user_settings/show_settings/settings_limi
 type ShowSettingsProps = {
 	settings: Data.UserSettings;
 	corrections: Data.Corrections.Correction[];
+	pendingSuggestions: Data.CorrectionSuggestions.CorrectionSuggestion[];
 	correctionsBeyondSpeechLimit: number;
 	limits: SettingsLimits;
 	options: {
@@ -25,6 +26,7 @@ type ShowSettingsProps = {
 export default function ShowSettings({
 	settings,
 	corrections,
+	pendingSuggestions,
 	correctionsBeyondSpeechLimit,
 	limits,
 	options,
@@ -53,6 +55,7 @@ export default function ShowSettings({
 				/>
 				<CorrectionsSection
 					corrections={corrections}
+					pendingSuggestions={pendingSuggestions}
 					beyondSpeechLimit={correctionsBeyondSpeechLimit}
 					limits={limits}
 				/>

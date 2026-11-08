@@ -262,4 +262,32 @@ describe('correctionSuggestionsReducer', () => {
 			expect(state.queue).toEqual([]);
 		});
 	});
+
+	it('should learn the pairs handled elsewhere and drop them from the queue', () => {
+		const state = correctionSuggestionsReducer(
+			buildState({
+				flushed: [VOXTRAL],
+				live: [ADONIS],
+				queue: [VOXTRAL, ADONIS],
+			}),
+			{ type: 'learned', pairs: [VOXTRAL] }
+		);
+
+		expect(state).toMatchObject({
+			flushed: [],
+			queue: [ADONIS],
+			knownPairs: [VOXTRAL],
+		});
+	});
+
+	it('should keep the same state when learning pairs that are already known', () => {
+		const state = buildState({ knownPairs: [VOXTRAL] });
+
+		const next = correctionSuggestionsReducer(state, {
+			type: 'learned',
+			pairs: [{ heard: 'VOX TRALE', written: 'voxtral' }],
+		});
+
+		expect(next).toBe(state);
+	});
 });

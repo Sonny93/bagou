@@ -1,6 +1,7 @@
 import testUtils from '@adonisjs/core/services/test_utils';
 import { test } from '@japa/runner';
 
+import { CorrectionSuggestionFactory } from '#database/factories/correction_suggestion_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import { UserSettingFactory } from '#database/factories/user_setting_factory';
 import { createCorrectionService } from '#tests/helpers/create_correction_service';
@@ -119,5 +120,35 @@ test.group('ShowSettingsController', (group) => {
 		const response = await client.get('/settings').loginAs(user).withInertia();
 
 		assert.equal(response.inertiaProps.correctionsBeyondSpeechLimit, 2);
+	});
+
+	test('should render the pending suggestions of the user and not the ones of another user', async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		const otherUser = await UserFactory.create();
+		await CorrectionSuggestionFactory.merge({
+			userId: user.id,
+			heard: 'vox tral',
+			written: 'Voxtral',
+		}).create();
+		await CorrectionSuggestionFactory.merge({
+			userId: otherUser.id,
+			heard: 'cloud',
+			written: 'Claude',
+		}).create();
+
+		const response = await client.get('/settings').loginAs(user).withInertia();
+
+		assert.deepEqual(
+			response.inertiaProps.pendingSuggestions.map(
+				({ heard, written }: { heard: string; written: string }) => ({
+					heard,
+					written,
+				})
+			),
+			[{ heard: 'vox tral', written: 'Voxtral' }]
+		);
 	});
 });

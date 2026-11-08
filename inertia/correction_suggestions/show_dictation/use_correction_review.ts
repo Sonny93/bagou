@@ -1,5 +1,5 @@
 import type { Data } from '@generated/data';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import {
 	buildReviewList,
@@ -8,6 +8,7 @@ import {
 import { useImportDismissedCorrections } from '~/correction_suggestions/show_dictation/use_import_dismissed_corrections';
 import { usePushSuggestions } from '~/correction_suggestions/show_dictation/use_push_suggestions';
 import { usePushWhenHidden } from '~/correction_suggestions/show_dictation/use_push_when_hidden';
+import { useRefreshSuggestionsWhenVisible } from '~/correction_suggestions/show_dictation/use_refresh_suggestions_when_visible';
 import type { CorrectionPair } from '~/dictation/core/correction_pair';
 import { useCorrectionSuggestions } from '~/dictation/show_dictation/use_correction_suggestions';
 import type { UseDictationDraftReturn } from '~/dictation/show_dictation/use_dictation_draft';
@@ -26,12 +27,14 @@ type UseCorrectionReviewReturn = {
 	suggestions: ReturnType<typeof useCorrectionSuggestions>;
 	reviewItems: readonly ReviewItem[];
 	resolve: (pair: CorrectionPair) => void;
+	handleDrawerOpenChange: (isOpen: boolean) => void;
 };
 
 /**
  * Ties the corrections found in the draft to the ones the server holds: the
  * pairs found are pushed at the stable points, the old browser-side
- * dismissals are sent once, and the list to review merges both sides.
+ * dismissals are sent once, the list to review merges both sides, and it is
+ * fetched again when the tab comes back (unless the drawer is open).
  */
 export function useCorrectionReview({
 	corrections,
@@ -39,8 +42,13 @@ export function useCorrectionReview({
 	pendingSuggestions,
 	draft,
 }: Readonly<UseCorrectionReviewOptions>): UseCorrectionReviewReturn {
-	const { pending, pushPairs, pushPairsBeforeLeaving, forgetPair } =
-		usePushSuggestions(pendingSuggestions);
+	const {
+		pending,
+		pushPairs,
+		pushPairsBeforeLeaving,
+		forgetPair,
+		getIsPushing,
+	} = usePushSuggestions(pendingSuggestions);
 	const suggestions = useCorrectionSuggestions({
 		knownPairs: [
 			...corrections,
@@ -51,11 +59,20 @@ export function useCorrectionReview({
 		onFlushed: pushPairs,
 	});
 	const { getContext } = draft;
-	const { getQueue, resolve: resolveLocally } = suggestions;
+	const { getQueue, resolve: resolveLocally, learn } = suggestions;
+	const isDrawerOpenRef = useRef(false);
 
 	const getDraftId = useCallback(() => getContext().draftId, [getContext]);
 	usePushWhenHidden({ getQueue, getDraftId, pushPairsBeforeLeaving });
 	useImportDismissedCorrections();
+	const getIsDrawerOpen = useCallback(() => isDrawerOpenRef.current, []);
+	useRefreshSuggestionsWhenVisible({ getIsDrawerOpen, getIsPushing });
+
+	useEffect(
+		() =>
+			learn([...corrections, ...dismissedSuggestions, ...pendingSuggestions]),
+		[learn, corrections, dismissedSuggestions, pendingSuggestions]
+	);
 
 	const reviewItems = useMemo(
 		() => buildReviewList(pending, suggestions.queue),
@@ -70,5 +87,9 @@ export function useCorrectionReview({
 		[resolveLocally, forgetPair]
 	);
 
-	return { suggestions, reviewItems, resolve };
+	const handleDrawerOpenChange = useCallback((isOpen: boolean) => {
+		isDrawerOpenRef.current = isOpen;
+	}, []);
+
+	return { suggestions, reviewItems, resolve, handleDrawerOpenChange };
 }

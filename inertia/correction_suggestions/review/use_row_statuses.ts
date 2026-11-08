@@ -17,6 +17,7 @@ type UseRowStatusesReturn = {
 	statuses: RowStatuses;
 	setStatus: (key: string, status: RowStatus | null) => void;
 	getResolvedKeys: () => ReadonlySet<string>;
+	getBusyKeys: () => ReadonlySet<string>;
 };
 
 /** What each row of the review is going through, by row key; a row with no status is waiting for a decision. */
@@ -42,5 +43,15 @@ export function useRowStatuses(): UseRowStatusesReturn {
 		[]
 	);
 
-	return { statuses, setStatus, getResolvedKeys };
+	const getBusyKeys = useCallback(
+		(): ReadonlySet<string> =>
+			new Set(
+				[...statusesRef.current]
+					.filter(([, status]) => !DONE_STATUSES.has(status))
+					.map(([key]) => key)
+			),
+		[]
+	);
+
+	return { statuses, setStatus, getResolvedKeys, getBusyKeys };
 }

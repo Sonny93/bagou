@@ -52,12 +52,13 @@ export default function ShowDictation({
 	const { t } = useLingui();
 	const [isAutoStartEnabled] = useBooleanPreference(AUTO_START_PREFERENCE);
 	const draft = useDictationDraft();
-	const { suggestions, reviewItems, resolve } = useCorrectionReview({
-		corrections,
-		dismissedSuggestions,
-		pendingSuggestions,
-		draft,
-	});
+	const { suggestions, reviewItems, resolve, handleDrawerOpenChange } =
+		useCorrectionReview({
+			corrections,
+			dismissedSuggestions,
+			pendingSuggestions,
+			draft,
+		});
 	const { copyStatus, copyCount, copyDraft, recordSelectionCopy } =
 		useDraftCopy({
 			draftId: draft.draftId,
@@ -172,6 +173,7 @@ export default function ShowDictation({
 				items={reviewItems}
 				canReview={CLEANABLE_STATUSES.has(state.status)}
 				onResolved={resolve}
+				onOpenChange={handleDrawerOpenChange}
 			/>
 			<DictationDock
 				state={state}

@@ -19,6 +19,10 @@ describe('findNextUnresolvedKey', () => {
 		);
 	});
 
+	it('should skip a row that is still being handled when it is in the skipped keys', () => {
+		expect(findNextUnresolvedKey(KEYS, new Set(['b', 'c']), 'a')).toBe('d');
+	});
+
 	it('should return null when every row is resolved', () => {
 		expect(findNextUnresolvedKey(KEYS, new Set(KEYS), 'c')).toBeNull();
 	});

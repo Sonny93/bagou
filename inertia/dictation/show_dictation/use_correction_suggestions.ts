@@ -28,6 +28,7 @@ type UseCorrectionSuggestionsReturn = {
 	rebase: (text: string) => void;
 	detectEdits: (text: string) => void;
 	resolve: (pair: CorrectionPair) => void;
+	learn: (pairs: readonly CorrectionPair[]) => void;
 };
 
 const createInitialSuggestions = (
@@ -46,7 +47,7 @@ const createInitialSuggestions = (
  * other version, an empty draft), and hands the queue to `onFlushed` with the
  * id of the draft it comes from. `detectEdits` is for the edits in between.
  * `knownPairs` (remembered, dismissed, already waiting on the server) are
- * never suggested.
+ * never suggested; `learn` adds pairs that became known later.
  */
 export function useCorrectionSuggestions({
 	knownPairs,
@@ -113,6 +114,12 @@ export function useCorrectionSuggestions({
 		[dispatch]
 	);
 
+	const learn = useCallback(
+		(pairs: readonly CorrectionPair[]) =>
+			void dispatch({ type: 'learned', pairs }),
+		[dispatch]
+	);
+
 	const getQueue = useCallback(() => suggestionsRef.current.queue, []);
 
 	return {
@@ -124,5 +131,6 @@ export function useCorrectionSuggestions({
 		rebase,
 		detectEdits,
 		resolve,
+		learn,
 	};
 }

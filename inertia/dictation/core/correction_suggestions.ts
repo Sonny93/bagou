@@ -22,7 +22,8 @@ export type CorrectionSuggestions = {
 export type CorrectionSuggestionsEvent =
 	| { type: 'edited'; currentText: string }
 	| { type: 'rebased'; currentText: string; baseline: string }
-	| { type: 'resolved'; pair: CorrectionPair };
+	| { type: 'resolved'; pair: CorrectionPair }
+	| { type: 'learned'; pairs: readonly CorrectionPair[] };
 
 export const createCorrectionSuggestions = (
 	knownPairs: readonly CorrectionPair[]
@@ -114,6 +115,9 @@ const flushLive = (
 	baseline,
 });
 
+const isKnown = (state: CorrectionSuggestions, pair: CorrectionPair): boolean =>
+	state.knownPairs.some((candidate) => isSameCorrectionPair(candidate, pair));
+
 const withoutPair = (
 	pairs: readonly CorrectionPair[],
 	pair: CorrectionPair
@@ -130,8 +134,22 @@ const withoutPair = (
  * `rebased` is for the text being replaced by something the user did not type:
  * the live corrections are first moved to the flushed ones, which survive,
  * then the baseline moves. `resolved` drops a pair that was remembered or
- * dismissed from both lists and never suggests it again.
+ * dismissed from both lists and never suggests it again. `learned` does the
+ * same for the pairs handled elsewhere (another device, the settings) that
+ * were not known yet.
  */
+const resolvePair = (
+	state: CorrectionSuggestions,
+	pair: CorrectionPair
+): CorrectionSuggestions => ({
+	...withPairs(
+		state,
+		withoutPair(state.flushed, pair),
+		withoutPair(state.live, pair)
+	),
+	knownPairs: [...state.knownPairs, pair],
+});
+
 export function correctionSuggestionsReducer(
 	state: CorrectionSuggestions,
 	event: CorrectionSuggestionsEvent
@@ -142,13 +160,10 @@ export function correctionSuggestionsReducer(
 		case 'rebased':
 			return flushLive(state, event.currentText, event.baseline);
 		case 'resolved':
-			return {
-				...withPairs(
-					state,
-					withoutPair(state.flushed, event.pair),
-					withoutPair(state.live, event.pair)
-				),
-				knownPairs: [...state.knownPairs, event.pair],
-			};
+			return resolvePair(state, event.pair);
+		case 'learned':
+			return event.pairs
+				.filter((pair) => !isKnown(state, pair))
+				.reduce(resolvePair, state);
 	}
 }

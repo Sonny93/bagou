@@ -2,8 +2,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Button } from '@minimalstuff/ui';
 import type { Ref } from 'react';
 
+import type { RowStatus } from '~/correction_suggestions/review/use_row_statuses';
 import type { ReviewItem } from '~/correction_suggestions/shared/build_review_list';
-import type { RowStatus } from '~/correction_suggestions/show_dictation/use_row_statuses';
 
 type ReviewRowActionsProps = {
 	item: ReviewItem;

@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/react/macro';
 import type { Ref } from 'react';
 
+import { ReviewRowActions } from '~/correction_suggestions/review/review_row_actions';
+import { ReviewRowMeta } from '~/correction_suggestions/review/review_row_meta';
+import type { RowStatus } from '~/correction_suggestions/review/use_row_statuses';
 import type { ReviewItem } from '~/correction_suggestions/shared/build_review_list';
-import { ReviewRowActions } from '~/correction_suggestions/show_dictation/review_row_actions';
-import { ReviewRowMeta } from '~/correction_suggestions/show_dictation/review_row_meta';
-import type { RowStatus } from '~/correction_suggestions/show_dictation/use_row_statuses';
 
 type ReviewRowProps = {
 	item: ReviewItem;

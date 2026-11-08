@@ -16,6 +16,7 @@ type CorrectionReviewProps = {
 	items: readonly ReviewItem[];
 	canReview: boolean;
 	onResolved: (pair: CorrectionPair) => void;
+	onOpenChange: (isOpen: boolean) => void;
 };
 
 /**
@@ -30,6 +31,7 @@ export function CorrectionReview({
 	items,
 	canReview,
 	onResolved,
+	onOpenChange,
 }: Readonly<CorrectionReviewProps>) {
 	const { t } = useLingui();
 	const [phase, setPhase] = useState<DrawerPhase>('closed');
@@ -41,12 +43,14 @@ export function CorrectionReview({
 	const handleOpen = () => {
 		setRows(items);
 		setPhase('open');
+		onOpenChange(true);
 	};
 
 	const handleClose = () => setPhase('closing');
 
 	const handleExited = () => {
 		setPhase('closed');
+		onOpenChange(false);
 		if (items.length === 0) focusDraftTextarea();
 	};
 

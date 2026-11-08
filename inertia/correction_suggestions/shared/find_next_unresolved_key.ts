@@ -1,6 +1,7 @@
 /**
  * The key of the row to move the focus to once `resolvedKey` is done: the
- * next unresolved row, else the closest unresolved one above it, else `null`.
+ * next row not in `resolvedKeys`, else the closest one above it, else `null`.
+ * `resolvedKeys` holds every row to skip, done or still being handled.
  */
 export function findNextUnresolvedKey(
 	rowKeys: readonly string[],

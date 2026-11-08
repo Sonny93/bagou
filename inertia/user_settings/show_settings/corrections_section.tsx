@@ -2,17 +2,20 @@ import type { Data } from '@generated/data';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useId, useState } from 'react';
 
+import type { PendingSuggestion } from '~/correction_suggestions/shared/pending_suggestion';
 import type { CorrectionPair } from '~/dictation/core/correction_pair';
 import { cn } from '~/shared/lib/cn';
 import { FOCUS_RING_CLASSES } from '~/shared/ui/focus_ring_classes';
 import { AddCorrectionForm } from '~/user_settings/show_settings/add_correction_form';
 import { BeyondSpeechLimitWarning } from '~/user_settings/show_settings/beyond_speech_limit_warning';
 import { CorrectionsList } from '~/user_settings/show_settings/corrections_list';
+import { PendingReview } from '~/user_settings/show_settings/pending_review';
 import type { SettingsLimits } from '~/user_settings/show_settings/settings_limits';
 import { useCorrectionsFocus } from '~/user_settings/show_settings/use_corrections_focus';
 
 type CorrectionsSectionProps = {
 	corrections: readonly Data.Corrections.Correction[];
+	pendingSuggestions: readonly PendingSuggestion[];
 	beyondSpeechLimit: number;
 	limits: SettingsLimits;
 };
@@ -23,6 +26,7 @@ type CorrectionsSectionProps = {
  */
 export function CorrectionsSection({
 	corrections,
+	pendingSuggestions,
 	beyondSpeechLimit,
 	limits,
 }: Readonly<CorrectionsSectionProps>) {
@@ -41,6 +45,8 @@ export function CorrectionsSection({
 		const { heard, written } = deleted;
 		setAnnouncement(t`Correction deleted: ${written} for ${heard}`);
 	};
+
+	const focusHeading = () => headingRef.current?.focus();
 
 	const handleDelete = (id: number) => void deleteAndAnnounce(id);
 
@@ -76,6 +82,12 @@ export function CorrectionsSection({
 			{beyondSpeechLimit > 0 && (
 				<BeyondSpeechLimitWarning count={beyondSpeechLimit} />
 			)}
+			<PendingReview
+				pendingSuggestions={pendingSuggestions}
+				correctionsCount={corrections.length}
+				onAnnounce={setAnnouncement}
+				onFocusHeading={focusHeading}
+			/>
 			<CorrectionsList corrections={corrections} onDelete={handleDelete} />
 			<AddCorrectionForm
 				maxSideLength={limits.maxCorrectionSideLength}

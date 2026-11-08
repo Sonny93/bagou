@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/react/macro';
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 
+import { ReviewRow } from '~/correction_suggestions/review/review_row';
+import { useResolveSuggestions } from '~/correction_suggestions/review/use_resolve_suggestions';
+import { useReviewActions } from '~/correction_suggestions/review/use_review_actions';
 import type { ReviewItem } from '~/correction_suggestions/shared/build_review_list';
-import { findNextUnresolvedKey } from '~/correction_suggestions/shared/find_next_unresolved_key';
 import { ReviewListFullNotice } from '~/correction_suggestions/show_dictation/review_list_full_notice';
-import { ReviewRow } from '~/correction_suggestions/show_dictation/review_row';
-import { useResolveSuggestions } from '~/correction_suggestions/show_dictation/use_resolve_suggestions';
 import type { CorrectionPair } from '~/dictation/core/correction_pair';
 
 type ReviewDrawerContentProps = {
@@ -15,30 +15,10 @@ type ReviewDrawerContentProps = {
 	onResolved: (pair: CorrectionPair) => void;
 };
 
-const findRow = (list: HTMLElement | null, key: string): HTMLElement | null => {
-	const rows = list?.querySelectorAll<HTMLElement>('[data-key]') ?? [];
-	return [...rows].find((candidate) => candidate.dataset.key === key) ?? null;
-};
-
-const focusRowAction = (list: HTMLElement | null, key: string): void => {
-	findRow(list, key)
-		?.querySelector<HTMLButtonElement>('button:not([disabled])')
-		?.focus();
-};
-
-const focusRowDismiss = (list: HTMLElement | null, key: string): void => {
-	findRow(list, key)
-		?.querySelector<HTMLButtonElement>('button[data-action="dismiss"]')
-		?.focus();
-};
-
 /**
  * The rows are the ones seen when the drawer opened, so a row that is done
  * stays in place with its result instead of jumping out. After each result
- * the focus moves on to the next row still to review, then to Close. When
- * the list turns out to be full, the Remember buttons go off, so the focus
- * moves to the Dismiss button of the same row once they have (the key waits
- * in a ref from the click, and the effect uses it when the list is full).
+ * the focus moves on to the next row still to review, then to Close.
  */
 export function ReviewDrawerContent({
 	rows,
@@ -46,42 +26,17 @@ export function ReviewDrawerContent({
 	firstRememberRef,
 	onResolved,
 }: Readonly<ReviewDrawerContentProps>) {
-	const listRef = useRef<HTMLUListElement>(null);
 	const [now] = useState(() => new Date());
-	const review = useResolveSuggestions(onResolved);
-	const dismissFocusKeyRef = useRef<string | null>(null);
-
-	useEffect(() => {
-		const key = dismissFocusKeyRef.current;
-		if (key === null || !review.isFull) return;
-		dismissFocusKeyRef.current = null;
-		focusRowDismiss(listRef.current, key);
+	const [announcement, setAnnouncement] = useState('');
+	const review = useResolveSuggestions({
+		onResolved,
+		onAnnounce: setAnnouncement,
 	});
-
-	const moveFocusFrom = (key: string) => {
-		const rowKeys = rows.map((row) => row.key);
-		const nextKey = findNextUnresolvedKey(
-			rowKeys,
-			review.getResolvedKeys(),
-			key
-		);
-		if (nextKey === null) closeButtonRef.current?.focus();
-		else focusRowAction(listRef.current, nextKey);
-	};
-
-	const remember = async (item: ReviewItem) => {
-		dismissFocusKeyRef.current = item.key;
-		const outcome = await review.remember(item);
-		if (outcome !== 'full') dismissFocusKeyRef.current = null;
-		if (outcome === 'resolved') moveFocusFrom(item.key);
-	};
-
-	const dismiss = async (item: ReviewItem) => {
-		if ((await review.dismiss(item)) === 'resolved') moveFocusFrom(item.key);
-	};
-
-	const handleRemember = (item: ReviewItem) => void remember(item);
-	const handleDismiss = (item: ReviewItem) => void dismiss(item);
+	const { listRef, handleRemember, handleDismiss } = useReviewActions({
+		rows,
+		review,
+		focusFallback: () => closeButtonRef.current?.focus(),
+	});
 
 	return (
 		<div className="flex flex-col gap-4">
@@ -106,7 +61,7 @@ export function ReviewDrawerContent({
 					/>
 				))}
 			</ul>
-			<output className="sr-only">{review.announcement}</output>
+			<output className="sr-only">{announcement}</output>
 		</div>
 	);
 }

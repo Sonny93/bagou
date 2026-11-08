@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - Suggested corrections now wait in a list you can open anytime, on all your devices, instead of a banner that could vanish.
+- Corrections to review also appear in the settings, and the list stays up to date when you come back to the tab.
 
 ## [1.3.0] - 2026-11-07
 
