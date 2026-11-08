@@ -28,7 +28,7 @@ jobs:
     needs: checks
     permissions:
       contents: write
-    uses: minimalstuff/tooling/.github/workflows/release.yml@705224c97824f55bc28a6139ea0aacefe4da82e1 # v0.9.0
+    uses: minimalstuff/tooling/.github/workflows/release.yml@80826a3ade0bb206c6c2b77fb1ce1b226513b9ab # v0.10.0
     with:
       increment: ${{ inputs.increment }}
       release-script: ${{ inputs.prerelease && 'release:next' || 'release' }}
