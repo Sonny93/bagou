@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Dictation can now also be transcribed by Deepgram.
+
+### Changed
+
+- Whoever hosts Bagou must now choose the transcription provider (see the README).
+
 ## [1.4.0] - 2026-11-08
 
 ### Changed

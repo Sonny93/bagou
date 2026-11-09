@@ -1,5 +1,7 @@
 import { Env } from '@adonisjs/core/env';
 
+import { TRANSCRIPTION_PROVIDER_NAMES } from '#transcription/transcription_provider_name';
+
 export default await Env.create(new URL('../', import.meta.url), {
 	NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
 	PORT: Env.schema.number(),
@@ -15,6 +17,8 @@ export default await Env.create(new URL('../', import.meta.url), {
 
 	APP_URL: Env.schema.string({ format: 'url', tld: false }),
 
-	MISTRAL_API_KEY: Env.schema.string(),
+	TRANSCRIPTION_PROVIDER: Env.schema.enum(TRANSCRIPTION_PROVIDER_NAMES),
+	MISTRAL_API_KEY: Env.schema.string.optional(),
+	DEEPGRAM_API_KEY: Env.schema.string.optional(),
 	ANTHROPIC_API_KEY: Env.schema.string(),
 });

@@ -1,4 +1,4 @@
-import type { RealtimeSocket } from '#transcription/providers/mistral/realtime_socket';
+import type { RealtimeSocket } from '#transcription/realtime_socket/realtime_socket';
 
 export type WebSocketFactory = (
 	url: string,

@@ -1,5 +1,5 @@
 const userSettingsConfig = {
-	/** Mistral documents 100 `context_bias` terms as the cap. */
+	/** Fits both providers: Mistral caps `context_bias` at 100 terms, Deepgram caps keyterms at 500 tokens. */
 	maxVocabularyTerms: 100,
 	maxTermLength: 100,
 	maxInstructionsLength: 2000,

@@ -1,6 +1,6 @@
 import type { OpenTranscriptionOptions } from '#transcription/open_transcription_options';
 import { MistralTranscriptionSession } from '#transcription/providers/mistral/mistral_transcription_session';
-import type { WebSocketFactory } from '#transcription/providers/mistral/web_socket_factory';
+import type { WebSocketFactory } from '#transcription/realtime_socket/web_socket_factory';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 import type { TranscriptionSession } from '#transcription/transcription_session';
 

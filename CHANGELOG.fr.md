@@ -6,6 +6,14 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 
 ## [Unreleased]
 
+### Added
+
+- La dictée peut désormais aussi être transcrite par Deepgram.
+
+### Changed
+
+- Celui qui héberge Bagou doit désormais choisir le fournisseur de transcription (voir le README).
+
 ## [1.4.0] - 2026-11-08
 
 ### Changed

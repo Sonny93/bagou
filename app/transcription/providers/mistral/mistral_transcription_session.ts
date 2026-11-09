@@ -2,7 +2,7 @@ import type { OpenTranscriptionOptions } from '#transcription/open_transcription
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import type { MistralServerMessage } from '#transcription/providers/mistral/mistral_server_message';
 import { parseMistralMessage } from '#transcription/providers/mistral/parse_mistral_message';
-import type { RealtimeSocket } from '#transcription/providers/mistral/realtime_socket';
+import type { RealtimeSocket } from '#transcription/realtime_socket/realtime_socket';
 import { TranscriptionErrorCode } from '#transcription/transcription_error_code';
 import { TranscriptionProviderError } from '#transcription/transcription_provider_error';
 import { TranscriptionSession } from '#transcription/transcription_session';

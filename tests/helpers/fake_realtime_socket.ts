@@ -1,22 +1,33 @@
-import type { RealtimeSocket } from '#transcription/providers/mistral/realtime_socket';
+import type { RealtimeSocket } from '#transcription/realtime_socket/realtime_socket';
 
 /**
  * In-memory stand-in for the provider WebSocket: records what the adapter
- * sends and lets a spec play the server's side.
+ * sends and lets a spec play the server's side. Text frames are kept parsed
+ * in `sent`, binary frames as copies of their bytes in `sentBinary`.
  */
 export class FakeRealtimeSocket implements RealtimeSocket {
 	readonly sent: Record<string, unknown>[] = [];
+	readonly sentBinary: Uint8Array[] = [];
 	closeCount = 0;
+	#openListener: () => void = () => undefined;
 	#messageListener: (message: string) => void = () => undefined;
 	#errorListener: () => void = () => undefined;
-	#closeListener: () => void = () => undefined;
+	#closeListener: (code: number, reason: string) => void = () => undefined;
 
-	send(message: string): void {
-		this.sent.push(JSON.parse(message));
+	send(message: string | Uint8Array): void {
+		if (typeof message === 'string') {
+			this.sent.push(JSON.parse(message));
+			return;
+		}
+		this.sentBinary.push(Uint8Array.from(message));
 	}
 
 	close(): void {
 		this.closeCount += 1;
+	}
+
+	onOpen(listener: () => void): void {
+		this.#openListener = listener;
 	}
 
 	onMessage(listener: (message: string) => void): void {
@@ -27,7 +38,7 @@ export class FakeRealtimeSocket implements RealtimeSocket {
 		this.#errorListener = listener;
 	}
 
-	onClose(listener: () => void): void {
+	onClose(listener: (code: number, reason: string) => void): void {
 		this.#closeListener = listener;
 	}
 
@@ -39,11 +50,15 @@ export class FakeRealtimeSocket implements RealtimeSocket {
 		this.#messageListener(message);
 	}
 
+	simulateOpen(): void {
+		this.#openListener();
+	}
+
 	simulateError(): void {
 		this.#errorListener();
 	}
 
-	simulateClose(): void {
-		this.#closeListener();
+	simulateClose(code = 1006, reason = ''): void {
+		this.#closeListener(code, reason);
 	}
 }

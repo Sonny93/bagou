@@ -1,6 +1,6 @@
 import { UnknownBenchProviderError } from '#stt_bench/unknown_bench_provider_error';
 
-const ALL_PROVIDERS_SELECTION = 'all';
+export const ALL_PROVIDERS_SELECTION = 'all';
 
 /**
  * `all` selects every registered name; no selection falls back to the

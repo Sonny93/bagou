@@ -14,7 +14,7 @@ Self-hosted, real-time voice dictation as a PWA. A global shortcut opens the win
 
 ## Features
 
-- **Live transcription** through Mistral Voxtral Realtime (free tier), streamed from the browser over a WebSocket.
+- **Live transcription** through Deepgram (Nova-3, with a starting credit) or Mistral Voxtral Realtime, one of them chosen per instance, streamed from the browser over a WebSocket.
 - **Cleanup by Claude** (Haiku by default, Sonnet in precise mode, chosen in the settings): removes hesitations and repetitions, applies your self-corrections ("no, I mean…"), adds punctuation, without rephrasing your words.
 - **Editable draft**: dictate several segments into one draft, fix it by hand, copy it to the clipboard.
 - **Settings per user**: dictation language (English, French), a vocabulary of names and jargon to spell right, free cleanup instructions, and a test block to try them on a sample text or a live dictation before saving.
@@ -26,7 +26,7 @@ Install it as an app and bind a global keyboard shortcut: [docs/installation.md]
 
 ## Getting started
 
-You need Docker with Compose, a Mistral API key (free tier, [console.mistral.ai](https://console.mistral.ai)), an Anthropic API key, and a domain served over HTTPS (microphone, passkeys and clipboard only work on HTTPS or localhost).
+You need Docker with Compose, an API key for one speech-to-text provider (Deepgram, [console.deepgram.com](https://console.deepgram.com), comes with a starting credit; or Mistral, [console.mistral.ai](https://console.mistral.ai), on a paid plan), an Anthropic API key, and a domain served over HTTPS (microphone, passkeys and clipboard only work on HTTPS or localhost).
 
 Create `compose.yml`:
 
@@ -77,11 +77,15 @@ APP_URL=https://bagou.example.com
 APP_KEY=
 # openssl rand -hex 16
 DB_PASSWORD=
+# deepgram or mistral
+TRANSCRIPTION_PROVIDER=
+# the key of the provider you chose, the other can stay empty
+DEEPGRAM_API_KEY=
 MISTRAL_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
-`APP_URL` must be the exact public URL: passkeys are bound to its hostname.
+`APP_URL` must be the exact public URL: passkeys are bound to its hostname. `TRANSCRIPTION_PROVIDER` picks the speech-to-text provider for the whole instance, and Bagou refuses to start without the matching key.
 
 Start it with `docker compose up -d` (migrations run on start) and put your HTTPS reverse proxy in front of `127.0.0.1:3333`.
 

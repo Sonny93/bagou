@@ -1,6 +1,6 @@
 # Bagou
 
-PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relayé par un seul conteneur Adonis, texte nettoyé par Claude (Haiku, ou Sonnet en mode précis), résultat dans le presse-papier.
+PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral ou Deepgram) relayé par un seul conteneur Adonis, texte nettoyé par Claude (Haiku, ou Sonnet en mode précis), résultat dans le presse-papier.
 
 ## Vérifier
 
@@ -23,8 +23,8 @@ PWA de dictée vocale mono-utilisateur : STT temps réel (Mistral Voxtral) relay
 - Le serveur n'envoie que des codes stables, jamais de texte traduit ; le front les traduit avec ses fonctions `describe*`.
 - `inertia/dictation/core/` sera repris tel quel par une future app Tauri : ni Inertia, ni Adonis, ni reste du front, seulement les types de `@generated/*` (règle `no-restricted-imports` de `oxlint.config.ts`).
 - Temps réel : `@rlanz/socket` seul entre navigateur et Adonis, aucune autre lib (Transmit seulement si un besoin SSE apparaît).
-- STT et nettoyage derrière les ports `TranscriptionProvider` et `TextCleaner` : un adaptateur par fournisseur, lié au port dans un provider Adonis, jamais choisi par variable d'env.
-- Fournisseur STT : le free tier passe en premier, sinon le projet perd son intérêt. Repli prévu : Deepgram.
+- STT et nettoyage derrière les ports `TranscriptionProvider` et `TextCleaner` : un adaptateur par fournisseur, lié au port dans un provider Adonis. Le STT se choisit pour toute l'instance par `TRANSCRIPTION_PROVIDER`, sans valeur par défaut (un choix par utilisateur imposerait des clés par utilisateur) ; le nettoyeur n'est jamais choisi par variable d'env.
+- Fournisseur STT : aucune carte bancaire chez un fournisseur, un usage gratuit passe en premier. L'API Mistral exige le paiement à l'usage depuis octobre 2026, d'où Deepgram sur son crédit de départ sans carte, avec `mip_opt_out=true` imposé pour refuser l'entraînement sur les dictées.
 - Nettoyage large (tout le brouillon à chaque segment) plutôt qu'économe : le coût est négligeable en mono-utilisateur, et le mode précis (Sonnet, 20× Haiku) reste un choix de l'utilisateur.
 - Modèle de nettoyage : réglage utilisateur stocké en code stable (`standard`/`precise`), jamais l'id du modèle ; Haiku par défaut, ni forcé ni en variable d'env, car chaque auto-hébergeur paie sa propre clé.
 - Auth : le reste de l'appli ne dépend que du guard session Adonis et du modèle `User` ; tout WebAuthn reste dans `app/passkeys/`. Passer à OIDC revient à remplacer ce domaine.

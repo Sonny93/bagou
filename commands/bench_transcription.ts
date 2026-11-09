@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { parseDictationLanguage } from '#shared/parse_dictation_language';
 import { UnknownDictationLanguageError } from '#shared/unknown_dictation_language_error';
 import { aggregateResults } from '#stt_bench/aggregate_results';
+import type { BenchProviderEntry } from '#stt_bench/bench_provider_entry';
 import { BENCH_PROVIDER_REGISTRY } from '#stt_bench/bench_provider_registry';
 import { BenchRunner } from '#stt_bench/bench_runner';
 import type { BenchSample } from '#stt_bench/bench_sample';
@@ -19,10 +20,15 @@ import {
 } from '#stt_bench/format_metrics';
 import { renderBenchReport } from '#stt_bench/render_bench_report';
 import { buildReportFileName } from '#stt_bench/report_file_name';
-import { selectProviderNames } from '#stt_bench/select_provider_names';
+import {
+	ALL_PROVIDERS_SELECTION,
+	selectProviderNames,
+} from '#stt_bench/select_provider_names';
+import { skipUnconfiguredProviders } from '#stt_bench/skip_unconfigured_providers';
 import { UnknownBenchProviderError } from '#stt_bench/unknown_bench_provider_error';
 import { CLEANUP_MODELS } from '#text_cleanup/anthropic/cleanup_models';
 import { TextCleaner } from '#text_cleanup/text_cleaner';
+import { MissingTranscriptionApiKeyError } from '#transcription/missing_transcription_api_key_error';
 import { PCM_AUDIO_FORMAT } from '#transcription/pcm_audio_format';
 import { TranscriptionProvider } from '#transcription/transcription_provider';
 
@@ -62,7 +68,8 @@ export default class BenchTranscription extends BaseCommand {
 		} catch (error) {
 			if (
 				!(error instanceof UnknownBenchProviderError) &&
-				!(error instanceof UnknownDictationLanguageError)
+				!(error instanceof UnknownDictationLanguageError) &&
+				!(error instanceof MissingTranscriptionApiKeyError)
 			) {
 				throw error;
 			}
@@ -78,14 +85,52 @@ export default class BenchTranscription extends BaseCommand {
 			boundName: boundProvider.name,
 			registeredNames: Object.keys(BENCH_PROVIDER_REGISTRY),
 		});
+		const providers = await this.#createProviders(providerNames);
 		const samples = await this.#loadSamples();
 		const runner = new BenchRunner(
 			convertAudioWithFfmpeg,
 			await this.app.container.make(TextCleaner)
 		);
-		for (const providerName of providerNames) {
-			await this.#benchProvider(runner, providerName, samples);
+		for (const { providerName, entry, provider } of providers) {
+			await this.#benchProvider({
+				runner,
+				providerName,
+				entry,
+				provider,
+				samples,
+			});
 		}
+	}
+
+	async #createProviders(providerNames: readonly string[]) {
+		const logger = await this.app.container.make('logger');
+		const namesToRun =
+			this.provider === ALL_PROVIDERS_SELECTION
+				? this.#dropUnconfiguredProviders(providerNames)
+				: providerNames;
+		return namesToRun.map((providerName) => {
+			const entry = BENCH_PROVIDER_REGISTRY[providerName];
+			return { providerName, entry, provider: entry.createProvider(logger) };
+		});
+	}
+
+	#dropUnconfiguredProviders(providerNames: readonly string[]): string[] {
+		const { configuredNames, skippedNames } = skipUnconfiguredProviders({
+			providerNames,
+			isConfigured: (name) => BENCH_PROVIDER_REGISTRY[name].isConfigured(),
+		});
+		for (const name of skippedNames) {
+			const { apiKeyEnvName } = BENCH_PROVIDER_REGISTRY[name];
+			this.logger.warning(`Skipping ${name}: set ${apiKeyEnvName} to run it`);
+		}
+		const [firstSkippedName] = skippedNames;
+		if (configuredNames.length === 0 && firstSkippedName !== undefined) {
+			throw new MissingTranscriptionApiKeyError(
+				firstSkippedName,
+				BENCH_PROVIDER_REGISTRY[firstSkippedName].apiKeyEnvName
+			);
+		}
+		return configuredNames;
 	}
 
 	async #loadSamples() {
@@ -98,16 +143,23 @@ export default class BenchTranscription extends BaseCommand {
 		return discovered.samples.slice(0, this.limit);
 	}
 
-	async #benchProvider(
-		runner: BenchRunner,
-		providerName: string,
-		samples: readonly BenchSample[]
-	) {
-		const entry = BENCH_PROVIDER_REGISTRY[providerName];
+	async #benchProvider({
+		runner,
+		providerName,
+		entry,
+		provider,
+		samples,
+	}: Readonly<{
+		runner: BenchRunner;
+		providerName: string;
+		entry: BenchProviderEntry;
+		provider: TranscriptionProvider;
+		samples: readonly BenchSample[];
+	}>) {
 		this.logger.info(`Provider ${providerName}: ${samples.length} sample(s)`);
 		const results = await runner.run({
 			language: parseDictationLanguage(this.language),
-			provider: entry.createProvider(),
+			provider,
 			samples,
 			chunkIntervalMs: PCM_AUDIO_FORMAT.chunkDurationMs,
 			onSampleCompleted: (result) => this.#logProgress(result),
