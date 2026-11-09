@@ -4,6 +4,14 @@ Self-hosted, real-time voice dictation as a PWA. A global shortcut opens the win
 
 > **The name**: _bagou_ (French, informal, pronounced "ba-goo") is the gift of the gab. _Avoir du bagou_ means having a way with words, being a smooth talker. Fitting for a tool that lets you just talk and turns it into clean text.
 
+## Why
+
+- **Purpose**: dictate text into any app on your own machine, seeing it appear as you speak, and get it back cleaned up without rephrasing. Talking is faster than typing; raw speech-to-text is too messy to paste as is.
+- **Users**: one person per instance, who is also the one hosting it. Anyone else runs their own copy with their own API keys.
+- **Stakes**: dictations are personal text. They are stored for 60 days in your database and sent to the speech-to-text provider and to Anthropic, and nowhere else: never logged, never sent to the browser of anyone else. The API keys stay on the server, and whoever hosts the instance pays for every provider call, so the daily quota and the rate limits exist to cap that bill.
+- **Hard constraints**: one app container and one Postgres, nothing else to run. Providers sit behind interchangeable adapters, and a provider usable at no cost comes first. Microphone, passkeys and clipboard require HTTPS (or localhost).
+- **Non-goals**: offline use, speech-to-text models running locally, voice agents, hosting other people's accounts as a service, encrypting the history.
+
 ## Features
 
 - **Live transcription** through Mistral Voxtral Realtime (free tier), streamed from the browser over a WebSocket.
