@@ -47,7 +47,7 @@ services:
       - postgres:/var/lib/postgresql
 
   bagou:
-    image: ghcr.io/sonny93/bagou:1
+    image: ghcr.io/sonny93/bagou:2
     restart: unless-stopped
     env_file: .env
     environment:
@@ -97,7 +97,7 @@ docker compose exec bagou node bin/console.js passkey:invite
 
 It prints a single-use link valid for 15 minutes. Open it, name the passkey, done. Same command if you lose all your passkeys.
 
-The tag `1` follows the latest 1.x release; pin `1.0.0` for a fixed version. To install it as an app, see "Install it as an app" above.
+The tag `2` follows the latest 2.x release; pin `2.0.0` for a fixed version. To install it as an app, see "Install it as an app" above.
 
 ## Development
 
