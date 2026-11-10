@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The ready-made Docker image is published again, for both regular PCs and ARM machines such as a Raspberry Pi.
+
 ## [2.0.0] - 2026-11-10
 
 ### Added
