@@ -9,6 +9,7 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 ### Added
 
 - La dictée peut désormais aussi être transcrite par Deepgram.
+- Les mots dictés apparaissent désormais en fondu, tout en douceur.
 
 ### Changed
 

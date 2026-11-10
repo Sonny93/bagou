@@ -49,8 +49,19 @@ body {
 	}
 }
 
+.dictation-word {
+	animation: dictation-word-fade-in 280ms ease-out backwards;
+}
+
+@keyframes dictation-word-fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
-	.dictation-caret {
+	.dictation-caret,
+	.dictation-word {
 		animation: none;
 	}
 }
