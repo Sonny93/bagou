@@ -45,10 +45,8 @@ export class DictationService {
 		listener: DictationListener
 	): Promise<Dictation> {
 		const { remainingBytes, userLogger } = await this.#admit(userId);
-		const [settings, corrections] = await Promise.all([
-			this.userSettingsService.get(userId),
-			this.correctionService.listPairs(userId),
-		]);
+		const settings = await this.userSettingsService.get(userId);
+		const corrections = await this.correctionService.listPairs(userId);
 		const preferences = toCleanupPreferences(settings, corrections);
 		return new Dictation(this.provider, userLogger, listener, {
 			language: settings.dictationLanguage,

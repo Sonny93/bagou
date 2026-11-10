@@ -22,19 +22,14 @@ export default class ShowDictationController {
 
 	async render({ auth, inertia }: HttpContext) {
 		const { id: userId } = auth.getUserOrFail();
-		const [
-			settings,
-			remainingMinutes,
-			corrections,
-			pendingSuggestions,
-			dismissedSuggestions,
-		] = await Promise.all([
-			this.userSettingsService.get(userId),
-			this.quotaService.getRemainingMinutes(userId),
-			this.correctionService.list(userId),
-			this.correctionSuggestionService.listPending(userId),
-			this.correctionSuggestionService.listDismissedPairs(userId),
-		]);
+		const settings = await this.userSettingsService.get(userId);
+		const remainingMinutes =
+			await this.quotaService.getRemainingMinutes(userId);
+		const corrections = await this.correctionService.list(userId);
+		const pendingSuggestions =
+			await this.correctionSuggestionService.listPending(userId);
+		const dismissedSuggestions =
+			await this.correctionSuggestionService.listDismissedPairs(userId);
 		return inertia.render('dictation/show_dictation', {
 			remainingMinutes,
 			cleanupQualities: toCleanupQualityOptions(this.textCleaner.modelNames),

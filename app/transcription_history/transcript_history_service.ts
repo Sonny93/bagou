@@ -110,10 +110,8 @@ export class TranscriptHistoryService {
 		);
 		if (!transcript) throw new TranscriptNotFoundException();
 		if (transcript.cleanedText !== null) return;
-		const [settings, corrections] = await Promise.all([
-			this.userSettingsService.get(userId),
-			this.correctionService.listPairs(userId),
-		]);
+		const settings = await this.userSettingsService.get(userId);
+		const corrections = await this.correctionService.listPairs(userId);
 		transcript.cleanedText = await this.textCleanupService.clean(
 			transcript.rawText,
 			toCleanupPreferences(settings, corrections)
@@ -136,10 +134,8 @@ export class TranscriptHistoryService {
 		text: string,
 		quality?: CleanupQuality
 	): Promise<string> {
-		const [settings, corrections] = await Promise.all([
-			this.userSettingsService.get(userId),
-			this.correctionService.listPairs(userId),
-		]);
+		const settings = await this.userSettingsService.get(userId);
+		const corrections = await this.correctionService.listPairs(userId);
 		const cleanedText = await this.textCleanupService.clean(text, {
 			...toCleanupPreferences(settings, corrections),
 			quality: quality ?? settings.cleanupQuality,
@@ -166,10 +162,8 @@ export class TranscriptHistoryService {
 			this.#retentionStart()
 		);
 		if (!transcript) throw new TranscriptNotFoundException();
-		const [settings, corrections] = await Promise.all([
-			this.userSettingsService.get(userId),
-			this.correctionService.listPairs(userId),
-		]);
+		const settings = await this.userSettingsService.get(userId);
+		const corrections = await this.correctionService.listPairs(userId);
 		return this.textCleanupService.clean(transcript.rawText, {
 			...toCleanupPreferences(settings, corrections),
 			quality,
