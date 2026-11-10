@@ -38,7 +38,8 @@ const ignoreRejection = (): void => undefined;
 /**
  * Deepgram live transcription over one WebSocket. Each `Results` message with
  * `is_final: true` is committed text that Deepgram never revises, so it maps
- * to `final`; interim results map to `partial`. `Metadata`, which Deepgram
+ * to `final` (which also supersedes the current partial); interim results map
+ * to `partial`. `Metadata`, which Deepgram
  * sends after `CloseStream`, resolves `finish()`. Keyterms travel in a
  * `Configure` message after the socket opens, never in the URL.
  */
@@ -220,8 +221,8 @@ export class DeepgramTranscriptionSession extends TranscriptionSession {
 	}
 
 	#commitFinal(text: string): void {
-		this.#clearPartial();
-		if (text === '') return;
+		if (text === '') return this.#clearPartial();
+		this.#isPartialShown = false;
 		this.emit('final', { text: this.#withSeparator(text) });
 		this.#committedText += this.#withSeparator(text);
 	}

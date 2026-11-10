@@ -12,6 +12,8 @@ import type { TranscriptionSessionEvents } from '#transcription/transcription_se
  *
  * - `final` `{ text }`: newly committed text. Append-only, never revised, and
  *   carries its own spaces and punctuation (consumers must not add separators).
+ *   It also replaces the current partial: after a `final` the partial is empty
+ *   until the next `partial`, with no separate clearing event.
  * - `partial` `{ text }`: the current uncommitted tail. Each event replaces the
  *   previous partial; an empty string clears it. Providers that only emit
  *   committed text never emit `partial`.

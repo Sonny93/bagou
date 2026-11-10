@@ -39,8 +39,9 @@ export const CLEANABLE_STATUSES: ReadonlySet<DictationState['status']> =
 export const INITIAL_DICTATION_STATE: DictationState = { status: 'idle' };
 
 /**
- * `final` text is append-only and `partial` text replaces the previous
- * partial, matching the server's transcript contract. Cleaning always ends
+ * `final` text is append-only and replaces the current partial, and `partial`
+ * text replaces the previous partial, matching the server's transcript
+ * contract. Cleaning always ends
  * in `done`, also from `finishing` when the finished event never arrived:
  * cancel and failure do not apply to it. An event that does not apply to the
  * current state is ignored, so late events never resurrect a dictation that
@@ -73,7 +74,11 @@ export function dictationReducer(
 				: state;
 		case 'finalReceived':
 			return isLive(state)
-				? { ...state, committedText: state.committedText + event.text }
+				? {
+						...state,
+						committedText: state.committedText + event.text,
+						partialText: '',
+					}
 				: state;
 		case 'partialReceived':
 			return isLive(state) ? { ...state, partialText: event.text } : state;

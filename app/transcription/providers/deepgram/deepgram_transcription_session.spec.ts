@@ -419,7 +419,7 @@ test.group('DeepgramTranscriptionSession transcripts', () => {
 		]);
 	});
 
-	test('should emit a partial with the same spacing rule and clear it on the final', async ({
+	test('should emit a partial with the same spacing rule and let the final supersede it', async ({
 		assert,
 	}) => {
 		const { socket, session } = await createReadySession();
@@ -432,7 +432,6 @@ test.group('DeepgramTranscriptionSession transcripts', () => {
 		assert.deepEqual(events, [
 			{ type: 'final', text: 'Bonjour' },
 			{ type: 'partial', text: ' tout' },
-			{ type: 'partial', text: '' },
 			{ type: 'final', text: ' tout le monde' },
 		]);
 	});

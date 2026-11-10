@@ -113,7 +113,7 @@ describe('dictationReducer', () => {
 		expect(dictationReducer(cleaning, event)).toBe(cleaning);
 	});
 
-	it('should append every final to the committed text and keep the partial', () => {
+	it('should append every final to the committed text and clear the pending partial', () => {
 		const state = reduce(recording('Bonjour', ' le mo'), {
 			type: 'finalReceived',
 			text: ' le monde',
@@ -121,7 +121,7 @@ describe('dictationReducer', () => {
 
 		expect(state).toMatchObject({
 			committedText: 'Bonjour le monde',
-			partialText: ' le mo',
+			partialText: '',
 		});
 	});
 
@@ -146,7 +146,7 @@ describe('dictationReducer', () => {
 		expect(state).toEqual({
 			status: 'finishing',
 			committedText: 'Bonjour monde',
-			partialText: ' le',
+			partialText: '',
 		});
 	});
 
