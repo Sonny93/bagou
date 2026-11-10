@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/react';
 import { useLingui } from '@lingui/react/macro';
+import { toast } from '@minimalstuff/ui';
 import { useEffect } from 'react';
-import { toast } from 'sonner';
 
 const NETWORK_ERROR_TOAST_ID = 'network-error';
 const SERVER_ERROR_TOAST_ID = 'server-error';

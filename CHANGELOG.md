@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Notifications have a new look, and keyboard users can reach them with F8.
 - Whoever hosts Bagou must now choose the transcription provider (see the README).
 
 ## [1.4.0] - 2026-11-08

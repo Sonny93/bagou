@@ -1,9 +1,12 @@
-import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { reportError } from '~/shared/errors/report_error';
 
-vi.mock('sonner', () => ({ toast: { error: vi.fn<() => void>() } }));
+const { toastError } = vi.hoisted(() => ({
+	toastError: vi.fn<() => void>(),
+}));
+
+vi.mock('@minimalstuff/ui', () => ({ toast: { error: toastError } }));
 
 describe('reportError', () => {
 	let consoleError: ReturnType<typeof vi.spyOn>;
@@ -25,7 +28,7 @@ describe('reportError', () => {
 		reportError('Could not save', error);
 
 		expect(consoleError).toHaveBeenCalledWith('Could not save', error);
-		expect(toast.error).toHaveBeenCalledWith('Could not save', {
+		expect(toastError).toHaveBeenCalledWith('Could not save', {
 			id: undefined,
 		});
 	});
@@ -33,6 +36,6 @@ describe('reportError', () => {
 	it('should give the toast the requested id so a repeated failure shows once', () => {
 		reportError('Could not save', new Error('boom'), { toastId: 'save' });
 
-		expect(toast.error).toHaveBeenCalledWith('Could not save', { id: 'save' });
+		expect(toastError).toHaveBeenCalledWith('Could not save', { id: 'save' });
 	});
 });

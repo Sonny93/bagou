@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
+import { toast } from '@minimalstuff/ui';
 import { useEffect } from 'react';
-import { toast } from 'sonner';
 
 const UNHANDLED_ERROR_TOAST_ID = 'unhandled-error';
 

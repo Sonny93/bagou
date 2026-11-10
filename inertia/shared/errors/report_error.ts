@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@minimalstuff/ui';
 
 import { logError } from '~/shared/errors/log_error';
 
