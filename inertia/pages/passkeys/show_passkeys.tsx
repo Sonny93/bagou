@@ -25,7 +25,9 @@ export default function ShowPasskeys({
 			</AppHeader>
 			<main className="mx-auto flex w-full max-w-xl flex-col gap-8 px-4 py-6 sm:px-6">
 				<div className="flex flex-col gap-1">
-					<h1 className="text-2xl font-semibold">Passkeys</h1>
+					<h1 className="text-2xl font-semibold">
+						<Trans>Passkeys</Trans>
+					</h1>
 					<p className="text-muted">
 						<Trans>The devices that can open your session.</Trans>
 					</p>

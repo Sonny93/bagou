@@ -41,7 +41,7 @@ export const AppHeader = ({
 					<span className="flex flex-col">
 						Bagou
 						<span className="text-[0.625rem] leading-none font-normal text-muted">
-							v{APP_VERSION}
+							{`v${APP_VERSION}`}
 						</span>
 					</span>
 				</Link>

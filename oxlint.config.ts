@@ -7,6 +7,7 @@ export default minimalstuffPreset({
 	adonisjs: true,
 	react: true,
 	vitest: true,
+	lingui: { allowedStrings: ['Bagou', '→'] },
 	overrides: [
 		{
 			files: ['**/app/**/*.ts'],

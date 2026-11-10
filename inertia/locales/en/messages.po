@@ -70,7 +70,7 @@ msgstr "A dictation is in progress. If you leave now, it will be lost."
 msgid "Account"
 msgstr "Account"
 
-#: inertia/pages/passkeys/show_passkeys.tsx:44
+#: inertia/pages/passkeys/show_passkeys.tsx:46
 #: inertia/passkeys/show_passkeys/add_passkey_form.tsx:17
 msgid "Add a passkey"
 msgstr "Add a passkey"
@@ -353,7 +353,7 @@ msgstr "Dismiss {written} for {heard}"
 msgid "Dismiss suggestions here, or delete corrections below to make room."
 msgstr "Dismiss suggestions here, or delete corrections below to make room."
 
-#: inertia/correction_suggestions/show_dictation/review_list_full_notice.tsx:14
+#: inertia/correction_suggestions/show_dictation/review_list_full_notice.tsx:13
 msgid "Dismiss suggestions here, or make room in <0>the settings</0>."
 msgstr "Dismiss suggestions here, or make room in <0>the settings</0>."
 
@@ -550,6 +550,7 @@ msgid "Passkey not found"
 msgstr "Passkey not found"
 
 #: inertia/dictation/show_dictation/account_menu.tsx:34
+#: inertia/pages/passkeys/show_passkeys.tsx:29
 msgid "Passkeys"
 msgstr "Passkeys"
 
@@ -708,7 +709,7 @@ msgstr "Something went wrong while displaying this page"
 msgid "Something went wrong, try again"
 msgstr "Something went wrong, try again"
 
-#: inertia/dictation/show_dictation/dictation_transcript.tsx:42
+#: inertia/dictation/show_dictation/dictation_transcript.tsx:51
 msgid "Speak, the text is written here."
 msgstr "Speak, the text is written here."
 
@@ -798,7 +799,7 @@ msgstr "The correction could not be saved, try again"
 msgid "The daily dictation quota is reached, try again tomorrow"
 msgstr "The daily dictation quota is reached, try again tomorrow"
 
-#: inertia/pages/passkeys/show_passkeys.tsx:30
+#: inertia/pages/passkeys/show_passkeys.tsx:32
 msgid "The devices that can open your session."
 msgstr "The devices that can open your session."
 
