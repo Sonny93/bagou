@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-10
+
 ### Added
 
 - Dictation can now also be transcribed by Deepgram.
@@ -107,7 +109,8 @@ First public release.
 - Install it as an app and open it with a global keyboard shortcut.
 - Run your own copy with the ready-made Docker image.
 
-[Unreleased]: https://github.com/Sonny93/bagou/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/Sonny93/bagou/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Sonny93/bagou/compare/v1.4.0...v2.0.0
 [1.4.0]: https://github.com/Sonny93/bagou/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/Sonny93/bagou/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Sonny93/bagou/compare/v1.1.0...v1.2.0
